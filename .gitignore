@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pyo
+*.db
+.env
+venv/
+.venv/
+Old/
+fix_db.py
+iniciar.sh
+
+# Docker
+.dockerignore
