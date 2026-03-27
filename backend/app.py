@@ -9,19 +9,23 @@ BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 app = Flask(__name__,
     static_folder=os.path.join(BASE, 'frontend', 'static'),
     template_folder=os.path.join(BASE, 'frontend', 'templates'))
-app.secret_key = os.environ.get('SECRET_KEY', 'cardapio-secret-2024')
-CORS(app, supports_credentials=True)
+
+app.secret_key = os.environ.get('SECRET_KEY', 'cardapio-secret-key-2024-xpto')
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['PERMANENT_SESSION_LIFETIME'] = 86400  # 24h
+CORS(app, supports_credentials=True, origins='*')
 
 UPLOADS_DIR = os.path.join(BASE, 'uploads')
 CONFIG_FILE  = os.path.join(BASE, 'config.json')
 os.makedirs(UPLOADS_DIR, exist_ok=True)
 init_db()
 
-def save_image(base64_str, filename):
-    if not base64_str: return None
-    if ',' in base64_str: base64_str = base64_str.split(',')[1]
-    path = os.path.join(UPLOADS_DIR, filename)
-    with open(path, 'wb') as f: f.write(base64.b64decode(base64_str))
+def save_image(b64, filename):
+    if not b64: return None
+    if ',' in b64: b64 = b64.split(',')[1]
+    with open(os.path.join(UPLOADS_DIR, filename), 'wb') as f:
+        f.write(base64.b64decode(b64))
     return f'/uploads/{filename}'
 
 def load_config():
@@ -47,7 +51,7 @@ def index():
     return send_from_directory(os.path.join(BASE, 'frontend', 'templates'), 'cardapio.html')
 
 @app.route('/admin')
-def admin():
+def admin_page():
     return send_from_directory(os.path.join(BASE, 'frontend', 'templates'), 'admin.html')
 
 @app.route('/uploads/<path:filename>')
@@ -64,12 +68,15 @@ def login():
     cur.execute("SELECT * FROM admin WHERE usuario=%s AND senha=%s", (usuario, senha))
     adm = fetchone(cur); conn.close()
     if not adm: return jsonify({'erro': 'Usuário ou senha incorretos'}), 401
-    session['admin_logged'] = True; session['admin_usuario'] = usuario
+    session.permanent = True
+    session['admin_logged'] = True
+    session['admin_usuario'] = usuario
     return jsonify({'ok': True, 'usuario': usuario})
 
 @app.route('/api/auth/logout', methods=['POST'])
 def logout():
-    session.clear(); return jsonify({'ok': True})
+    session.clear()
+    return jsonify({'ok': True})
 
 @app.route('/api/auth/check')
 def check_auth():
@@ -80,10 +87,10 @@ def check_auth():
 def alterar_senha():
     d = request.get_json()
     nova = hashlib.sha256(d.get('nova','').encode()).hexdigest()
-    usuario = session.get('admin_usuario')
     conn = get_connection(); cur = conn.cursor()
-    cur.execute("UPDATE admin SET senha=%s WHERE usuario=%s", (nova, usuario))
-    conn.commit(); conn.close(); return jsonify({'ok': True})
+    cur.execute("UPDATE admin SET senha=%s WHERE usuario=%s", (nova, session.get('admin_usuario')))
+    conn.commit(); conn.close()
+    return jsonify({'ok': True})
 
 # ── CONFIG ────────────────────────────────────────────────────────────────────
 @app.route('/api/config')
@@ -94,20 +101,24 @@ def get_config():
 @login_required
 def set_config():
     d = request.get_json(); cfg = load_config()
-    if d.get('nome_loja'):    cfg['nome_loja']   = d['nome_loja']
-    if d.get('wpp'):          cfg['wpp']         = d['wpp']
-    if 'frete'     in d:      cfg['frete']       = float(d['frete'])
-    if 'frete_min' in d:      cfg['frete_min']   = float(d['frete_min'])
-    if d.get('logo_base64'):  cfg['logo_url']    = save_image(d['logo_base64'], 'logo.jpg')
-    if d.get('banner_base64'):cfg['banner_url']  = save_image(d['banner_base64'], 'banner.jpg')
-    save_config(cfg); return jsonify({'ok': True, 'cfg': cfg})
+    for k in ['nome_loja','wpp']:
+        if d.get(k): cfg[k] = d[k]
+    for k in ['frete','frete_min']:
+        if k in d: cfg[k] = float(d[k])
+    if d.get('logo_base64'):   cfg['logo_url']   = save_image(d['logo_base64'], 'logo.jpg')
+    if d.get('banner_base64'): cfg['banner_url'] = save_image(d['banner_base64'], 'banner.jpg')
+    # Horários
+    if 'horarios' in d: cfg['horarios'] = d['horarios']
+    save_config(cfg)
+    return jsonify({'ok': True, 'cfg': cfg})
 
 # ── CATEGORIAS ────────────────────────────────────────────────────────────────
 @app.route('/api/categorias')
 def get_categorias():
     conn = get_connection(); cur = conn.cursor()
     cur.execute("SELECT * FROM categorias ORDER BY ordem")
-    cats = fetchall(cur); conn.close(); return jsonify(cats)
+    cats = fetchall(cur); conn.close()
+    return jsonify(cats)
 
 @app.route('/api/admin/categoria', methods=['POST'])
 @login_required
@@ -116,8 +127,8 @@ def criar_categoria():
     cur.execute("SELECT COALESCE(MAX(ordem),0)+1 FROM categorias")
     ordem = cur.fetchone()[0]
     cur.execute("INSERT INTO categorias (nome, ordem) VALUES (%s,%s) RETURNING id", (d['nome'], ordem))
-    new_id = cur.fetchone()[0]; conn.commit(); conn.close()
-    return jsonify({'id': new_id}), 201
+    nid = cur.fetchone()[0]; conn.commit(); conn.close()
+    return jsonify({'id': nid}), 201
 
 @app.route('/api/admin/categoria/<int:cid>', methods=['PATCH'])
 @login_required
@@ -156,13 +167,13 @@ def get_cardapio():
 @app.route('/api/pedido', methods=['POST'])
 def criar_pedido():
     dados = request.get_json()
-    nome  = dados.get('nome_cliente','').strip()
-    tel   = dados.get('telefone','').strip()
-    obs   = dados.get('observacao','').strip()
+    nome = dados.get('nome_cliente','').strip()
+    tel  = dados.get('telefone','').strip()
+    obs  = dados.get('observacao','').strip()
     itens = dados.get('itens', [])
-    tipo  = dados.get('tipo_entrega', 'retirada')
-    end   = dados.get('endereco','').strip()
-    fpag  = dados.get('forma_pagamento','').strip()
+    tipo = dados.get('tipo_entrega', 'retirada')
+    end  = dados.get('endereco','').strip()
+    fpag = dados.get('forma_pagamento','').strip()
     if not nome or not itens:
         return jsonify({'erro': 'Nome e itens são obrigatórios'}), 400
     if tipo == 'entrega' and not end:
@@ -179,8 +190,9 @@ def criar_pedido():
         subtotal += p['preco'] * qty
         valids.append((p['id'], qty, p['preco']))
     total = round(subtotal + frete, 2)
+    # Novos pedidos entram como 'pendente'
     cur.execute(
-        "INSERT INTO pedidos (nome_cliente,telefone,observacao,total,subtotal,frete,tipo_entrega,endereco,forma_pagamento) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
+        "INSERT INTO pedidos (nome_cliente,telefone,observacao,total,subtotal,frete,tipo_entrega,endereco,forma_pagamento,status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,'pendente') RETURNING id",
         (nome, tel, obs, total, round(subtotal,2), frete, tipo, end, fpag))
     pid = cur.fetchone()[0]
     cur.executemany("INSERT INTO itens_pedido (pedido_id,produto_id,quantidade,preco_unit) VALUES (%s,%s,%s,%s)",
@@ -199,9 +211,12 @@ def listar_pedidos():
     conn = get_connection(); cur = conn.cursor()
     q = "SELECT * FROM pedidos WHERE 1=1"
     params = []
-    if status_filter: q += " AND status=%s"; params.append(status_filter)
-    if nome_filter:   q += " AND (nome_cliente ILIKE %s OR CAST(id AS TEXT)=%s)"; params += [f'%{nome_filter}%', nome_filter]
-    if data_filter:   q += " AND criado_em LIKE %s"; params.append(f'{data_filter}%')
+    if status_filter:
+        q += " AND status=%s"; params.append(status_filter)
+    if nome_filter:
+        q += " AND (nome_cliente ILIKE %s OR CAST(id AS TEXT)=%s)"; params += [f'%{nome_filter}%', nome_filter]
+    if data_filter:
+        q += " AND criado_em LIKE %s"; params.append(f'{data_filter}%')
     q += " ORDER BY criado_em DESC"
     cur.execute(q, params); pedidos = fetchall(cur); result = []
     for p in pedidos:
@@ -215,11 +230,8 @@ def listar_pedidos():
 @login_required
 def editar_pedido(pid):
     d = request.get_json(); conn = get_connection(); cur = conn.cursor()
-    if 'nome_cliente'    in d: cur.execute("UPDATE pedidos SET nome_cliente=%s WHERE id=%s",    (d['nome_cliente'], pid))
-    if 'telefone'        in d: cur.execute("UPDATE pedidos SET telefone=%s WHERE id=%s",        (d['telefone'], pid))
-    if 'observacao'      in d: cur.execute("UPDATE pedidos SET observacao=%s WHERE id=%s",      (d['observacao'], pid))
-    if 'endereco'        in d: cur.execute("UPDATE pedidos SET endereco=%s WHERE id=%s",        (d['endereco'], pid))
-    if 'forma_pagamento' in d: cur.execute("UPDATE pedidos SET forma_pagamento=%s WHERE id=%s", (d['forma_pagamento'], pid))
+    for col in ['nome_cliente','telefone','observacao','endereco','forma_pagamento']:
+        if col in d: cur.execute(f"UPDATE pedidos SET {col}=%s WHERE id=%s", (d[col], pid))
     conn.commit(); conn.close(); return jsonify({'ok': True})
 
 @app.route('/api/admin/pedidos/<int:pid>', methods=['DELETE'])
@@ -234,15 +246,20 @@ def deletar_pedido(pid):
 @app.route('/api/admin/pedidos/<int:pid>/status', methods=['PATCH'])
 @login_required
 def atualizar_status(pid):
-    d = request.get_json(); status = d.get('status'); forma_pagamento = d.get('forma_pagamento')
-    if status not in ('novo','em_preparo','em_rota','entregue','cancelado'):
+    d = request.get_json()
+    status = d.get('status')
+    forma_pagamento = d.get('forma_pagamento')
+    statuses_validos = ('pendente','aceito','em_preparo','pronto','em_rota','entregue','cancelado')
+    if status not in statuses_validos:
         return jsonify({'erro': 'Status inválido'}), 400
     conn = get_connection(); cur = conn.cursor()
     if forma_pagamento:
         cur.execute("UPDATE pedidos SET status=%s, forma_pagamento=%s WHERE id=%s", (status, forma_pagamento, pid))
     else:
         cur.execute("UPDATE pedidos SET status=%s WHERE id=%s", (status, pid))
-    if status == 'entregue':
+
+    # Gera financeiro ao aceitar o pedido
+    if status == 'aceito':
         cur.execute("SELECT * FROM pedidos WHERE id=%s", (pid,)); pedido = fetchone(cur)
         fpag = forma_pagamento or pedido.get('forma_pagamento') or 'Não informado'
         cliente_id = None
@@ -252,9 +269,12 @@ def atualizar_status(pid):
             if cl: cliente_id = cl[0]
         cur.execute("SELECT id FROM financeiro WHERE pedido_id=%s", (pid,))
         if not cur.fetchone():
-            cur.execute("INSERT INTO financeiro (pedido_id, cliente_id, valor, tipo, forma_pagamento, descricao, pago) VALUES (%s,%s,%s,'entrada',%s,'Pedido #'||%s,1)",
-                (pid, cliente_id, pedido['total'], fpag, pid))
-    conn.commit(); conn.close(); return jsonify({'ok': True})
+            cur.execute(
+                "INSERT INTO financeiro (pedido_id, cliente_id, valor, tipo, forma_pagamento, descricao, pago) VALUES (%s,%s,%s,'entrada',%s,%s,1)",
+                (pid, cliente_id, pedido['total'], fpag, f'Pedido #{pid}'))
+
+    conn.commit(); conn.close()
+    return jsonify({'ok': True})
 
 # ── PRODUTOS ──────────────────────────────────────────────────────────────────
 @app.route('/api/admin/produtos')
@@ -262,8 +282,8 @@ def atualizar_status(pid):
 def listar_produtos():
     conn = get_connection(); cur = conn.cursor()
     cur.execute("SELECT * FROM categorias ORDER BY ordem"); cats = fetchall(cur)
-    cur.execute("SELECT * FROM produtos"); prods = fetchall(cur); conn.close()
-    return jsonify({'categorias': cats, 'produtos': prods})
+    cur.execute("SELECT * FROM produtos"); prods = fetchall(cur)
+    conn.close(); return jsonify({'categorias': cats, 'produtos': prods})
 
 @app.route('/api/admin/produto', methods=['POST'])
 @login_required
@@ -273,8 +293,8 @@ def criar_produto():
     conn = get_connection(); cur = conn.cursor()
     cur.execute("INSERT INTO produtos (categoria_id,nome,descricao,preco,foto_url) VALUES (%s,%s,%s,%s,%s) RETURNING id",
         (d['categoria_id'], d['nome'], d.get('descricao',''), float(d['preco']), foto))
-    new_id = cur.fetchone()[0]; conn.commit(); conn.close()
-    return jsonify({'id': new_id}), 201
+    nid = cur.fetchone()[0]; conn.commit(); conn.close()
+    return jsonify({'id': nid}), 201
 
 @app.route('/api/admin/produto/<int:pid>', methods=['PATCH'])
 @login_required
@@ -301,18 +321,18 @@ def deletar_produto(pid):
 @app.route('/api/admin/financeiro')
 @login_required
 def listar_financeiro():
-    tipo  = request.args.get('tipo','')
-    pago  = request.args.get('pago','')
-    data_ini = request.args.get('data_ini','')
-    data_fim = request.args.get('data_fim','')
+    tipo = request.args.get('tipo','')
+    pago = request.args.get('pago','')
+    di   = request.args.get('data_ini','')
+    df   = request.args.get('data_fim','')
     conn = get_connection(); cur = conn.cursor()
     q = '''SELECT f.*, c.nome as cliente_nome, c.telefone as cliente_tel
         FROM financeiro f LEFT JOIN clientes c ON c.id=f.cliente_id WHERE 1=1'''
     params = []
     if tipo: q += " AND f.tipo=%s"; params.append(tipo)
     if pago != '': q += " AND f.pago=%s"; params.append(int(pago))
-    if data_ini: q += " AND f.criado_em >= %s"; params.append(data_ini)
-    if data_fim: q += " AND f.criado_em <= %s"; params.append(data_fim + ' 23:59:59')
+    if di: q += " AND f.criado_em >= %s"; params.append(di)
+    if df: q += " AND f.criado_em <= %s"; params.append(df + ' 23:59:59')
     q += " ORDER BY f.criado_em DESC"
     cur.execute(q, params); result = fetchall(cur); conn.close()
     return jsonify(result)
@@ -324,20 +344,17 @@ def criar_lancamento():
     cur.execute(
         "INSERT INTO financeiro (valor, tipo, forma_pagamento, descricao, observacao, pago) VALUES (%s,%s,%s,%s,%s,%s) RETURNING id",
         (float(d['valor']), d.get('tipo','entrada'), d.get('forma_pagamento',''),
-         d.get('descricao',''), d.get('observacao',''), 1 if d.get('pago',True) else 0))
-    new_id = cur.fetchone()[0]; conn.commit(); conn.close()
-    return jsonify({'id': new_id}), 201
+         d.get('descricao',''), d.get('observacao',''), 1 if d.get('pago', True) else 0))
+    nid = cur.fetchone()[0]; conn.commit(); conn.close()
+    return jsonify({'id': nid}), 201
 
 @app.route('/api/admin/financeiro/<int:fid>', methods=['PATCH'])
 @login_required
 def editar_lancamento(fid):
     d = request.get_json(); conn = get_connection(); cur = conn.cursor()
-    if 'valor'          in d: cur.execute("UPDATE financeiro SET valor=%s WHERE id=%s",          (float(d['valor']), fid))
-    if 'tipo'           in d: cur.execute("UPDATE financeiro SET tipo=%s WHERE id=%s",           (d['tipo'], fid))
-    if 'forma_pagamento'in d: cur.execute("UPDATE financeiro SET forma_pagamento=%s WHERE id=%s",(d['forma_pagamento'], fid))
-    if 'descricao'      in d: cur.execute("UPDATE financeiro SET descricao=%s WHERE id=%s",      (d['descricao'], fid))
-    if 'observacao'     in d: cur.execute("UPDATE financeiro SET observacao=%s WHERE id=%s",     (d['observacao'], fid))
-    if 'pago'           in d: cur.execute("UPDATE financeiro SET pago=%s WHERE id=%s",           (1 if d['pago'] else 0, fid))
+    for col in ['valor','tipo','forma_pagamento','descricao','observacao']:
+        if col in d: cur.execute(f"UPDATE financeiro SET {col}=%s WHERE id=%s", (d[col] if col != 'valor' else float(d[col]), fid))
+    if 'pago' in d: cur.execute("UPDATE financeiro SET pago=%s WHERE id=%s", (1 if d['pago'] else 0, fid))
     conn.commit(); conn.close(); return jsonify({'ok': True})
 
 @app.route('/api/admin/financeiro/<int:fid>', methods=['DELETE'])
@@ -359,9 +376,8 @@ def listar_clientes():
 @login_required
 def editar_cliente(cid):
     d = request.get_json(); conn = get_connection(); cur = conn.cursor()
-    if 'nome'     in d: cur.execute("UPDATE clientes SET nome=%s WHERE id=%s",     (d['nome'], cid))
-    if 'email'    in d: cur.execute("UPDATE clientes SET email=%s WHERE id=%s",    (d['email'], cid))
-    if 'endereco' in d: cur.execute("UPDATE clientes SET endereco=%s WHERE id=%s", (d['endereco'], cid))
+    for col in ['nome','email','endereco']:
+        if col in d: cur.execute(f"UPDATE clientes SET {col}=%s WHERE id=%s", (d[col], cid))
     conn.commit(); conn.close(); return jsonify({'ok': True})
 
 if __name__ == '__main__':
