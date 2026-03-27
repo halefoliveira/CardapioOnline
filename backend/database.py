@@ -52,6 +52,7 @@ def init_db():
         pedido_id INTEGER REFERENCES pedidos(id),
         cliente_id INTEGER REFERENCES clientes(id),
         valor REAL NOT NULL, tipo TEXT NOT NULL DEFAULT 'entrada',
+        data_lancamento TEXT,
         forma_pagamento TEXT, descricao TEXT, observacao TEXT,
         pago INTEGER DEFAULT 1,
         criado_em TEXT DEFAULT to_char(NOW(), 'YYYY-MM-DD HH24:MI:SS'))''')
@@ -69,6 +70,7 @@ def init_db():
         "ALTER TABLE financeiro ADD COLUMN IF NOT EXISTS descricao TEXT",
         "ALTER TABLE financeiro ADD COLUMN IF NOT EXISTS observacao TEXT",
         "ALTER TABLE financeiro ADD COLUMN IF NOT EXISTS pago INTEGER DEFAULT 1",
+        "ALTER TABLE financeiro ADD COLUMN IF NOT EXISTS data_lancamento TEXT",
     ]:
         try: c.execute(m)
         except: pass

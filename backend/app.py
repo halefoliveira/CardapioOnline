@@ -341,10 +341,18 @@ def listar_financeiro():
 @login_required
 def criar_lancamento():
     d = request.get_json(); conn = get_connection(); cur = conn.cursor()
-    cur.execute(
-        "INSERT INTO financeiro (valor, tipo, forma_pagamento, descricao, observacao, pago) VALUES (%s,%s,%s,%s,%s,%s) RETURNING id",
-        (float(d['valor']), d.get('tipo','entrada'), d.get('forma_pagamento',''),
-         d.get('descricao',''), d.get('observacao',''), 1 if d.get('pago', True) else 0))
+    data_lanc = d.get('data_lancamento','') or None
+    if data_lanc:
+        cur.execute(
+            "INSERT INTO financeiro (valor, tipo, forma_pagamento, descricao, observacao, pago, data_lancamento, criado_em) VALUES (%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
+            (float(d['valor']), d.get('tipo','entrada'), d.get('forma_pagamento',''),
+             d.get('descricao',''), d.get('observacao',''), 1 if d.get('pago', True) else 0,
+             data_lanc, data_lanc))
+    else:
+        cur.execute(
+            "INSERT INTO financeiro (valor, tipo, forma_pagamento, descricao, observacao, pago) VALUES (%s,%s,%s,%s,%s,%s) RETURNING id",
+            (float(d['valor']), d.get('tipo','entrada'), d.get('forma_pagamento',''),
+             d.get('descricao',''), d.get('observacao',''), 1 if d.get('pago', True) else 0))
     nid = cur.fetchone()[0]; conn.commit(); conn.close()
     return jsonify({'id': nid}), 201
 
@@ -352,7 +360,7 @@ def criar_lancamento():
 @login_required
 def editar_lancamento(fid):
     d = request.get_json(); conn = get_connection(); cur = conn.cursor()
-    for col in ['valor','tipo','forma_pagamento','descricao','observacao']:
+    for col in ['valor','tipo','forma_pagamento','descricao','observacao','data_lancamento']:
         if col in d: cur.execute(f"UPDATE financeiro SET {col}=%s WHERE id=%s", (d[col] if col != 'valor' else float(d[col]), fid))
     if 'pago' in d: cur.execute("UPDATE financeiro SET pago=%s WHERE id=%s", (1 if d['pago'] else 0, fid))
     conn.commit(); conn.close(); return jsonify({'ok': True})
