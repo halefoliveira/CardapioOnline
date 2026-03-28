@@ -177,7 +177,12 @@ def criar_pedido():
     if tipo == 'entrega' and not end:
         return jsonify({'erro': 'Endereço obrigatório para entrega'}), 400
     cfg = load_config()
-    frete = float(cfg.get('frete', 0)) if tipo == 'entrega' else 0.0
+    # frete_override permite que o PDV envie um frete personalizado
+    frete_override = dados.get('frete_override')
+    if frete_override is not None:
+        frete = float(frete_override) if tipo == 'entrega' else 0.0
+    else:
+        frete = float(cfg.get('frete', 0)) if tipo == 'entrega' else 0.0
     conn = get_connection(); cur = conn.cursor()
     subtotal = 0.0; valids = []
     for item in itens:

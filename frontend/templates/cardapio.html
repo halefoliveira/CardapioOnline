@@ -372,7 +372,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;}
         <div class="fg"><label>Endereço *</label><input type="text" id="inpEnd" placeholder="Rua, número, bairro, complemento"></div>
       </div>
       <div class="fg"><label>Seu nome *</label><input type="text" id="inpNome" placeholder="Como te chamamos?"></div>
-      <div class="fg"><label>WhatsApp</label><input type="tel" id="inpTel" placeholder="(61) 99999-9999"></div>
+      <div class="fg"><label>WhatsApp</label><input type="tel" id="inpTel" placeholder="(61) 99999-9999" oninput="maskTel(this)"></div>
       <div class="fg"><label>Forma de pagamento</label>
         <select id="inpPgto">
           <option value="">Selecione...</option>
@@ -397,6 +397,13 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;}
 
 <script>
 const API='/api';
+
+function maskTel(el){
+  let v=el.value.replace(/\D/g,'').slice(0,11);
+  if(v.length<=10) v=v.replace(/^(\d{2})(\d{4})(\d{0,4})$/,'($1) $2-$3');
+  else v=v.replace(/^(\d{2})(\d{5})(\d{0,4})$/,'($1) $2-$3');
+  el.value=v.replace(/-$/,'');
+}
 let cardapio=[], cart={}, cfg={}, tipoEntrega='retirada', lojaAberta=false;
 const DIAS=['domingo','segunda','terca','quarta','quinta','sexta','sabado'];
 const DIAS_PT=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
@@ -579,6 +586,7 @@ async function enviar(){
   const fpag=document.getElementById('inpPgto').value;
   if(!lojaAberta){toast('A loja está fechada!',true);return;}
   if(!nome){toast('Informe seu nome!',true);return;}
+  if(tel){const digits=tel.replace(/\D/g,'');if(digits.length<10){toast('WhatsApp inválido! Informe DDD + número.',true);return;}}
   if(tipoEntrega==='entrega'&&!end){toast('Informe o endereço!',true);return;}
   const btn=document.getElementById('sendBtn'); btn.disabled=true;
   try{

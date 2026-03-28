@@ -1,5 +1,50 @@
 {
   "nome_loja": "Feijuca da Fabi",
-  "wpp": "61995736193",
-  "logo_url": "/uploads/logo.jpg"
+  "wpp": "61993056291",
+  "logo_url": "/uploads/logo.jpg",
+  "frete": 0.0,
+  "frete_min": 0.0,
+  "horarios": {
+    "domingo": {
+      "ativo": true,
+      "abertura": "08:00",
+      "fechamento": "22:00"
+    },
+    "segunda": {
+      "ativo": false,
+      "abertura": "08:00",
+      "fechamento": "22:00"
+    },
+    "terca": {
+      "ativo": false,
+      "abertura": "08:00",
+      "fechamento": "22:00"
+    },
+    "quarta": {
+      "ativo": false,
+      "abertura": "08:00",
+      "fechamento": "22:00"
+    },
+    "quinta": {
+      "ativo": false,
+      "abertura": "08:00",
+      "fechamento": "22:00"
+    },
+    "sexta": {
+      "ativo": false,
+      "abertura": "08:00",
+      "fechamento": "22:00"
+    },
+    "sabado": {
+      "ativo": true,
+      "abertura": "08:00",
+      "fechamento": "22:00"
+    }
+  },
+  "tipos_pagamento": [
+    "Dinheiro",
+    "PIX",
+    "Cartão de Débito",
+    "Cartão de Crédito"
+  ]
 }
