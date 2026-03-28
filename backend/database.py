@@ -30,14 +30,14 @@ def init_db():
     c.execute('''CREATE TABLE IF NOT EXISTS produtos (
         id SERIAL PRIMARY KEY, categoria_id INTEGER NOT NULL REFERENCES categorias(id),
         nome TEXT NOT NULL, descricao TEXT, preco REAL NOT NULL,
-        disponivel INTEGER DEFAULT 1, foto_url TEXT)''')
+        disponivel INTEGER DEFAULT 1, foto_url TEXT,
+        preco_promo REAL, em_promo INTEGER DEFAULT 0)''')
     c.execute('''CREATE TABLE IF NOT EXISTS pedidos (
         id SERIAL PRIMARY KEY, nome_cliente TEXT NOT NULL,
         telefone TEXT, observacao TEXT, total REAL NOT NULL,
         subtotal REAL NOT NULL DEFAULT 0, frete REAL NOT NULL DEFAULT 0,
         tipo_entrega TEXT DEFAULT 'retirada', endereco TEXT,
-        forma_pagamento TEXT,
-        status TEXT DEFAULT 'pendente',
+        forma_pagamento TEXT, status TEXT DEFAULT 'pendente',
         criado_em TEXT DEFAULT to_char(NOW(), 'YYYY-MM-DD HH24:MI:SS'))''')
     c.execute('''CREATE TABLE IF NOT EXISTS itens_pedido (
         id SERIAL PRIMARY KEY, pedido_id INTEGER NOT NULL REFERENCES pedidos(id),
@@ -52,15 +52,13 @@ def init_db():
         pedido_id INTEGER REFERENCES pedidos(id),
         cliente_id INTEGER REFERENCES clientes(id),
         valor REAL NOT NULL, tipo TEXT NOT NULL DEFAULT 'entrada',
-        data_lancamento TEXT,
         forma_pagamento TEXT, descricao TEXT, observacao TEXT,
-        pago INTEGER DEFAULT 1,
+        pago INTEGER DEFAULT 1, data_lancamento TEXT,
         criado_em TEXT DEFAULT to_char(NOW(), 'YYYY-MM-DD HH24:MI:SS'))''')
     c.execute('''CREATE TABLE IF NOT EXISTS admin (
         id SERIAL PRIMARY KEY, usuario TEXT UNIQUE NOT NULL, senha TEXT NOT NULL)''')
 
-    # Migrações
-    for m in [
+    migrations = [
         "ALTER TABLE pedidos ADD COLUMN IF NOT EXISTS subtotal REAL NOT NULL DEFAULT 0",
         "ALTER TABLE pedidos ADD COLUMN IF NOT EXISTS frete REAL NOT NULL DEFAULT 0",
         "ALTER TABLE pedidos ADD COLUMN IF NOT EXISTS tipo_entrega TEXT DEFAULT 'retirada'",
@@ -71,11 +69,13 @@ def init_db():
         "ALTER TABLE financeiro ADD COLUMN IF NOT EXISTS observacao TEXT",
         "ALTER TABLE financeiro ADD COLUMN IF NOT EXISTS pago INTEGER DEFAULT 1",
         "ALTER TABLE financeiro ADD COLUMN IF NOT EXISTS data_lancamento TEXT",
-    ]:
+        "ALTER TABLE produtos ADD COLUMN IF NOT EXISTS preco_promo REAL",
+        "ALTER TABLE produtos ADD COLUMN IF NOT EXISTS em_promo INTEGER DEFAULT 0",
+    ]
+    for m in migrations:
         try: c.execute(m)
         except: pass
 
-    # Migrar status 'novo' para 'pendente'
     try: c.execute("UPDATE pedidos SET status='pendente' WHERE status='novo'")
     except: pass
 
