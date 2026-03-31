@@ -114,8 +114,9 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-he
 .ped-its{margin:8px 0;padding:7px 0;border-top:1px dashed var(--bd);border-bottom:1px dashed var(--bd);}
 .ped-it{font-size:11px;color:var(--mu);padding:1px 0;}
 .ped-tot{font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;color:var(--ac);margin-top:7px;}
-.ped-btns{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;overflow:hidden;}
-.ped-btns button{flex:1;min-width:0;}
+.ped-btns{display:flex;gap:3px;margin-top:8px;align-items:center;flex-wrap:nowrap;overflow:hidden;}
+.ped-btns button{flex:0 0 auto;font-size:10px!important;padding:4px 8px!important;white-space:nowrap;line-height:1.3;}
+.ped-btns .btn-principal{flex:1 1 auto;max-width:55%;min-width:0;font-size:10px!important;padding:4px 6px!important;overflow:hidden;text-overflow:ellipsis;}
 
 /* FILTROS */
 .fils{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px;align-items:center;}
@@ -125,8 +126,8 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-he
 .sinp:focus{outline:none;border-color:var(--bl);}
 
 /* PDV */
-.pdv-lay{display:grid;grid-template-columns:1fr 350px;gap:16px;height:calc(100vh - 120px);}
-.pdv-left{overflow-y:auto;}
+.pdv-lay{display:grid;grid-template-columns:1fr 360px;gap:16px;align-items:start;}
+.pdv-left{overflow-y:auto;max-height:calc(100vh - 120px);}
 .pdv-cats{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;}
 .pdv-cat{border:1.5px solid var(--bd);background:#fff;border-radius:9px;padding:5px 13px;font-size:11px;font-weight:700;color:var(--mu);cursor:pointer;font-family:'Nunito',sans-serif;transition:.15s;}
 .pdv-cat.on,.pdv-cat:hover{background:var(--bl);border-color:var(--bl);color:#fff;}
@@ -143,9 +144,9 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-he
 .pdv-promo-tag{background:var(--ac);color:#fff;font-size:9px;font-weight:800;padding:1px 6px;border-radius:4px;margin-bottom:3px;display:inline-block;}
 .pdv-it.em-promo{border-color:rgba(230,57,70,.35);background:linear-gradient(135deg,#fff,#fff8f8);}
 .pdv-it-pr-old{font-size:9px;color:var(--mu);text-decoration:line-through;margin-top:1px;}
-.pdv-aside{display:flex;flex-direction:column;background:#fff;border-radius:var(--r);border:1px solid var(--bd);overflow:visible;min-height:0;}
+.pdv-aside{display:flex;flex-direction:column;background:#fff;border-radius:var(--r);border:1px solid var(--bd);overflow:visible;position:sticky;top:0;}
 .pdv-hd{padding:12px 16px;background:var(--sb);color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;flex-shrink:0;}
-.pdv-list{flex:1;overflow-y:auto;padding:10px 13px;min-height:0;}
+.pdv-list{overflow-y:auto;padding:10px 13px;min-height:100px;max-height:280px;}
 .pdv-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--bd);}
 .pdv-row:last-child{border-bottom:none;}
 .pdv-rn{flex:1;font-size:12px;font-weight:600;word-break:break-word;min-width:0;overflow-wrap:break-word;}
@@ -263,12 +264,32 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-he
 /* Máscara telefone */
 .tel-hint{font-size:10px;color:var(--mu);margin-top:3px;}
 
+
+/* PDV separador de categoria */
+.pdv-cat-section{margin-bottom:16px;}
+.pdv-cat-label{font-size:12px;font-weight:800;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;padding:6px 0 8px;border-bottom:2px solid var(--bd);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.pdv-cat-label::before{content:'';display:block;width:3px;height:14px;background:var(--bl);border-radius:2px;}
+
+
+/* PDV múltiplas formas de pagamento */
+.pdv-pgto-row{display:flex;gap:6px;align-items:center;margin-bottom:6px;}
+.pdv-pgto-row select{flex:1;font-size:12px;padding:5px 8px;border:1.5px solid var(--bd);border-radius:8px;background:#fff;}
+.pdv-pgto-row input[type=number]{width:90px;font-size:12px;padding:5px 8px;border:1.5px solid var(--bd);border-radius:8px;}
+.pdv-pgto-row button{background:none;border:none;color:var(--ac);cursor:pointer;font-size:16px;padding:2px 4px;}
+.pdv-add-pgto{font-size:11px;color:var(--bl);font-weight:700;cursor:pointer;background:none;border:none;padding:2px 0;margin-bottom:6px;}
+.pdv-pgto-troco{font-size:12px;color:var(--gr);font-weight:700;padding:4px 0;}
+
 @media print{
   body *{visibility:hidden;}
   #pa,#pa *{visibility:visible;}
-  #pa{position:absolute;left:0;top:0;width:80mm;}
-  @page{size:80mm auto;margin-top:20mm;margin-bottom:10mm;margin-left:0;margin-right:0;}
+  #pa{position:absolute;left:0;top:0;width:72mm;}
+  @page{size:80mm auto;margin:3mm 4mm 5mm 4mm;}
 }
+.desconto-row{display:flex;align-items:center;gap:7px;margin-bottom:8px;background:var(--grl);border:1.5px solid var(--gr);border-radius:10px;padding:7px 11px;}
+.desconto-row label{font-size:11px;font-weight:700;color:var(--gr);white-space:nowrap;}
+.desconto-row input{width:80px;font-size:12px;padding:4px 8px;border:1.5px solid var(--bd);border-radius:7px;text-align:right;}
+.desconto-row select{font-size:11px;padding:4px 7px;border:1.5px solid var(--bd);border-radius:7px;background:#fff;}
+.desconto-val{font-weight:800;color:var(--gr);font-size:12px;min-width:60px;}
 
 /* RESPONSIVE */
 @media(max-width:900px){
@@ -445,9 +466,15 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-he
       <option value="entregue">🟢 Entregue</option>
       <option value="cancelado">⚫ Cancelado</option>
     </select>
-    <input type="date" class="sinp" id="listaDt">
-    <input class="sinp" id="listaNome" placeholder="🔍 Nome ou número">
+    <input class="sinp" id="listaNome" placeholder="🔍 Nome ou número" style="min-width:150px">
+    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+      <span style="font-size:11px;color:var(--mu);white-space:nowrap">De</span>
+      <input type="date" class="sinp" id="listaDtI">
+      <span style="font-size:11px;color:var(--mu)">até</span>
+      <input type="date" class="sinp" id="listaDtF">
+    </div>
     <button class="btn bbl bsm" onclick="loadListaPedidos()">Filtrar</button>
+    <button class="btn bgh bsm" onclick="limparFiltrosLista()">Limpar</button>
     <span id="listaTotal" style="font-size:12px;color:var(--mu);margin-left:auto"></span>
   </div>
   <div class="card" style="padding:0">
@@ -471,9 +498,10 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-he
 <div class="pg" id="pg-pdv">
   <div class="pg-t">PDV / Caixa</div>
   <div class="pdv-lay">
-    <div class="pdv-left">
-      <div class="pdv-cats" id="pdvCats"></div>
-      <div class="pdv-grid" id="pdvGrid"></div>
+    <div class="pdv-left" style="display:flex;flex-direction:column;gap:0">
+      <!-- Filtro de categoria em lista horizontal de chips -->
+      <div class="pdv-cats" id="pdvCats" style="margin-bottom:12px"></div>
+      <div id="pdvGrid"></div>
     </div>
     <div class="pdv-aside">
       <div class="pdv-hd">🛒 Pedido atual</div>
@@ -490,21 +518,33 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-he
           </div>
           <div class="fg"><label>Cliente</label><input type="text" id="pdvCli" placeholder="Nome"></div>
           <div class="fg"><label>Telefone</label><input type="tel" id="pdvTel" placeholder="(61) 99999-9999" oninput="maskPhoneInline(this)"></div>
-          <div class="fg"><label>Pagamento</label>
-            <select id="pdvPg">
-              <option value="">Selecione...</option>
-              <option value="Dinheiro">💵 Dinheiro</option>
-              <option value="Cartão de Débito">💳 Débito</option>
-              <option value="Cartão de Crédito">💳 Crédito</option>
-              <option value="PIX">📱 PIX</option>
-            </select>
+          <div class="fg">
+            <label style="display:flex;justify-content:space-between;align-items:center">
+              Pagamento
+              <button class="pdv-add-pgto" onclick="pdvAddPgto()">+ Adicionar forma</button>
+            </label>
+            <div id="pdvPgtoRows"></div>
+            <div class="pdv-pgto-troco" id="pdvTroco" style="display:none"></div>
           </div>
           <div class="fg"><label>Obs</label><input type="text" id="pdvObs" placeholder="Observações..."></div>
         </div>
         <div class="pdv-sr" id="pdvSrR" style="display:none"><span>Subtotal</span><span id="pdvSrV">R$ 0,00</span></div>
         <div class="pdv-sr" id="pdvFrR" style="display:none"><span>🚚 Frete</span><span id="pdvFrV">R$ 0,00</span></div>
+        <div class="desconto-row" id="pdvDescontoRow" style="display:none">
+          <label>🏷️ Desconto</label>
+          <select id="pdvDescTipo" onchange="pdvCalc()">
+            <option value="valor">R$</option>
+            <option value="pct">%</option>
+          </select>
+          <input type="number" id="pdvDescVal" min="0" step="0.01" placeholder="0" oninput="pdvCalc()">
+          <span class="desconto-val" id="pdvDescMostra">R$ 0,00</span>
+          <button style="background:none;border:none;color:var(--mu);cursor:pointer;font-size:13px" onclick="pdvToggleDesconto()" title="Remover desconto">✕</button>
+        </div>
         <div class="pdv-tr"><span>Total</span><span id="pdvTot">R$ 0,00</span></div>
-        <button class="pdv-fb" onclick="pdvFinalizar()">✅ Finalizar Pedido</button>
+        <div style="display:flex;gap:7px;margin-bottom:7px">
+          <button class="btn bgh bsm" style="flex:0 0 auto" onclick="pdvToggleDesconto()" id="btnDesconto">🏷️ Desconto</button>
+          <button class="pdv-fb" style="flex:1" onclick="pdvFinalizar()">✅ Finalizar</button>
+        </div>
       </div>
     </div>
   </div>
@@ -595,11 +635,12 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-he
 <!-- RESUMO -->
 <div class="pg" id="pg-resumo">
   <div class="pg-t">Resumo</div>
-  <div class="stats">
+  <div class="stats" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">
     <div class="stat"><div class="stat-ic">📋</div><div class="stat-lb">Total pedidos</div><div class="stat-v" id="sTot">—</div></div>
     <div class="stat"><div class="stat-ic">💵</div><div class="stat-lb">Faturamento</div><div class="stat-v" id="sFat">—</div></div>
     <div class="stat"><div class="stat-ic">🎯</div><div class="stat-lb">Ticket médio</div><div class="stat-v" id="sTick">—</div></div>
     <div class="stat"><div class="stat-ic">✅</div><div class="stat-lb">Entregues hoje</div><div class="stat-v" id="sHj">—</div></div>
+    <div class="stat"><div class="stat-ic">👁️</div><div class="stat-lb">Visitas únicas</div><div class="stat-v" id="sVisitas">—</div></div>
   </div>
   <div class="card">
     <div class="ct" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
@@ -767,16 +808,52 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-he
 
 <!-- MODAL EDITAR PEDIDO -->
 <div class="overlay" id="mEditPed">
-  <div class="mbox">
-    <h3>✏️ Editar Pedido</h3>
+  <div class="mbox" style="max-width:560px">
+    <h3>✏️ Editar Pedido <span id="epNumero" style="color:var(--mu);font-size:14px;font-weight:400"></span></h3>
     <input type="hidden" id="epId">
-    <div class="fg"><label>Nome</label><input type="text" id="epNm"></div>
-    <div class="fg"><label>Telefone</label><input type="tel" id="epTel" placeholder="(61) 99999-9999"></div>
-    <div class="fg"><label>Observação</label><input type="text" id="epObs"></div>
-    <div class="fg"><label>Endereço</label><input type="text" id="epEnd"></div>
-    <div class="fg"><label>Pagamento</label>
-      <select id="epPg"><option value="">—</option><option value="Dinheiro">💵 Dinheiro</option><option value="Cartão de Débito">💳 Débito</option><option value="Cartão de Crédito">💳 Crédito</option><option value="PIX">📱 PIX</option></select>
+    <div class="r2">
+      <div class="fg"><label>Nome</label><input type="text" id="epNm"></div>
+      <div class="fg"><label>Telefone</label><input type="tel" id="epTel" placeholder="(61) 99999-9999"></div>
     </div>
+    <div class="r2">
+      <div class="fg"><label>Observação</label><input type="text" id="epObs"></div>
+      <div class="fg"><label>Endereço</label><input type="text" id="epEnd"></div>
+    </div>
+    <div class="fg">
+      <label style="display:flex;justify-content:space-between;align-items:center">
+        Pagamento
+        <button type="button" class="pdv-add-pgto" onclick="epAddPgto()">+ Adicionar forma</button>
+      </label>
+      <div id="epPgtoRows"></div>
+      <div style="font-size:12px;font-weight:700;padding:3px 0;min-height:18px" id="epPgtoInfo"></div>
+    </div>
+    <!-- Campo oculto mantido para compatibilidade com salvarEditPed -->
+    <input type="hidden" id="epPg">
+    <div class="fg"><label>Status</label>
+      <select id="epStatus">
+        <option value="pendente">🔴 Pendente</option>
+        <option value="aceito">🟠 Em produção</option>
+        <option value="pronto">🔵 Pronto</option>
+        <option value="entregue">🟢 Entregue</option>
+        <option value="cancelado">⚫ Cancelado</option>
+      </select>
+    </div>
+    <div class="fg"><label>Frete (R$)</label><input type="number" id="epFrete" step="0.50" placeholder="0,00" oninput="epAtualizarTotais()"></div>
+    <div class="fg"><label>Desconto</label>
+      <div style="display:flex;gap:8px;align-items:center">
+        <select id="epDescTipo" style="width:70px;padding:7px;border:1.5px solid var(--bd);border-radius:8px;font-size:12px" onchange="epAtualizarTotais()">
+          <option value="valor">R$</option>
+          <option value="pct">%</option>
+        </select>
+        <input type="number" id="epDescVal" min="0" step="0.01" placeholder="0" style="flex:1;font-size:13px" oninput="epAtualizarTotais()">
+        <span style="font-size:12px;color:var(--gr);font-weight:700" id="epDescMostra"></span>
+      </div>
+    </div>
+    <div class="fg">
+      <label>Itens do pedido <button type="button" class="btn bbl bsm" style="float:right" onclick="epAddItem()">+ Item</button></label>
+      <div id="epItens" style="display:flex;flex-direction:column;gap:6px;margin-top:6px"></div>
+    </div>
+    <div id="epTotais" style="background:var(--bg);border-radius:10px;padding:10px 12px;font-size:13px;margin-bottom:4px"></div>
     <div class="mft">
       <button class="btn bgh" onclick="closeModal('mEditPed')">Cancelar</button>
       <button class="btn bbl" onclick="salvarEditPed()">Salvar</button>
@@ -879,7 +956,7 @@ function goPage(name,el){
   el.classList.add('on');
   closeSb();
   if(name==='pedidos')    loadPedidos();
-  if(name==='pdv')        loadPDV();
+  if(name==='pdv')        loadPDV().then(()=>{ if(!document.getElementById('pdvPgtoRows').innerHTML.trim()) renderPdvPgto(); });
   if(name==='produtos')   loadProds();
   if(name==='categorias') loadCats();
   if(name==='clientes')   loadClients();
@@ -898,8 +975,11 @@ function goPage(name,el){
   }
   if(name==='lista-pedidos'){
     // Preencher data de hoje como padrão
-    if(!document.getElementById('listaDt').value)
-      document.getElementById('listaDt').value=new Date().toISOString().slice(0,10);
+    if(!document.getElementById('listaDtI').value){
+      const hoje=new Date().toISOString().slice(0,10);
+      document.getElementById('listaDtI').value=hoje;
+      document.getElementById('listaDtF').value=hoje;
+    }
     loadListaPedidos();
   }
   if(name==='config')     loadConfig();
@@ -1031,13 +1111,13 @@ function renderPedCard(p,col){
   const delBtn=`<button class="btn bdn" onclick="delPed(${p.id})">🗑️</button>`;
   const impBtn=`<button class="btn bgh bsm" onclick="impPed(${p.id})">🖨️</button>`;
   if(col==='pend'){
-    btns=`<button class="btn bgr bsm" style="flex:1" onclick="abrirAceitar(${p.id},'${(p.forma_pagamento||'').replace(/'/g,"\\'")}')">✅ Aceitar</button>${editBtn}${delBtn}`;
+    btns=`<button class="btn bgr bsm btn-principal" style="font-size:10px;padding:4px 8px" onclick="abrirAceitar(${p.id},'${(p.forma_pagamento||'').replace(/'/g,"\\'")}')">✅ Aceitar</button>${editBtn}${delBtn}`;
   } else if(col==='ace'){
     // Em produção: pode editar, excluir e avançar
-    btns=`<button class="btn bbl bsm" style="flex:1" onclick="moverStatus(${p.id},'pronto')">✔️ Pronto</button>${editBtn}${delBtn}${impBtn}`;
+    btns=`<button class="btn bbl bsm btn-principal" style="font-size:10px;padding:4px 8px" onclick="moverStatus(${p.id},'pronto')">✔️ Pronto</button>${editBtn}${delBtn}${impBtn}`;
   } else if(col==='prep'){
     // Pronto: pode editar, excluir e finalizar
-    btns=`<button class="btn bac bsm" style="flex:1" onclick="moverStatus(${p.id},'entregue')">📦 Entregue</button>${editBtn}${delBtn}${impBtn}`;
+    btns=`<button class="btn bac bsm btn-principal" style="font-size:10px;padding:4px 8px" onclick="moverStatus(${p.id},'entregue')">📦 Entregue</button>${editBtn}${delBtn}${impBtn}`;
   } else {
     // Entregue: só pode voltar 1 etapa (para poder excluir depois) e imprimir
     btns=`<button class="btn bgh bsm" onclick="moverStatus(${p.id},'pronto')" title="Voltar para Pronto">↩️ Voltar</button>${impBtn}`;
@@ -1113,24 +1193,213 @@ async function impPedAutomatic(pid){
   window.print(); a.style.display='none';
 }
 
-function openEditPed(id,nome,tel,obs,end,pgto){
+let epItensData=[];
+let epPagamentos=[{tipo:'',valor:0}];
+
+function epGetTipos(){
+  return cfgG.tipos_pagamento||['Dinheiro','PIX','Cartão de Débito','Cartão de Crédito'];
+}
+function epInitPgto(pgtoStr){
+  // Parsear string de pagamento existente
+  if(pgtoStr&&pgtoStr.trim()){
+    const partes=pgtoStr.split('+').map(s=>s.trim()).filter(Boolean);
+    const parsed=partes.map(parte=>{
+      const m=parte.match(/^(.+?)\s+R\$([\d,.]+)$/);
+      if(m) return {tipo:m[1].trim(), valor:parseFloat(m[2].replace(',','.'))};
+      return {tipo:parte, valor:0};
+    });
+    epPagamentos=parsed.length?parsed:[{tipo:'',valor:0}];
+  } else {
+    epPagamentos=[{tipo:'',valor:0}];
+  }
+  renderEpPgto();
+}
+function epAddPgto(){
+  epPagamentos.push({tipo:'',valor:0});
+  renderEpPgto();
+}
+function epRemPgto(idx){
+  if(epPagamentos.length<=1) return;
+  epPagamentos.splice(idx,1);
+  renderEpPgto();
+}
+function renderEpPgto(){
+  const wrap=document.getElementById('epPgtoRows');
+  if(!wrap) return;
+  const tipos=epGetTipos();
+  const total=epGetTotalCalc();
+  wrap.innerHTML=epPagamentos.map((pg,i)=>`
+    <div class="pdv-pgto-row" style="margin-bottom:6px">
+      <select onchange="epPagamentos[${i}].tipo=this.value;epAutoFillValor(${i})" style="flex:1;font-size:12px;padding:6px 8px;border:1.5px solid var(--bd);border-radius:8px;background:#fff">
+        <option value="">Selecione...</option>
+        ${tipos.map(t=>`<option value="${t}"${pg.tipo===t?' selected':''}>${t}</option>`).join('')}
+      </select>
+      <input type="number" step="0.01" min="0" placeholder="R$ valor"
+        id="epPgVal${i}"
+        value="${pg.valor>0?pg.valor.toFixed(2):''}"
+        style="width:90px;font-size:12px;padding:6px 8px;border:1.5px solid var(--bd);border-radius:8px;text-align:right"
+        oninput="epPagamentos[${i}].valor=parseFloat(this.value)||0;epInfoPgto()">
+      ${epPagamentos.length>1
+        ?`<button onclick="epRemPgto(${i})" style="background:none;border:none;color:var(--mu);cursor:pointer;font-size:14px;padding:0 3px">✕</button>`
+        :''}
+    </div>`).join('');
+  epInfoPgto();
+}
+function epAutoFillValor(idx){
+  // Preenche automaticamente o valor restante quando só há 1 forma ou é a última
+  const total=epGetTotalCalc();
+  const jaPreenchido=epPagamentos.filter((_,i)=>i!==idx).reduce((s,p)=>s+(p.valor||0),0);
+  const restante=Math.max(0,total-jaPreenchido);
+  if(restante>0){
+    epPagamentos[idx].valor=restante;
+    const el=document.getElementById(`epPgVal${idx}`);
+    if(el) el.value=restante.toFixed(2);
+  }
+  epInfoPgto();
+}
+function epGetTotalCalc(){
+  const sub=epItensData.reduce((s,i)=>s+i.preco_unit*i.quantidade,0);
+  const fr=parseFloat((document.getElementById('epFrete')||{value:0}).value)||0;
+  const desc=epGetDesconto(sub+fr);
+  return Math.max(0,sub+fr-desc);
+}
+function epInfoPgto(){
+  const total=epGetTotalCalc();
+  const pago=epPagamentos.reduce((s,p)=>s+(p.valor||0),0);
+  const el=document.getElementById('epPgtoInfo');
+  if(!el) return;
+  if(pago>0&&pago<total-0.01){
+    el.style.color='var(--ac)'; el.textContent=`⚠️ Falta R$ ${(total-pago).toFixed(2).replace('.',',')}`;
+  } else if(pago>total+0.01){
+    el.style.color='var(--gr)'; el.textContent=`💵 Troco: R$ ${(pago-total).toFixed(2).replace('.',',')}`;
+  } else if(pago>0){
+    el.style.color='var(--gr)'; el.textContent='✓ Pagamento conferido';
+  } else {
+    el.textContent='';
+  }
+  // Atualizar campo oculto com string combinada
+  const pgStr=epPagamentos
+    .filter(p=>p.tipo)
+    .map(p=>`${p.tipo}${epPagamentos.filter(x=>x.tipo).length>1?' R$'+p.valor.toFixed(2):''}`)
+    .join(' + ');
+  const hiddenPg=document.getElementById('epPg');
+  if(hiddenPg) hiddenPg.value=pgStr;
+}
+
+
+async function openEditPed(id,nome,tel,obs,end,pgto){
   document.getElementById('epId').value=id;
+  document.getElementById('epNumero').textContent='— Pedido '+id;
   document.getElementById('epNm').value=nome;
   document.getElementById('epTel').value=tel;
   document.getElementById('epObs').value=obs;
   document.getElementById('epEnd').value=end;
-  document.getElementById('epPg').value=pgto;
+  // Inicializar pagamentos a partir da string existente
+  epInitPgto(pgto);
+  // Buscar dados completos do pedido
+  try{
+    const r=await fetch(`${API}/admin/pedidos`); const ps=await r.json();
+    const p=ps.find(x=>x.id===parseInt(id));
+    if(p){
+      document.getElementById('epStatus').value=p.status||'pendente';
+      document.getElementById('epFrete').value=(p.frete||0).toFixed(2);
+      document.getElementById('epDescVal').value='';
+      epItensData=p.itens?[...p.itens.map(i=>({produto_id:i.produto_id,nome:i.nome,quantidade:i.quantidade,preco_unit:i.preco_unit}))]:[];
+      // Re-inicializar pagamento com valor do pedido (após carregar itens)
+      if(p.forma_pagamento) epInitPgto(p.forma_pagamento);
+    }
+  }catch(e){epItensData=[];}
+  renderEpItens();
+  renderEpPgto();
   document.getElementById('mEditPed').classList.add('on');
+}
+
+function renderEpItens(){
+  const wrap=document.getElementById('epItens');
+  if(!epItensData.length){wrap.innerHTML='<p style="font-size:12px;color:var(--mu)">Nenhum item</p>';epAtualizarTotais();return;}
+  wrap.innerHTML=epItensData.map((it,idx)=>`
+    <div style="display:flex;gap:6px;align-items:center;background:var(--bg);border-radius:8px;padding:7px 10px">
+      <span style="flex:1;font-size:12px;font-weight:600">${it.nome}</span>
+      <select style="width:60px;font-size:12px;padding:3px 6px;border:1.5px solid var(--bd);border-radius:6px;background:#fff" onchange="epQtd(${idx},this.value)">
+        ${[1,2,3,4,5,6,7,8,9,10].map(n=>`<option value="${n}"${it.quantidade===n?' selected':''}>${n}</option>`).join('')}
+      </select>
+      <span style="font-size:11px;color:var(--mu);min-width:65px;text-align:right">R$${(it.preco_unit*it.quantidade).toFixed(2)}</span>
+      <button onclick="epRemItem(${idx})" style="background:none;border:none;color:var(--ac);cursor:pointer;font-size:14px;padding:0 2px">✕</button>
+    </div>`).join('');
+  epAtualizarTotais();
+}
+
+function epQtd(idx,val){epItensData[idx].quantidade=parseInt(val);epAtualizarTotais();}
+function epRemItem(idx){epItensData.splice(idx,1);renderEpItens();}
+
+async function epAddItem(){
+  if(!prodsD.length){toast('Carregue os produtos primeiro',true);return;}
+  // Criar select rápido de produto
+  const opts=prodsD.filter(p=>p.disponivel).map(p=>`<option value="${p.id}" data-preco="${p.preco_promo&&p.em_promo?p.preco_promo:p.preco}">${p.nome} — R$${p.preco.toFixed(2)}</option>`).join('');
+  const wrap=document.getElementById('epItens');
+  const sel=document.createElement('div');
+  sel.style.cssText='display:flex;gap:6px;align-items:center;padding:7px;background:#fff;border:1.5px solid var(--bl);border-radius:8px';
+  sel.innerHTML=`<select id="epNewProd" style="flex:1;font-size:12px;padding:4px 8px;border:1.5px solid var(--bd);border-radius:6px">${opts}</select>
+    <button class="btn bbl bsm" onclick="epConfirmAdd()">+ Adicionar</button>
+    <button class="btn bgh bsm" onclick="renderEpItens()">✕</button>`;
+  wrap.insertBefore(sel, wrap.firstChild);
+}
+
+function epConfirmAdd(){
+  const sel=document.getElementById('epNewProd');
+  if(!sel) return;
+  const id=parseInt(sel.value);
+  const preco=parseFloat(sel.options[sel.selectedIndex].dataset.preco);
+  const nome=sel.options[sel.selectedIndex].text.split(' — ')[0];
+  const existe=epItensData.find(x=>x.produto_id===id);
+  if(existe){existe.quantidade++;renderEpItens();return;}
+  epItensData.push({produto_id:id,nome,quantidade:1,preco_unit:preco});
+  renderEpItens();
+}
+
+function epGetDesconto(base){
+  const tipo=(document.getElementById('epDescTipo')||{value:'valor'}).value;
+  const val=parseFloat((document.getElementById('epDescVal')||{value:'0'}).value)||0;
+  if(!val) return 0;
+  if(tipo==='pct') return Math.min(base, base*(val/100));
+  return Math.min(base, val);
+}
+
+function epAtualizarTotais(){
+  const sub=epItensData.reduce((s,i)=>s+i.preco_unit*i.quantidade,0);
+  const fr=parseFloat(document.getElementById('epFrete').value)||0;
+  const desc=epGetDesconto(sub+fr);
+  const tot=Math.max(0,sub+fr-desc);
+  // Mostrar desconto calculado
+  const dm=document.getElementById('epDescMostra');
+  if(dm) dm.textContent=desc>0?'- R$ '+desc.toFixed(2).replace('.',','):'';
+  document.getElementById('epTotais').innerHTML=
+    `<div style="display:flex;justify-content:space-between;font-size:12px"><span>Subtotal:</span><span>R$${sub.toFixed(2).replace('.',',')}</span></div>`+
+    (fr>0?`<div style="display:flex;justify-content:space-between;font-size:12px"><span>Frete:</span><span>R$${fr.toFixed(2).replace('.',',')}</span></div>`:'')+
+    (desc>0?`<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--gr)"><span>🏷️ Desconto:</span><span>- R$${desc.toFixed(2).replace('.',',')}</span></div>`:'')+
+    `<div style="display:flex;justify-content:space-between;font-weight:800;margin-top:6px;padding-top:6px;border-top:1.5px solid var(--bd);font-size:14px"><span>Total:</span><span style="color:var(--bl)">R$${tot.toFixed(2).replace('.',',')}</span></div>`;
 }
 async function salvarEditPed(){
   const id=document.getElementById('epId').value;
+  const novoStatus=document.getElementById('epStatus').value;
+  const frete=parseFloat(document.getElementById('epFrete').value)||0;
+  const descEp=epGetDesconto(epItensData.reduce((s,i)=>s+i.preco_unit*i.quantidade,0)+frete);
+  // Dados gerais
   await fetch(`${API}/admin/pedidos/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({
     nome_cliente:document.getElementById('epNm').value.trim(),
     telefone:document.getElementById('epTel').value.trim(),
-    observacao:document.getElementById('epObs').value.trim(),
+    observacao:document.getElementById('epObs').value.trim()+(descEp>0?` (desc. R$${descEp.toFixed(2)})`:'' ),
     endereco:document.getElementById('epEnd').value.trim(),
-    forma_pagamento:document.getElementById('epPg').value
+    forma_pagamento:epPagamentos.filter(p=>p.tipo).map(p=>`${p.tipo}${epPagamentos.filter(x=>x.tipo).length>1?' R$'+parseFloat(p.valor).toFixed(2):''}`).join(' + ')||document.getElementById('epPg').value,
+    itens:epItensData.map(i=>({produto_id:i.produto_id,quantidade:i.quantidade})),
+    frete
   })});
+  // Atualizar status se mudou
+  const r=await fetch(`${API}/admin/pedidos`); const ps=await r.json();
+  const p=ps.find(x=>x.id===parseInt(id));
+  if(p&&p.status!==novoStatus){
+    await fetch(`${API}/admin/pedidos/${id}/status`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:novoStatus,forma_pagamento:document.getElementById('epPg').value})});
+  }
   closeModal('mEditPed'); toast('Pedido atualizado!'); loadPedidos();
 }
 async function delPed(id){
@@ -1143,43 +1412,49 @@ async function impPed(pid){
   const r=await fetch(`${API}/admin/pedidos`); const ps=await r.json();
   const p=ps.find(x=>x.id===pid); if(!p) return;
   const loja=cfgG.nome_loja||'Cardápio';
-  const sep='<div style="border-top:1px dashed #333;margin:5px 0"></div>';
-  const linhas=[];
-  // Cabeçalho
-  linhas.push(`<div style="text-align:center;font-weight:900;font-size:14px;border-bottom:2px solid #000;padding-bottom:5px;margin-bottom:5px;letter-spacing:.5px">${loja}</div>`);
-  // Número do pedido em destaque
-  linhas.push(`<div style="text-align:center;font-size:18px;font-weight:900;letter-spacing:1px;margin-bottom:5px">PEDIDO ${p.id}</div>`);
-  linhas.push(sep);
-  linhas.push(`<div><b>Cliente:</b> ${p.nome_cliente}</div>`);
-  if(p.telefone) linhas.push(`<div><b>Tel:</b> ${p.telefone}</div>`);
-  linhas.push(`<div><b>Tipo:</b> ${p.tipo_entrega==='entrega'?'🚚 ENTREGA':'🏠 RETIRADA'}</div>`);
-  if(p.endereco) linhas.push(`<div><b>Endereço:</b> ${p.endereco}</div>`);
-  linhas.push(`<div><b>Data:</b> ${p.criado_em}</div>`);
-  linhas.push(sep);
-  // Itens
-  p.itens.forEach(i=>{
-    const total_item=(i.quantidade*i.preco_unit).toFixed(2);
-    linhas.push(`<div style="display:flex;justify-content:space-between;margin:3px 0"><span><b>${i.quantidade}x ${i.nome}</b></span><span><b>R$${total_item}</b></span></div>`);
-  });
-  linhas.push(sep);
-  if((p.frete||0)>0){
-    linhas.push(`<div style="display:flex;justify-content:space-between"><span>Subtotal:</span><span>R$${(p.subtotal||0).toFixed(2)}</span></div>`);
-    linhas.push(`<div style="display:flex;justify-content:space-between"><span>Frete:</span><span>R$${p.frete.toFixed(2)}</span></div>`);
-  }
-  // Total em maior destaque
-  linhas.push(`<div style="display:flex;justify-content:space-between;font-size:16px;font-weight:900;margin-top:4px;padding-top:4px;border-top:2px solid #000"><span>TOTAL</span><span>R$${p.total.toFixed(2)}</span></div>`);
-  if(p.forma_pagamento) linhas.push(`<div style="margin-top:3px"><b>Pagamento:</b> ${p.forma_pagamento}</div>`);
-  if(p.observacao){linhas.push(sep);linhas.push(`<div><b>Obs:</b> ${p.observacao}</div>`);}
-  linhas.push(`<div style="text-align:center;margin-top:8px;font-size:11px">— Obrigado! —</div>`);
+  const SEP='<div style="border-top:1px dashed #000;margin:4px 0"></div>';
+  const L=[];
 
-  const h=`<div style="width:76mm;font-family:'Courier New',monospace;font-size:11px;line-height:1.6;padding:3mm;color:#000;background:#fff">${linhas.join('')}</div>`;
-  const a=document.getElementById('pa');
-  a.style.cssText='display:block;position:absolute;left:0;top:0;width:80mm;height:auto;overflow:visible;background:#fff;';
-  a.innerHTML=h;
-  requestAnimationFrame(()=>{
-    window.print();
-    setTimeout(()=>{a.style.display='none';a.innerHTML='';},800);
+  // ── Cabeçalho ────────────────────────────────────────────────────────────────
+  L.push(`<div style="text-align:center;font-size:14px;font-weight:900;border-bottom:2px solid #000;padding-bottom:4px;margin-bottom:4px">${loja}</div>`);
+  L.push(`<div style="text-align:center;font-size:18px;font-weight:900;letter-spacing:1px;padding:3px 0">PEDIDO ${p.id}</div>`);
+  L.push(SEP);
+
+  // ── Dados do cliente — todos em negrito ───────────────────────────────────────
+  L.push(`<div style="font-size:11px"><b>Cliente:</b> <b>${p.nome_cliente}</b></div>`);
+  if(p.telefone) L.push(`<div style="font-size:11px"><b>Tel:</b> <b>${p.telefone}</b></div>`);
+  L.push(`<div style="font-size:11px"><b>Tipo:</b> <b>${p.tipo_entrega==='entrega'?'ENTREGA':'RETIRADA'}</b></div>`);
+  if(p.endereco) L.push(`<div style="font-size:11px"><b>Endereço:</b> <b>${p.endereco}</b></div>`);
+  L.push(`<div style="font-size:11px"><b>Data:</b> <b>${p.criado_em}</b></div>`);
+  if(p.forma_pagamento) L.push(`<div style="font-size:11px"><b>Pagamento:</b> <b>${p.forma_pagamento}</b></div>`);
+  L.push(SEP);
+
+  // ── Itens ─────────────────────────────────────────────────────────────────────
+  p.itens.forEach(i=>{
+    const tot=(i.quantidade*i.preco_unit).toFixed(2);
+    L.push(`<div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;padding:2px 0">
+      <span>${i.quantidade}x ${i.nome}</span><span>R$${tot}</span>
+    </div>`);
   });
+  L.push(SEP);
+
+  // ── Totais ─────────────────────────────────────────────────────────────────────
+  if((p.frete||0)>0){
+    L.push(`<div style="display:flex;justify-content:space-between;font-size:11px"><span>Subtotal:</span><span>R$${(p.subtotal||0).toFixed(2)}</span></div>`);
+    L.push(`<div style="display:flex;justify-content:space-between;font-size:11px"><b>Frete:</b><span>R$${p.frete.toFixed(2)}</span></div>`);
+  }
+  L.push(`<div style="display:flex;justify-content:space-between;font-size:16px;font-weight:900;border-top:2px solid #000;margin-top:3px;padding-top:3px"><b>TOTAL</b><b>R$${p.total.toFixed(2)}</b></div>`);
+  if(p.observacao){
+    L.push(SEP);
+    L.push(`<div style="font-size:11px"><b>Obs:</b> ${p.observacao}</div>`);
+  }
+  L.push(`<div style="text-align:center;margin-top:8px;font-size:11px;border-top:1px solid #000;padding-top:5px"><b>*** Obrigado pela preferência! ***</b></div>`);
+
+  const html=`<div style="width:72mm;font-family:'Courier New',monospace;font-size:11px;line-height:1.5;color:#000;background:#fff;padding:2mm">${L.join('')}</div>`;
+  const a=document.getElementById('pa');
+  a.style.cssText='display:block;position:absolute;left:0;top:0;width:80mm;height:auto;background:#fff;';
+  a.innerHTML=html;
+  requestAnimationFrame(()=>{window.print();setTimeout(()=>{a.style.display='none';a.innerHTML='';},800);});
 }
 
 // ── PDV ───────────────────────────────────────────────────────────────────────
@@ -1192,30 +1467,40 @@ async function loadPDV(){
     catsD=d.categorias; prodsD=d.produtos;
     document.getElementById('pCat').innerHTML=catsD.map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
     renderPdvCats(); renderPdvGrid();
+    pdvInitPgto(); // inicializar pagamentos
+    renderPdvPgto(); // garantir render após DOM pronto
   }catch(e){toast('Erro ao carregar produtos',true);}
 }
 function renderPdvCats(){
   document.getElementById('pdvCats').innerHTML=
     `<div class="pdv-cat on" onclick="pdvCat('todos',this)">Todos</div>`+
-    allCats.map(c=>`<div class="pdv-cat" onclick="pdvCat(${c.id},this)">${c.nome}</div>`).join('');
+    allCats.map(cat=>`<div class="pdv-cat" onclick="pdvCat(${cat.id},this)">${cat.nome}</div>`).join('');
 }
 function pdvCat(id,el){
-  pdvCatA=id; document.querySelectorAll('.pdv-cat').forEach(b=>b.classList.remove('on'));
-  el.classList.add('on'); renderPdvGrid();
+  pdvCatA=id;
+  document.querySelectorAll('.pdv-cat').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  renderPdvGrid();
 }
+
 function renderPdvGrid(){
-  let f=pdvCatA==='todos'?[...allProds]:allProds.filter(p=>p.categoria_id===pdvCatA);
-  // Ordenar conforme ordem das categorias
-  f.sort((a,b)=>{
+  let todos=pdvCatA==='todos'?[...allProds]:allProds.filter(p=>p.categoria_id===pdvCatA);
+  todos.sort((a,b)=>{
     const oa=allCats.find(c=>c.id===a.categoria_id)?.ordem||99;
     const ob=allCats.find(c=>c.id===b.categoria_id)?.ordem||99;
-    return oa!==ob ? oa-ob : a.nome.localeCompare(b.nome);
+    return oa!==ob?oa-ob:a.nome.localeCompare(b.nome);
   });
-  document.getElementById('pdvGrid').innerHTML=f.length?f.map(p=>{
+  if(!todos.length){
+    document.getElementById('pdvGrid').innerHTML='<p style="color:var(--mu);text-align:center;padding:20px;font-size:13px">Nenhum produto disponível</p>';
+    return;
+  }
+
+  function cardProd(p){
     const ic=pdvCart[p.id]?.quantidade>0; const qt=pdvCart[p.id]?.quantidade||0;
-    const precoReal=p.em_promo&&p.preco_promo?p.preco_promo:p.preco;
-    const promoTag=p.em_promo&&p.preco_promo?'<div class="pdv-promo-tag">🏷️ PROMO</div>':'';
-    const precoOld=p.em_promo&&p.preco_promo?`<div class="pdv-it-pr-old">R$ ${p.preco.toFixed(2).replace('.',',')}</div>`:'';
+    const precoReal=p.em_promo&&p.preco_promo?parseFloat(p.preco_promo):parseFloat(p.preco);
+    const promoTag=p.em_promo?'<div class="pdv-promo-tag">🏷️ PROMO</div>':'';
+    const precoOld=p.em_promo&&p.preco_promo&&parseFloat(p.preco_promo)>0&&parseFloat(p.preco_promo)<p.preco
+      ?`<div class="pdv-it-pr-old">R$ ${parseFloat(p.preco).toFixed(2).replace('.',',')}</div>`:'';
     return `<div class="pdv-it ${ic?'ic':''} ${p.em_promo?'em-promo':''}" id="pi${p.id}" onclick="pdvAdd(${p.id},${precoReal},'${esc(p.nome)}',${p.preco})">
       <div class="pdv-it-qt" id="pq${p.id}">${qt}</div>
       ${promoTag}
@@ -1224,7 +1509,32 @@ function renderPdvGrid(){
       <div class="pdv-it-pr">R$ ${precoReal.toFixed(2).replace('.',',')}</div>
       ${precoOld}
     </div>`;
-  }).join(''):'<p style="color:var(--mu);text-align:center;padding:20px;font-size:13px">Nenhum produto disponível</p>';
+  }
+
+  if(pdvCatA!=='todos'){
+    // Filtro por categoria: sem separador
+    document.getElementById('pdvGrid').innerHTML=`<div class="pdv-grid-inner">${todos.map(cardProd).join('')}</div>`;
+  } else {
+    // Todos: agrupar por categoria com separador visual
+    const grupos={};
+    todos.forEach(p=>{
+      const cat=allCats.find(c=>c.id===p.categoria_id);
+      const key=cat?cat.id:'sem-cat';
+      const nome=cat?cat.nome:'Outros';
+      if(!grupos[key]) grupos[key]={nome,ordem:cat?.ordem||99,prods:[]};
+      grupos[key].prods.push(p);
+    });
+    const html=Object.values(grupos)
+      .sort((a,b)=>a.ordem-b.ordem)
+      .map(g=>`
+        <div class="pdv-cat-section">
+          <div class="pdv-cat-label">${g.nome}</div>
+          <div class="pdv-grid-inner" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:9px">
+            ${g.prods.map(cardProd).join('')}
+          </div>
+        </div>`).join('');
+    document.getElementById('pdvGrid').innerHTML=html;
+  }
 }
 function pdvAdd(id,preco,nome,precoOriginal){
   if(!pdvCart[id]) pdvCart[id]={produto_id:id,nome,preco,precoOriginal:precoOriginal||preco,quantidade:0};
@@ -1250,19 +1560,132 @@ function renderPdvCart(){
     </div>`).join('');
   pdvCalc();
 }
+// ── PDV: múltiplas formas de pagamento ───────────────────────────────────────
+let pdvPagamentos = [{tipo:'', valor:0}];
+
+function pdvGetTipos(){
+  return cfgG.tipos_pagamento || ['Dinheiro','PIX','Cartão de Débito','Cartão de Crédito'];
+}
+
+function pdvInitPgto(){
+  pdvPagamentos = [{tipo:'', valor:0}];
+  // Só renderiza se o elemento existir (evita erro antes de entrar na página PDV)
+  if(document.getElementById('pdvPgtoRows')) renderPdvPgto();
+}
+
+function pdvAddPgto(){
+  pdvPagamentos.push({tipo:'', valor:0});
+  renderPdvPgto();
+}
+
+function pdvRemPgto(idx){
+  if(pdvPagamentos.length <= 1) return;
+  pdvPagamentos.splice(idx, 1);
+  renderPdvPgto();
+}
+
+function pdvAutoFillValor(idx){
+  // Ao selecionar a forma, preenche automaticamente com o restante
+  const total=pdvGetTotal();
+  const jaPreenchido=pdvPagamentos.filter((_,i)=>i!==idx).reduce((s,p)=>s+(parseFloat(p.valor)||0),0);
+  const restante=Math.max(0,total-jaPreenchido);
+  if(restante>0){
+    pdvPagamentos[idx].valor=restante;
+    const el=document.getElementById(`pdvPgVal${idx}`);
+    if(el) el.value=restante.toFixed(2);
+  }
+  pdvVerificarTroco();
+}
+
+function renderPdvPgto(){
+  const wrap = document.getElementById('pdvPgtoRows');
+  if(!wrap) return;
+  const tipos = pdvGetTipos();
+  wrap.innerHTML = pdvPagamentos.map((pg, i) => `
+    <div class="pdv-pgto-row">
+      <select onchange="pdvPagamentos[${i}].tipo=this.value;pdvAutoFillValor(${i})">
+        <option value="">Selecione...</option>
+        ${tipos.map(t => `<option value="${t}"${pg.tipo===t?' selected':''}>${t}</option>`).join('')}
+      </select>
+      <input type="number" step="0.01" min="0" placeholder="R$ valor"
+        id="pdvPgVal${i}"
+        value="${pg.valor > 0 ? pg.valor.toFixed(2) : ''}"
+        oninput="pdvPagamentos[${i}].valor=parseFloat(this.value)||0;pdvVerificarTroco()">
+      ${pdvPagamentos.length > 1
+        ? `<button onclick="pdvRemPgto(${i})" title="Remover">✕</button>`
+        : `<span style="width:22px;display:inline-block"></span>`}
+    </div>`).join('');
+  pdvVerificarTroco();
+}
+
+function pdvGetTotal(){
+  const its = Object.values(pdvCart);
+  const sub = its.reduce((s,i) => s + i.preco * i.quantidade, 0);
+  const frEl = document.getElementById('pdvFr');
+  const fr = pdvTipoA === 'entrega' ? (parseFloat(frEl?.value) || 0) : 0;
+  const desc = pdvGetDesconto(sub + fr);
+  return Math.max(0, sub + fr - desc);
+}
+
+function pdvVerificarTroco(){
+  const total = pdvGetTotal();
+  const pago = pdvPagamentos.reduce((s,p) => s + (parseFloat(p.valor)||0), 0);
+  const el = document.getElementById('pdvTroco');
+  if(!el) return;
+  if(pago <= 0){ el.style.display='none'; return; }
+  if(pago < total - 0.01){
+    el.style.display='block'; el.style.color='var(--ac)';
+    el.textContent = `⚠️ Falta R$ ${(total - pago).toFixed(2).replace('.',',')}`;
+  } else if(pago > total + 0.01){
+    el.style.display='block'; el.style.color='var(--gr)';
+    el.textContent = `💵 Troco: R$ ${(pago - total).toFixed(2).replace('.',',')}`;
+  } else {
+    el.style.display='none';
+  }
+}
+
+let pdvDescontoAtivo=false;
+
+function pdvToggleDesconto(){
+  pdvDescontoAtivo=!pdvDescontoAtivo;
+  const row=document.getElementById('pdvDescontoRow');
+  const btn=document.getElementById('btnDesconto');
+  if(row) row.style.display=pdvDescontoAtivo?'flex':'none';
+  if(btn) btn.style.background=pdvDescontoAtivo?'var(--grl)':'';
+  if(!pdvDescontoAtivo){
+    const dv=document.getElementById('pdvDescVal');
+    if(dv) dv.value='';
+  }
+  pdvCalc();
+}
+
+function pdvGetDesconto(sub){
+  if(!pdvDescontoAtivo) return 0;
+  const tipo=(document.getElementById('pdvDescTipo')||{value:'valor'}).value;
+  const val=parseFloat((document.getElementById('pdvDescVal')||{value:'0'}).value)||0;
+  if(tipo==='pct') return Math.min(sub, sub*(val/100));
+  return Math.min(sub, val);
+}
+
 function pdvCalc(){
   const its=Object.values(pdvCart);
   const sub=its.reduce((s,i)=>s+i.preco*i.quantidade,0);
-  // Sempre usa o valor digitado no campo, independente da config
   const frEl=document.getElementById('pdvFr');
   const fr=pdvTipoA==='entrega'?(frEl?parseFloat(frEl.value)||0:0):0;
-  const tot=sub+fr;
+  const desc=pdvGetDesconto(sub+fr);
+  const tot=Math.max(0, sub+fr-desc);
+
   document.getElementById('pdvTot').textContent='R$ '+tot.toFixed(2).replace('.',',');
   const sf=pdvTipoA==='entrega'&&fr>0;
-  document.getElementById('pdvSrR').style.display=sf?'flex':'none';
+  const hasSub=sf||(pdvDescontoAtivo&&desc>0);
+  document.getElementById('pdvSrR').style.display=hasSub?'flex':'none';
   document.getElementById('pdvFrR').style.display=sf?'flex':'none';
   document.getElementById('pdvSrV').textContent='R$ '+sub.toFixed(2).replace('.',',');
   document.getElementById('pdvFrV').textContent='R$ '+fr.toFixed(2).replace('.',',');
+  // Atualizar exibição do desconto
+  const dm=document.getElementById('pdvDescMostra');
+  if(dm) dm.textContent=desc>0?'- R$ '+desc.toFixed(2).replace('.',','):'';
+  pdvVerificarTroco();
 }
 function pdvTipo(t){
   pdvTipoA=t;
@@ -1271,6 +1694,7 @@ function pdvTipo(t){
   document.getElementById('pdvEndW').style.display=t==='entrega'?'block':'none';
   if(t==='entrega'&&cfgG.frete) document.getElementById('pdvFr').value=cfgG.frete;
   pdvCalc();
+  pdvVerificarTroco();
 }
 async function pdvFinalizar(){
   const its=Object.values(pdvCart);
@@ -1278,22 +1702,40 @@ async function pdvFinalizar(){
   const nome=document.getElementById('pdvCli').value.trim()||'PDV';
   const tel=document.getElementById('pdvTel').value.trim();
   const end=document.getElementById('pdvEnd').value.trim();
-  const fpag=document.getElementById('pdvPg').value;
   const obs=document.getElementById('pdvObs').value.trim();
   if(pdvTipoA==='entrega'&&!end){toast('Informe o endereço!',true);return;}
-  if(tel){const digs=tel.replace(/\D/g,'');if(digs.length<10){toast('Telefone inválido! Informe DDD + número.',true);return;}}
-  if(!fpag){toast('Selecione o pagamento!',true);return;}
-  // Frete: usa valor digitado no campo (pode ter sido editado pelo operador)
+  if(tel&&tel.trim()){
+    const digs=tel.replace(/[^0-9]/g,'');
+    if(digs.length>0&&digs.length<11){toast('Telefone inválido! Informe DDD (2 dígitos) + 9 dígitos.',true);return;}
+  }
+  // Validar pagamentos múltiplos
+  const pgtos=(pdvPagamentos||[]).filter(p=>p.tipo);
+  if(!pgtos.length){toast('Selecione ao menos uma forma de pagamento!',true);return;}
+  const total=pdvGetTotal();
+  if(pgtos.length===1&&(!pgtos[0].valor||pgtos[0].valor===0)) pgtos[0].valor=total;
+  const pagoFinal=pgtos.reduce((s,p)=>s+(parseFloat(p.valor)||0),0);
+  if(pgtos.length>1&&pagoFinal<total-0.01){
+    toast(`Valor pago R$${pagoFinal.toFixed(2)} menor que o total R$${total.toFixed(2)}!`,true); return;
+  }
+  const fpag=pgtos.map(p=>`${p.tipo}${pgtos.length>1?' R$'+parseFloat(p.valor).toFixed(2):''}`).join(' + ');
+  const desconto=pdvGetDesconto(Object.values(pdvCart).reduce((s,i)=>s+i.preco*i.quantidade,0)+(pdvTipoA==='entrega'?parseFloat(document.getElementById('pdvFr').value)||0:0));
+  const descontoStr=desconto>0?` (desc. R$${desconto.toFixed(2)})`:'';
   const freteDigitado=pdvTipoA==='entrega'?parseFloat(document.getElementById('pdvFr').value)||0:0;
-  const r=await fetch(`${API}/pedido`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome_cliente:nome,telefone:tel,observacao:obs,endereco:end,tipo_entrega:pdvTipoA,forma_pagamento:fpag,frete_override:freteDigitado,itens:its.map(i=>({produto_id:i.produto_id,quantidade:i.quantidade}))})});
+  const r=await fetch(`${API}/pedido`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    nome_cliente:nome,telefone:tel,observacao:obs,endereco:end,
+    tipo_entrega:pdvTipoA,forma_pagamento:fpag,frete_override:freteDigitado,
+    itens:its.map(i=>({produto_id:i.produto_id,quantidade:i.quantidade}))
+  })});
   const d=await r.json();
   if(!r.ok){toast(d.erro||'Erro',true);return;}
-  // PDV: aceita (gera financeiro) e coloca em produção
   await fetch(`${API}/admin/pedidos/${d.pedido_id}/status`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'aceito',forma_pagamento:fpag})});
-  toast(`Pedido ${d.pedido_id} criado — R$ ${d.total.toFixed(2).replace('.',',')} ✅`,false,true);
+  toast(`Pedido ${d.pedido_id} — R$ ${d.total.toFixed(2).replace('.',',')} ✅`,false,true);
   pdvCart={};
-  ['pdvCli','pdvTel','pdvEnd','pdvObs'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('pdvPg').value=''; pdvTipoA='retirada'; pdvTipo('retirada');
+  ['pdvCli','pdvTel','pdvEnd','pdvObs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  pdvTipoA='retirada'; pdvTipo('retirada');
+  pdvInitPgto();
+  pdvDescontoAtivo=false;const pdvDr=document.getElementById('pdvDescontoRow');if(pdvDr)pdvDr.style.display='none';
+  const pdvDv=document.getElementById('pdvDescVal');if(pdvDv)pdvDv.value='';
   renderPdvCart(); renderPdvGrid();
 }
 
@@ -1306,8 +1748,8 @@ async function loadProds(){
   document.getElementById('pCat').innerHTML=catsD.map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
   document.getElementById('prodBody').innerHTML=prodsD.map(p=>{
     const cat=catsD.find(c=>c.id===p.categoria_id);
-    const promoLabel=p.em_promo&&p.preco_promo
-      ?`<span style="background:var(--ac);color:#fff;font-size:9px;font-weight:800;padding:1px 5px;border-radius:4px;margin-left:4px">PROMO R$${parseFloat(p.preco_promo).toFixed(2)}</span>`:''
+    const promoLabel=p.em_promo
+      ?`<span style="background:rgba(80,80,80,.55);color:#fff;font-size:9px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:4px">🏷️${p.preco_promo&&parseFloat(p.preco_promo)>0?' R$'+parseFloat(p.preco_promo).toFixed(2):' PROMO'}</span>`:''
     return `<tr id="pr${p.id}">
       <td><div style="display:flex;align-items:center;gap:8px">
         <div class="pth">${p.foto_url?`<img src="${p.foto_url}">`:'🛍️'}</div>
@@ -1570,6 +2012,8 @@ async function loadResumo(){
     if(el('gIni')&&!el('gIni').value) el('gIni').value=fmt(ini);
     if(el('gFim')&&!el('gFim').value) el('gFim').value=fmt(fim);
     loadGraf(ps);
+    // Carregar visitas
+    try{const rv=await fetch('/api/visitas');const v=await rv.json();if(el('sVisitas'))el('sVisitas').textContent=v.total||0;}catch(e){}
   }catch(e){
     console.error('loadResumo error:',e);
     toast('Erro ao carregar resumo',true);
@@ -1620,84 +2064,157 @@ function switchRel(tipo,el){
 async function loadRelatorio(){
   const di=document.getElementById('relDtI').value;
   const df=document.getElementById('relDtF').value;
-  const relStats=document.getElementById('relStats');
   const relContent=document.getElementById('relContent');
   const relTitulo=document.getElementById('relTitulo');
-  relStats.style.display='none';
-  relContent.innerHTML='<p style="color:var(--mu);padding:16px;text-align:center">Carregando...</p>';
+  const relStats=document.getElementById('relStats');
+  if(!relContent){console.error('relContent não encontrado');return;}
+  relContent.innerHTML='<p style="color:var(--mu);padding:24px;text-align:center">⏳ Carregando...</p>';
+  if(relStats) relStats.style.display='none';
 
-  if(relAtual==='pedidos'){
-    relTitulo.textContent='📋 Todos os Pedidos';
-    let url=`${API}/admin/pedidos?`;
-    if(di) url+=`data=${di}&`;
-    const r=await fetch(url); const ps=await r.json();
-    const filtrados=df?ps.filter(p=>p.criado_em&&p.criado_em.slice(0,10)<=df):ps;
-    const fat=filtrados.filter(p=>p.status==='entregue').reduce((s,p)=>s+p.total,0);
-    document.getElementById('relTotPed').textContent=filtrados.length;
-    document.getElementById('relEnt').textContent='R$'+fat.toFixed(2).replace('.',',');
-    document.getElementById('relSai').textContent='—';
-    document.getElementById('relSaldo').textContent='R$'+fat.toFixed(2).replace('.',',');
-    relStats.style.display='grid';
-    relContent.innerHTML=`<div class="ts"><table class="tbl">
-      <thead><tr><th>Pedido</th><th>Data</th><th>Cliente</th><th class="hide-mobile">Tel</th><th class="hide-mobile">Tipo</th><th class="hide-mobile">Pgto</th><th>Status</th><th>Total</th></tr></thead>
-      <tbody>${filtrados.map(p=>`<tr>
-        <td>${p.id}</td>
-        <td style="font-size:11px">${p.criado_em}</td>
-        <td>${p.nome_cliente}</td>
-        <td class="hide-mobile">${p.telefone||'—'}</td>
-        <td class="hide-mobile">${p.tipo_entrega==='entrega'?'🚚':'🏠'}</td>
-        <td class="hide-mobile">${p.forma_pagamento||'—'}</td>
-        <td><span class="tag ${statusTagCls(p.status)}">${sLbl(p.status)}</span></td>
-        <td style="font-weight:800">R$${p.total.toFixed(2).replace('.',',')}</td>
-      </tr>`).join('')}</tbody>
-    </table></div>`;
-  } else if(relAtual==='caixa'){
-    relTitulo.textContent='🏧 Fechamento de Caixa';
-    relStats.style.display='none';
-    const html=await loadCaixa(di,df);
-    relContent.innerHTML=html;
-    return;
-  } else {
-    // relatórios financeiros
-    const tMap={apagar:{label:'📤 Contas a Pagar',tipo:'saida',pago:0},areceber:{label:'📥 Contas a Receber',tipo:'entrada',pago:0},extrato:{label:'💳 Extrato Completo',tipo:'',pago:''}};
-    const cfg=tMap[relAtual]||tMap.extrato;
-    relTitulo.textContent=cfg.label;
-    let url=`${API}/admin/financeiro?`;
-    if(cfg.tipo) url+=`tipo=${cfg.tipo}&`;
-    if(cfg.pago!=='') url+=`pago=${cfg.pago}&`;
-    if(di) url+=`data_ini=${di}&`;
-    if(df) url+=`data_fim=${df}`;
-    const r=await fetch(url); const fins=await r.json();
-    const ent=fins.filter(f=>f.tipo==='entrada'&&f.pago).reduce((s,f)=>s+f.valor,0);
-    const sai=fins.filter(f=>f.tipo==='saida'&&f.pago).reduce((s,f)=>s+f.valor,0);
-    document.getElementById('relTotPed').textContent=fins.length;
-    document.getElementById('relEnt').textContent='R$'+ent.toFixed(2).replace('.',',');
-    document.getElementById('relSai').textContent='R$'+sai.toFixed(2).replace('.',',');
-    document.getElementById('relSaldo').textContent='R$'+(ent-sai).toFixed(2).replace('.',',');
-    relStats.style.display='grid';
-    relContent.innerHTML=`<div class="ts"><table class="tbl">
-      <thead><tr><th>Data</th><th>Descrição</th><th>Obs</th><th>Tipo</th><th>Pgto</th><th>Status</th><th>Valor</th></tr></thead>
-      <tbody>${fins.map(f=>{const isE=f.tipo==='entrada';const isPg=f.pago;return `<tr>
-        <td style="font-size:11px">${(f.data_lancamento||f.criado_em||'').slice(0,10)}</td>
-        <td>${f.descricao||'—'}</td><td style="font-size:11px;color:var(--mu)">${f.observacao||''}</td>
-        <td><span class="ft ${isE?'ft-e':'ft-s'}">${isE?'Entrada':'Saída'}</span></td>
-        <td>${f.forma_pagamento||'—'}</td>
-        <td><span class="fp ${isPg?'fp-p':'fp-n'}">${isPg?'Pago':'Pendente'}</span></td>
-        <td style="font-weight:800;color:${isE?'#1a6895':'var(--ac)'}">R$${f.valor.toFixed(2).replace('.',',')}</td>
-      </tr>`}).join('')}</tbody>
-    </table></div>`;
+  try{
+    if(relAtual==='pedidos'){
+      if(relTitulo) relTitulo.textContent='📋 Todos os Pedidos';
+      const r=await fetch(`${API}/admin/pedidos`);
+      if(!r.ok) throw new Error('Erro ao buscar pedidos');
+      const ps=await r.json();
+      const filtrados=ps.filter(p=>{
+        if(!p.criado_em) return true;
+        const d=p.criado_em.slice(0,10);
+        if(di&&d<di) return false;
+        if(df&&d>df) return false;
+        return true;
+      });
+      const entregues=filtrados.filter(p=>p.status==='entregue');
+      const fat=entregues.reduce((s,p)=>s+p.total,0);
+      // Stats inline (não depende de IDs externos)
+      const statsHtml=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:14px">
+        <div class="stat" style="padding:12px 14px"><div class="stat-lb">Total pedidos</div><div class="stat-v" style="font-size:18px">${filtrados.length}</div></div>
+        <div class="stat" style="padding:12px 14px"><div class="stat-lb">Entregues</div><div class="stat-v" style="font-size:18px;color:var(--gr)">${entregues.length}</div></div>
+        <div class="stat" style="padding:12px 14px"><div class="stat-lb">Faturamento</div><div class="stat-v" style="font-size:18px;color:var(--bl)">R$${fat.toFixed(2).replace('.',',')}</div></div>
+        <div class="stat" style="padding:12px 14px"><div class="stat-lb">Ticket médio</div><div class="stat-v" style="font-size:18px">${entregues.length?'R$'+(fat/entregues.length).toFixed(2).replace('.',','):'—'}</div></div>
+      </div>`;
+      const tableHtml=filtrados.length?`<div class="ts"><table class="tbl">
+        <thead><tr><th>Pedido</th><th>Data</th><th>Cliente</th><th class="hide-mobile">Tel</th><th class="hide-mobile">Tipo</th><th class="hide-mobile">Pgto</th><th>Status</th><th>Total</th></tr></thead>
+        <tbody>${filtrados.map(p=>`<tr>
+          <td style="font-weight:800">${p.id}</td>
+          <td style="font-size:11px;color:var(--mu)">${p.criado_em}</td>
+          <td><b>${p.nome_cliente}</b></td>
+          <td class="hide-mobile">${p.telefone||'—'}</td>
+          <td class="hide-mobile">${p.tipo_entrega==='entrega'?'🚚 Entrega':'🏠 Retirada'}</td>
+          <td class="hide-mobile">${p.forma_pagamento||'—'}</td>
+          <td><span class="tag ${statusTagCls(p.status)}">${sLbl(p.status)}</span></td>
+          <td style="font-weight:800;color:var(--bl)">R$${p.total.toFixed(2).replace('.',',')}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>`:`<p style="color:var(--mu);text-align:center;padding:24px">Nenhum pedido no período selecionado.</p>`;
+      relContent.innerHTML=statsHtml+tableHtml;
+
+    } else if(relAtual==='caixa'){
+      if(relTitulo) relTitulo.textContent='🏧 Fechamento de Caixa';
+      const html=await loadCaixa(di,df);
+      relContent.innerHTML=html;
+
+    } else {
+      const tMap={
+        apagar:{label:'📤 Contas a Pagar',tipo:'saida',pago:'0'},
+        areceber:{label:'📥 Contas a Receber',tipo:'entrada',pago:'0'},
+        extrato:{label:'💳 Extrato Completo',tipo:'',pago:''}
+      };
+      const cfg=tMap[relAtual]||tMap.extrato;
+      if(relTitulo) relTitulo.textContent=cfg.label;
+      let url=`${API}/admin/financeiro?`;
+      if(cfg.tipo) url+=`tipo=${cfg.tipo}&`;
+      if(cfg.pago!=='') url+=`pago=${cfg.pago}&`;
+      if(di) url+=`data_ini=${di}&`;
+      if(df) url+=`data_fim=${df}`;
+      const r=await fetch(url);
+      if(!r.ok) throw new Error('Erro ao buscar financeiro');
+      const fins=await r.json();
+      const ent=fins.filter(f=>f.tipo==='entrada'&&(f.pago===1||f.pago===true)).reduce((s,f)=>s+f.valor,0);
+      const sai=fins.filter(f=>f.tipo==='saida'&&(f.pago===1||f.pago===true)).reduce((s,f)=>s+f.valor,0);
+      const statsHtml=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:14px">
+        <div class="stat" style="padding:12px 14px"><div class="stat-lb">Registros</div><div class="stat-v" style="font-size:18px">${fins.length}</div></div>
+        <div class="stat" style="padding:12px 14px"><div class="stat-lb">Entradas</div><div class="stat-v" style="font-size:18px;color:var(--bl)">R$${ent.toFixed(2).replace('.',',')}</div></div>
+        <div class="stat" style="padding:12px 14px"><div class="stat-lb">Saídas</div><div class="stat-v" style="font-size:18px;color:var(--ac)">R$${sai.toFixed(2).replace('.',',')}</div></div>
+        <div class="stat" style="padding:12px 14px"><div class="stat-lb">Saldo</div><div class="stat-v" style="font-size:18px;color:${ent-sai>=0?'var(--gr)':'var(--ac)'}">R$${(ent-sai).toFixed(2).replace('.',',')}</div></div>
+      </div>`;
+      const tableHtml=fins.length?`<div class="ts"><table class="tbl">
+        <thead><tr><th>Data</th><th>Descrição</th><th class="hide-mobile">Obs</th><th>Tipo</th><th class="hide-mobile">Pgto</th><th>Status</th><th>Valor</th></tr></thead>
+        <tbody>${fins.map(f=>{const isE=f.tipo==='entrada';const isPg=f.pago===1||f.pago===true;return `<tr>
+          <td style="font-size:11px;color:var(--mu)">${(f.data_lancamento||f.criado_em||'').slice(0,10)}</td>
+          <td>${f.descricao||'—'}</td>
+          <td class="hide-mobile" style="font-size:11px;color:var(--mu)">${f.observacao||''}</td>
+          <td><span class="ft ${isE?'ft-e':'ft-s'}">${isE?'Entrada':'Saída'}</span></td>
+          <td class="hide-mobile">${f.forma_pagamento||'—'}</td>
+          <td><span class="fp ${isPg?'fp-p':'fp-n'}">${isPg?'Pago':'Pendente'}</span></td>
+          <td style="font-weight:800;color:${isE?'#1a6895':'var(--ac)'}">R$${f.valor.toFixed(2).replace('.',',')}</td>
+        </tr>`}).join('')}</tbody>
+      </table></div>`:`<p style="color:var(--mu);text-align:center;padding:24px">Nenhum registro no período.</p>`;
+      relContent.innerHTML=statsHtml+tableHtml;
+    }
+  }catch(err){
+    console.error('loadRelatorio erro:',err);
+    relContent.innerHTML=`<div style="color:var(--ac);padding:24px;text-align:center">Erro ao carregar relatório: ${err.message}</div>`;
   }
 }
 
 function sLbl(s){return {pendente:"🔴 Pendente",aceito:"🟠 Aceito",em_preparo:"🟠 Em preparo",pronto:"🔵 Pronto",em_rota:"🔵 Em rota",entregue:"🟢 Entregue",cancelado:"⚫ Cancelado"}[s]||s;}
 function statusTagCls(s){return {pendente:'tag-ac',aceito:'tag-or',em_preparo:'tag-or',pronto:'tag-bl',em_rota:'tag-bl',entregue:'tag-gr',cancelado:'tag-mu'}[s]||'';}
 
-function imprimirRelatorio(){
-  // Usar print nativo — o browser tem opção de salvar como PDF
-  const titulo=document.getElementById('relTitulo').textContent;
-  const conteudo=document.getElementById('relContent').innerHTML;
-  const stats=document.getElementById('relStats').innerHTML;
+async function imprimirRelatorio(){
+  const titulo=document.getElementById('relTitulo')?.textContent||'Relatório';
   const loja=cfgG.nome_loja||'Cardápio';
+  const di=document.getElementById('relDtI').value;
+  const df=document.getElementById('relDtF').value;
+  // Para caixa: gerar com pedidos detalhados
+  if(relAtual==='caixa'){
+    const r=await fetch(`${API}/admin/pedidos?status=entregue`);
+    let ps=await r.json();
+    if(di||df) ps=ps.filter(p=>{
+      if(!p.criado_em) return true;
+      const d=p.criado_em.slice(0,10);
+      if(di&&d<di) return false; if(df&&d>df) return false; return true;
+    });
+    const total=ps.reduce((s,p)=>s+p.total,0);
+    const porPgto={};
+    ps.forEach(p=>{
+      const formas=(p.forma_pagamento||'Não informado').split('+').map(s=>s.trim());
+      formas.forEach(parte=>{
+        const m=parte.match(/^(.+?)\s+R\$([\d,.]+)$/);
+        const tipo=m?m[1].trim():parte;
+        const val=m?parseFloat(m[2].replace(',','.')): (p.total/formas.length);
+        if(!porPgto[tipo]) porPgto[tipo]={qtd:0,valor:0};
+        porPgto[tipo].qtd++; porPgto[tipo].valor+=val;
+      });
+    });
+    const periodo=di&&df?`${di} a ${df}`:di||df||'Todos os registros';
+    let html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${titulo}</title>
+    <style>
+      body{font-family:Arial,sans-serif;font-size:11px;margin:12mm;}
+      h1{font-size:16px;font-weight:900;text-align:center;margin-bottom:4px;}
+      h2{font-size:12px;text-align:center;color:#555;margin-bottom:14px;}
+      h3{font-size:12px;font-weight:800;margin:14px 0 6px;border-bottom:1px solid #ccc;padding-bottom:4px;}
+      table{width:100%;border-collapse:collapse;margin-bottom:12px;}
+      th{background:#f0f0f0;text-align:left;padding:5px 7px;font-size:10px;border-bottom:2px solid #ccc;}
+      td{padding:4px 7px;border-bottom:1px solid #eee;font-size:10px;}
+      .tot-row{background:#f0f0f0;font-weight:900;}
+      @page{margin:12mm;}
+    </style></head><body>
+    <h1>${loja} — Fechamento de Caixa</h1>
+    <h2>Período: ${periodo} &nbsp;|&nbsp; ${ps.length} pedidos entregues &nbsp;|&nbsp; Total: R$${total.toFixed(2)}</h2>
+    <h3>Formas de Pagamento</h3>
+    <table><thead><tr><th>Forma</th><th style="text-align:center">Qtd</th><th style="text-align:right">Total</th><th style="text-align:right">%</th></tr></thead><tbody>
+    ${Object.entries(porPgto).sort((a,b)=>b[1].valor-a[1].valor).map(([k,v])=>`<tr><td><b>${k}</b></td><td style="text-align:center">${v.qtd}</td><td style="text-align:right">R$${v.valor.toFixed(2)}</td><td style="text-align:right">${total>0?((v.valor/total)*100).toFixed(1)+'%':'—'}</td></tr>`).join('')}
+    <tr class="tot-row"><td>TOTAL GERAL</td><td style="text-align:center">${ps.length}</td><td style="text-align:right">R$${total.toFixed(2)}</td><td style="text-align:right">100%</td></tr>
+    </tbody></table>
+    <h3>Detalhamento dos Pedidos</h3>
+    <table><thead><tr><th>Pedido</th><th>Data</th><th>Cliente</th><th>Tipo</th><th>Pagamento</th><th style="text-align:right">Total</th></tr></thead><tbody>
+    ${ps.map(p=>`<tr><td><b>${p.id}</b></td><td>${p.criado_em}</td><td>${p.nome_cliente}</td><td>${p.tipo_entrega==='entrega'?'Entrega':'Retirada'}</td><td>${p.forma_pagamento||'—'}</td><td style="text-align:right">R$${p.total.toFixed(2)}</td></tr>`).join('')}
+    </tbody></table></body></html>`;
+    const w=window.open('','_blank'); w.document.write(html); w.document.close();
+    w.focus(); setTimeout(()=>w.print(),400);
+    return;
+  }
+  const conteudo=document.getElementById('relContent').innerHTML;
   const html=`<!DOCTYPE html><html><head><meta charset="UTF-8">
     <title>${titulo}</title>
     <style>
@@ -1729,15 +2246,35 @@ function imprimirRelatorio(){
 }
 
 // ── LISTA PEDIDOS ─────────────────────────────────────────────────────────────
+function limparFiltrosLista(){
+  ['listaStatus','listaDtI','listaDtF','listaNome'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.value='';
+  });
+  document.getElementById('listaBody').innerHTML='<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--mu)">Filtros limpos. Clique em Filtrar para carregar.</td></tr>';
+  document.getElementById('listaTotal').textContent='';
+}
 async function loadListaPedidos(){
   const status=document.getElementById('listaStatus').value;
-  const dt=document.getElementById('listaDt').value;
+  const dtI=document.getElementById('listaDtI').value;
+  const dtF=document.getElementById('listaDtF').value;
   const nome=document.getElementById('listaNome').value.trim();
   let url=`${API}/admin/pedidos?`;
   if(status) url+=`status=${status}&`;
-  if(dt) url+=`data=${dt}&`;
-  if(nome) url+=`nome=${encodeURIComponent(nome)}`;
-  const r=await fetch(url); const ps=await r.json();
+  if(nome) url+=`nome=${encodeURIComponent(nome)}&`;
+  // Filtrar localmente por range de datas
+  const semFiltro=!status&&!dtI&&!dtF&&!nome;
+  const r=await fetch(url); let ps=await r.json();
+  // Filtrar por range de datas localmente
+  if(dtI||dtF){
+    ps=ps.filter(p=>{
+      if(!p.criado_em) return true;
+      const d=p.criado_em.slice(0,10);
+      if(dtI&&d<dtI) return false;
+      if(dtF&&d>dtF) return false;
+      return true;
+    });
+  }
   document.getElementById('listaTotal').textContent=`${ps.length} pedido(s) encontrado(s)`;
   const tbody=document.getElementById('listaBody');
   if(!ps.length){tbody.innerHTML='<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--mu)">Nenhum pedido encontrado</td></tr>';return;}
@@ -1763,47 +2300,75 @@ async function loadListaPedidos(){
 
 // ── FECHAMENTO DE CAIXA ───────────────────────────────────────────────────────
 async function loadCaixa(di,df){
-  let url=`${API}/admin/pedidos?status=entregue`;
-  if(di) url+=`&data=${di}`;
-  const r=await fetch(url); let ps=await r.json();
-  if(df) ps=ps.filter(p=>p.criado_em&&p.criado_em.slice(0,10)<=df);
+  const r=await fetch(`${API}/admin/pedidos?status=entregue`);
+  let ps=await r.json();
+  // Filtrar por período localmente
+  if(di||df){
+    ps=ps.filter(p=>{
+      if(!p.criado_em) return true;
+      const d=p.criado_em.slice(0,10);
+      if(di&&d<di) return false;
+      if(df&&d>df) return false;
+      return true;
+    });
+  }
+  if(!ps.length){
+    return '<div style="text-align:center;padding:32px;color:var(--mu)"><div style="font-size:32px;margin-bottom:10px">📭</div><div style="font-weight:700">Nenhum pedido entregue no período</div><div style="font-size:12px;margin-top:6px">Selecione um período com pedidos finalizados</div></div>';
+  }
   const total=ps.reduce((s,p)=>s+p.total,0);
-  // Agrupar por forma de pagamento
+  const ticket=ps.length?total/ps.length:0;
+  // Agrupar por forma de pagamento (suporta múltiplas: "Dinheiro R$50 + PIX R$30")
   const porPgto={};
   ps.forEach(p=>{
-    const k=p.forma_pagamento||'Não informado';
-    if(!porPgto[k]) porPgto[k]={qtd:0,valor:0};
-    porPgto[k].qtd++; porPgto[k].valor+=p.total;
+    const formas=p.forma_pagamento||'Não informado';
+    const partes=formas.split('+').map(s=>s.trim());
+    partes.forEach(parte=>{
+      const mValor=parte.match(/^(.+?)\s+R\$([\d,.]+)$/);
+      if(mValor){
+        const tipo=mValor[1].trim();
+        const val=parseFloat(mValor[2].replace(',','.'))||0;
+        if(!porPgto[tipo]) porPgto[tipo]={qtd:0,valor:0};
+        porPgto[tipo].qtd++; porPgto[tipo].valor+=val;
+      } else {
+        if(!porPgto[parte]) porPgto[parte]={qtd:0,valor:0};
+        porPgto[parte].qtd++; porPgto[parte].valor+=p.total/partes.length;
+      }
+    });
   });
-  // Também buscar lançamentos avulsos do período
+  // Lançamentos avulsos
   let urlFin=`${API}/admin/financeiro?pago=1`;
   if(di) urlFin+=`&data_ini=${di}`;
   if(df) urlFin+=`&data_fim=${df}`;
   const rFin=await fetch(urlFin); const fins=await rFin.json();
   const entAvulso=fins.filter(f=>f.tipo==='entrada'&&!f.pedido_id).reduce((s,f)=>s+f.valor,0);
   const saiAvulso=fins.filter(f=>f.tipo==='saida').reduce((s,f)=>s+f.valor,0);
-  const html=`
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
-      <div class="stat" style="padding:12px 14px"><div class="stat-lb">Pedidos entregues</div><div class="stat-v" style="font-size:18px">${ps.length}</div></div>
-      <div class="stat" style="padding:12px 14px"><div class="stat-lb">Faturamento pedidos</div><div class="stat-v" style="font-size:18px;color:var(--bl)">R$${total.toFixed(2).replace('.',',')}</div></div>
-      <div class="stat" style="padding:12px 14px"><div class="stat-lb">Saldo líquido</div><div class="stat-v" style="font-size:18px;color:var(--gr)">R$${(total+entAvulso-saiAvulso).toFixed(2).replace('.',',')}</div></div>
-    </div>
-    <h4 style="font-size:13px;font-weight:800;margin-bottom:10px;color:var(--tx)">Por forma de pagamento</h4>
-    <div class="ts"><table class="tbl">
-      <thead><tr><th>Forma de Pagamento</th><th>Qtd. Pedidos</th><th>Total</th></tr></thead>
-      <tbody>${Object.entries(porPgto).sort((a,b)=>b[1].valor-a[1].valor).map(([k,v])=>`
-        <tr><td><b>${k}</b></td><td>${v.qtd}</td><td style="font-weight:800;color:var(--bl)">R$${v.valor.toFixed(2).replace('.',',')}</td></tr>`).join('')}
-        <tr style="background:var(--bg)"><td><b>TOTAL</b></td><td><b>${ps.length}</b></td><td style="font-weight:900;font-size:15px;color:var(--gr)">R$${total.toFixed(2).replace('.',',')}</td></tr>
-      </tbody>
-    </table></div>
-    ${entAvulso>0||saiAvulso>0?`
-    <h4 style="font-size:13px;font-weight:800;margin:14px 0 10px;color:var(--tx)">Lançamentos avulsos</h4>
-    <div style="display:flex;gap:12px;flex-wrap:wrap">
-      <div class="stat" style="padding:10px 14px;flex:1"><div class="stat-lb">Entradas avulsas</div><div class="stat-v" style="font-size:16px;color:var(--bl)">R$${entAvulso.toFixed(2).replace('.',',')}</div></div>
-      <div class="stat" style="padding:10px 14px;flex:1"><div class="stat-lb">Saídas avulsas</div><div class="stat-v" style="font-size:16px;color:var(--ac)">R$${saiAvulso.toFixed(2).replace('.',',')}</div></div>
-    </div>`:''}`;
+  const totalLiq=total+entAvulso-saiAvulso;
+
+  let html='';
+  html+=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:18px">`;
+  html+=`<div class="stat" style="padding:12px 14px"><div class="stat-ic">📦</div><div class="stat-lb">Pedidos entregues</div><div class="stat-v" style="font-size:22px">${ps.length}</div></div>`;
+  html+=`<div class="stat" style="padding:12px 14px"><div class="stat-ic">💵</div><div class="stat-lb">Total vendas</div><div class="stat-v" style="font-size:20px;color:var(--bl)">R$${total.toFixed(2).replace('.',',')}</div></div>`;
+  html+=`<div class="stat" style="padding:12px 14px"><div class="stat-ic">🎯</div><div class="stat-lb">Ticket médio</div><div class="stat-v" style="font-size:20px">R$${ticket.toFixed(2).replace('.',',')}</div></div>`;
+  html+=`<div class="stat" style="padding:12px 14px"><div class="stat-ic">💰</div><div class="stat-lb">Saldo líquido</div><div class="stat-v" style="font-size:20px;color:${totalLiq>=0?'var(--gr)':'var(--ac)'}">R$${totalLiq.toFixed(2).replace('.',',')}</div></div>`;
+  html+=`</div>`;
+  html+=`<h4 style="font-size:14px;font-weight:800;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--bd)">💳 Vendas por forma de pagamento</h4>`;
+  html+=`<div class="ts"><table class="tbl"><thead><tr><th>Forma de Pagamento</th><th style="text-align:center">Qtd</th><th style="text-align:right">Total</th><th style="text-align:right">% do total</th></tr></thead><tbody>`;
+  Object.entries(porPgto).sort((a,b)=>b[1].valor-a[1].valor).forEach(([k,v])=>{
+    html+=`<tr><td><b>${k}</b></td><td style="text-align:center">${v.qtd}</td><td style="text-align:right;font-weight:800;color:var(--bl)">R$${v.valor.toFixed(2).replace('.',',')}</td><td style="text-align:right;color:var(--mu)">${total>0?((v.valor/total)*100).toFixed(1)+'%':'—'}</td></tr>`;
+  });
+  html+=`<tr style="background:var(--bg);border-top:2px solid var(--bd)"><td><b>TOTAL GERAL</b></td><td style="text-align:center"><b>${ps.length}</b></td><td style="text-align:right;font-weight:900;font-size:16px;color:var(--gr)">R$${total.toFixed(2).replace('.',',')}</td><td style="text-align:right">100%</td></tr>`;
+  html+=`</tbody></table></div>`;
+  if(entAvulso>0||saiAvulso>0){
+    html+=`<h4 style="font-size:14px;font-weight:800;margin:18px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--bd)">📋 Lançamentos avulsos</h4>`;
+    html+=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px">`;
+    html+=`<div class="stat" style="padding:10px 14px"><div class="stat-lb">Entradas avulsas</div><div class="stat-v" style="color:var(--bl)">R$${entAvulso.toFixed(2).replace('.',',')}</div></div>`;
+    html+=`<div class="stat" style="padding:10px 14px"><div class="stat-lb">Saídas avulsas</div><div class="stat-v" style="color:var(--ac)">R$${saiAvulso.toFixed(2).replace('.',',')}</div></div>`;
+    html+=`<div class="stat" style="padding:10px 14px"><div class="stat-lb">Saldo líquido total</div><div class="stat-v" style="color:${totalLiq>=0?'var(--gr)':'var(--ac)'}">R$${totalLiq.toFixed(2).replace('.',',')}</div></div>`;
+    html+=`</div>`;
+  }
   return html;
 }
+
 
 // ── MÁSCARA TELEFONE ──────────────────────────────────────────────────────────
 function maskPhone(el){
@@ -1847,10 +2412,12 @@ function buildPgtoOptions(selectedVal=''){
 }
 function populatePgtoSelects(){
   const opts=buildPgtoOptions();
-  ['pdvPg','aceitar-pgto'].forEach(id=>{
+  ['aceitar-pgto'].forEach(id=>{
     const el=document.getElementById(id);
     if(el){const cur=el.value; el.innerHTML=opts; if(cur) el.value=cur;}
   });
+  // Atualizar tipos do PDV multipagamento também
+  if(document.getElementById('pdvPgtoRows')) renderPdvPgto();
 }
 checkAuth();
 </script>

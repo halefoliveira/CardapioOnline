@@ -3,7 +3,10 @@ import psycopg2, os, time
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
 def get_connection():
-    return psycopg2.connect(DATABASE_URL)
+    conn = psycopg2.connect(DATABASE_URL)
+    conn.cursor().execute("SET TIME ZONE 'America/Sao_Paulo'")
+    conn.commit()
+    return conn
 
 def fetchall(cur):
     cols = [d[0] for d in cur.description]
@@ -38,7 +41,7 @@ def init_db():
         subtotal REAL NOT NULL DEFAULT 0, frete REAL NOT NULL DEFAULT 0,
         tipo_entrega TEXT DEFAULT 'retirada', endereco TEXT,
         forma_pagamento TEXT, status TEXT DEFAULT 'pendente',
-        criado_em TEXT DEFAULT to_char(NOW(), 'YYYY-MM-DD HH24:MI:SS'))''')
+        criado_em TEXT DEFAULT to_char(NOW() AT TIME ZONE 'America/Sao_Paulo', 'YYYY-MM-DD HH24:MI:SS'))''')
     c.execute('''CREATE TABLE IF NOT EXISTS itens_pedido (
         id SERIAL PRIMARY KEY, pedido_id INTEGER NOT NULL REFERENCES pedidos(id),
         produto_id INTEGER NOT NULL REFERENCES produtos(id),
@@ -46,7 +49,7 @@ def init_db():
     c.execute('''CREATE TABLE IF NOT EXISTS clientes (
         id SERIAL PRIMARY KEY, telefone TEXT UNIQUE NOT NULL,
         nome TEXT, email TEXT, endereco TEXT,
-        criado_em TEXT DEFAULT to_char(NOW(), 'YYYY-MM-DD HH24:MI:SS'))''')
+        criado_em TEXT DEFAULT to_char(NOW() AT TIME ZONE 'America/Sao_Paulo', 'YYYY-MM-DD HH24:MI:SS'))''')
     c.execute('''CREATE TABLE IF NOT EXISTS financeiro (
         id SERIAL PRIMARY KEY,
         pedido_id INTEGER REFERENCES pedidos(id),
@@ -54,7 +57,7 @@ def init_db():
         valor REAL NOT NULL, tipo TEXT NOT NULL DEFAULT 'entrada',
         forma_pagamento TEXT, descricao TEXT, observacao TEXT,
         pago INTEGER DEFAULT 1, data_lancamento TEXT,
-        criado_em TEXT DEFAULT to_char(NOW(), 'YYYY-MM-DD HH24:MI:SS'))''')
+        criado_em TEXT DEFAULT to_char(NOW() AT TIME ZONE 'America/Sao_Paulo', 'YYYY-MM-DD HH24:MI:SS'))''')
     c.execute('''CREATE TABLE IF NOT EXISTS admin (
         id SERIAL PRIMARY KEY, usuario TEXT UNIQUE NOT NULL, senha TEXT NOT NULL)''')
 

@@ -59,6 +59,33 @@ def admin_page():
 def uploads(filename):
     return send_from_directory(UPLOADS_DIR, filename)
 
+# ── VISITAS ───────────────────────────────────────────────────────────────────
+VISITAS_FILE = os.path.join(BASE, 'visitas.json')
+
+def load_visitas():
+    if os.path.exists(VISITAS_FILE):
+        with open(VISITAS_FILE, 'r') as f: return json.load(f)
+    return {'total': 0, 'ips': []}
+
+def save_visitas(data):
+    with open(VISITAS_FILE, 'w') as f: json.dump(data, f)
+
+@app.route('/api/visita', methods=['POST'])
+def registrar_visita():
+    ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    if ip: ip = ip.split(',')[0].strip()
+    v = load_visitas()
+    if ip and ip not in v['ips']:
+        v['ips'].append(ip)
+        v['total'] = len(v['ips'])
+        save_visitas(v)
+    return jsonify({'total': v['total']})
+
+@app.route('/api/visitas')
+def get_visitas():
+    v = load_visitas()
+    return jsonify({'total': v['total']})
+
 # ── AUTH ──────────────────────────────────────────────────────────────────────
 @app.route('/api/auth/login', methods=['POST'])
 def login():
@@ -231,6 +258,32 @@ def editar_pedido(pid):
     d = request.get_json(); conn = get_connection(); cur = conn.cursor()
     for col in ['nome_cliente','telefone','observacao','endereco','forma_pagamento']:
         if col in d: cur.execute(f"UPDATE pedidos SET {col}=%s WHERE id=%s", (d[col], pid))
+    # Edição de itens do pedido
+    if 'itens' in d:
+        novos_itens = d['itens']
+        subtotal = 0.0
+        cur.execute("DELETE FROM itens_pedido WHERE pedido_id=%s", (pid,))
+        for item in novos_itens:
+            cur.execute("SELECT preco, preco_promo, em_promo FROM produtos WHERE id=%s", (item['produto_id'],))
+            p = cur.fetchone()
+            if p:
+                preco = float(p[1] or p[0]) if p[2] else float(p[0])
+                qty = int(item['quantidade'])
+                subtotal += preco * qty
+                cur.execute("INSERT INTO itens_pedido (pedido_id,produto_id,quantidade,preco_unit) VALUES (%s,%s,%s,%s)",
+                    (pid, item['produto_id'], qty, preco))
+        frete = float(d.get('frete', 0))
+        total = round(subtotal + frete, 2)
+        cur.execute("UPDATE pedidos SET subtotal=%s, frete=%s, total=%s WHERE id=%s",
+            (round(subtotal,2), frete, total, pid))
+    elif 'frete' in d:
+        frete = float(d['frete'])
+        cur.execute("SELECT subtotal FROM pedidos WHERE id=%s", (pid,))
+        row = cur.fetchone()
+        if row:
+            subtotal = float(row[0] or 0)
+            cur.execute("UPDATE pedidos SET frete=%s, total=%s WHERE id=%s",
+                (frete, round(subtotal+frete,2), pid))
     conn.commit(); conn.close(); return jsonify({'ok': True})
 
 @app.route('/api/admin/pedidos/<int:pid>', methods=['DELETE'])
@@ -265,9 +318,27 @@ def atualizar_status(pid):
             if cl: cliente_id = cl[0]
         cur.execute("SELECT id FROM financeiro WHERE pedido_id=%s", (pid,))
         if not cur.fetchone():
-            cur.execute(
-                "INSERT INTO financeiro (pedido_id,cliente_id,valor,tipo,forma_pagamento,descricao,pago) VALUES (%s,%s,%s,'entrada',%s,%s,1)",
-                (pid, cliente_id, pedido['total'], fpag, f'Pedido {pid}'))
+            # Suporte a múltiplos pagamentos: "Dinheiro R$50.00 + PIX R$30.00"
+            import re as _re
+            partes = [p.strip() for p in fpag.split('+')]
+            total_ped = pedido['total']
+            if len(partes) > 1:
+                # Múltiplos: inserir um registro por forma
+                for parte in partes:
+                    m = _re.match(r'^(.+?)\s+R\$([\d,.]+)$', parte)
+                    if m:
+                        tipo_pgto = m.group(1).strip()
+                        val = float(m.group(2).replace(',', '.'))
+                    else:
+                        tipo_pgto = parte
+                        val = total_ped / len(partes)
+                    cur.execute(
+                        "INSERT INTO financeiro (pedido_id,cliente_id,valor,tipo,forma_pagamento,descricao,pago) VALUES (%s,%s,%s,'entrada',%s,%s,1)",
+                        (pid, cliente_id, round(val, 2), tipo_pgto, f'Pedido {pid} - {tipo_pgto}'))
+            else:
+                cur.execute(
+                    "INSERT INTO financeiro (pedido_id,cliente_id,valor,tipo,forma_pagamento,descricao,pago) VALUES (%s,%s,%s,'entrada',%s,%s,1)",
+                    (pid, cliente_id, total_ped, fpag, f'Pedido {pid}'))
     conn.commit(); conn.close(); return jsonify({'ok': True})
 
 # ── PRODUTOS ──────────────────────────────────────────────────────────────────
