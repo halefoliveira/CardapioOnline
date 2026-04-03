@@ -19,4 +19,4 @@ RUN mkdir -p /app/uploads
 
 EXPOSE 5000
 
-CMD ["gunicorn", "--chdir", "backend", "app:app", "--bind", "0.0.0.0:5000", "--timeout", "120"]
+CMD ["gunicorn", "--chdir", "backend", "app:app", "--bind", "0.0.0.0:5000", "--timeout", "120", "--reload"]

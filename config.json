@@ -1,5 +1,61 @@
 {
   "nome_loja": "Feijuca da Fabi",
   "wpp": "61995736193",
-  "logo_url": "/uploads/logo.jpg"
+  "logo_url": "/uploads/logo.jpg",
+  "frete": 8.0,
+  "frete_min": 0.0,
+  "horarios": {
+    "domingo": {
+      "ativo": false,
+      "abertura": "08:00",
+      "fechamento": "22:00"
+    },
+    "segunda": {
+      "ativo": false,
+      "abertura": "08:00",
+      "fechamento": "22:00"
+    },
+    "terca": {
+      "ativo": false,
+      "abertura": "08:00",
+      "fechamento": "22:00"
+    },
+    "quarta": {
+      "ativo": false,
+      "abertura": "08:00",
+      "fechamento": "22:00"
+    },
+    "quinta": {
+      "ativo": false,
+      "abertura": "08:00",
+      "fechamento": "22:00"
+    },
+    "sexta": {
+      "ativo": true,
+      "abertura": "08:00",
+      "fechamento": "22:00"
+    },
+    "sabado": {
+      "ativo": false,
+      "abertura": "08:00",
+      "fechamento": "22:00"
+    }
+  },
+  "tipos_pagamento": [
+    "Dinheiro",
+    "PIX",
+    "Cartão de Débito",
+    "Cartão de Crédito"
+  ],
+  "cupons": [
+    {
+      "codigo": "BEMVINDO",
+      "tipo": "novo_cliente",
+      "tipo_desconto": "pct",
+      "desconto": 10,
+      "mensagem": "10% de Desconto na Primeira compra!",
+      "ativo": true
+    }
+  ],
+  "banner_url": "/uploads/banner.jpg"
 }

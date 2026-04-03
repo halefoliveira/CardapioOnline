@@ -4,7 +4,8 @@ DATABASE_URL = os.environ.get('DATABASE_URL')
 
 def get_connection():
     conn = psycopg2.connect(DATABASE_URL)
-    conn.cursor().execute("SET TIME ZONE 'America/Sao_Paulo'")
+    cur = conn.cursor()
+    cur.execute("SET TIME ZONE 'America/Sao_Paulo'")
     conn.commit()
     return conn
 
@@ -46,14 +47,18 @@ def init_db():
         id SERIAL PRIMARY KEY, pedido_id INTEGER NOT NULL REFERENCES pedidos(id),
         produto_id INTEGER NOT NULL REFERENCES produtos(id),
         quantidade INTEGER NOT NULL, preco_unit REAL NOT NULL)''')
+    # Tabela única de clientes/fornecedores
     c.execute('''CREATE TABLE IF NOT EXISTS clientes (
-        id SERIAL PRIMARY KEY, telefone TEXT UNIQUE NOT NULL,
+        id SERIAL PRIMARY KEY, telefone TEXT UNIQUE,
         nome TEXT, email TEXT, endereco TEXT,
+        tipo TEXT DEFAULT 'cliente',
+        cpf_cnpj TEXT,
         criado_em TEXT DEFAULT to_char(NOW() AT TIME ZONE 'America/Sao_Paulo', 'YYYY-MM-DD HH24:MI:SS'))''')
     c.execute('''CREATE TABLE IF NOT EXISTS financeiro (
         id SERIAL PRIMARY KEY,
         pedido_id INTEGER REFERENCES pedidos(id),
         cliente_id INTEGER REFERENCES clientes(id),
+        empresa_id INTEGER REFERENCES clientes(id),
         valor REAL NOT NULL, tipo TEXT NOT NULL DEFAULT 'entrada',
         forma_pagamento TEXT, descricao TEXT, observacao TEXT,
         pago INTEGER DEFAULT 1, data_lancamento TEXT,
@@ -72,8 +77,17 @@ def init_db():
         "ALTER TABLE financeiro ADD COLUMN IF NOT EXISTS observacao TEXT",
         "ALTER TABLE financeiro ADD COLUMN IF NOT EXISTS pago INTEGER DEFAULT 1",
         "ALTER TABLE financeiro ADD COLUMN IF NOT EXISTS data_lancamento TEXT",
+        "ALTER TABLE financeiro ADD COLUMN IF NOT EXISTS empresa_id INTEGER",
         "ALTER TABLE produtos ADD COLUMN IF NOT EXISTS preco_promo REAL",
         "ALTER TABLE produtos ADD COLUMN IF NOT EXISTS em_promo INTEGER DEFAULT 0",
+        "ALTER TABLE clientes ADD COLUMN IF NOT EXISTS tipo TEXT DEFAULT 'cliente'",
+        "ALTER TABLE clientes ADD COLUMN IF NOT EXISTS cpf_cnpj TEXT",
+        "ALTER TABLE clientes ALTER COLUMN telefone DROP NOT NULL",
+        "ALTER TABLE admin ADD COLUMN IF NOT EXISTS role TEXT DEFAULT 'admin'",
+        "ALTER TABLE admin ADD COLUMN IF NOT EXISTS nome TEXT",
+        "ALTER TABLE admin ADD COLUMN IF NOT EXISTS permissions TEXT DEFAULT '{}'",
+        "ALTER TABLE admin ADD COLUMN IF NOT EXISTS email TEXT",
+        "UPDATE admin SET role='admin' WHERE role IS NULL",
     ]
     for m in migrations:
         try: c.execute(m)
@@ -81,6 +95,8 @@ def init_db():
 
     try: c.execute("UPDATE pedidos SET status='pendente' WHERE status='novo'")
     except: pass
+
+
 
     c.execute("SELECT COUNT(*) FROM categorias")
     if c.fetchone()[0] == 0:

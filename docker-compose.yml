@@ -23,6 +23,8 @@ services:
     volumes:
       - ./uploads:/app/uploads
       - ./config.json:/app/config.json
+      - ./backend:/app/backend
+      - ./frontend:/app/frontend
     depends_on:
       - db
     restart: on-failure
