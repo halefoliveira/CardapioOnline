@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Super Admin — CardápioOnline</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0F172A;color:#E2E8F0;min-height:100vh}
+a{color:inherit;text-decoration:none}
+
+/* ── LOGIN ── */
+#loginWrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.login-card{background:#1E293B;border:1px solid #334155;border-radius:16px;padding:40px;width:100%;max-width:380px}
+.login-card h1{font-size:22px;font-weight:700;margin-bottom:6px;color:#F1F5F9}
+.login-card p{font-size:13px;color:#94A3B8;margin-bottom:28px}
+.login-logo{font-size:40px;margin-bottom:16px;text-align:center}
+
+/* ── LAYOUT ── */
+#appWrap{display:none;min-height:100vh}
+.sidebar{position:fixed;top:0;left:0;width:230px;height:100vh;background:#1E293B;border-right:1px solid #334155;overflow-y:auto;z-index:100;display:flex;flex-direction:column}
+.sb-logo{padding:20px 18px 16px;border-bottom:1px solid #334155;text-align:center}
+.sb-logo .icon{font-size:36px;margin-bottom:6px}
+.sb-logo .brand{font-size:15px;font-weight:700;color:#F1F5F9}
+.sb-logo .sub{font-size:11px;color:#64748B;margin-top:2px}
+.sb-nav{flex:1;padding:12px 0}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 18px;font-size:13px;cursor:pointer;border-radius:0;transition:background .15s;color:#94A3B8;border:none;background:none;width:100%;text-align:left}
+.nav-item:hover{background:#273344;color:#E2E8F0}
+.nav-item.active{background:#1D4ED8;color:#fff;font-weight:600}
+.nav-item .ico{font-size:16px;width:20px;text-align:center}
+.sb-footer{padding:14px 18px;border-top:1px solid #334155}
+.sb-user{font-size:12px;color:#64748B;margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.main{margin-left:230px;padding:24px;min-height:100vh}
+
+/* ── CARDS DASHBOARD ── */
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:16px;margin-bottom:24px}
+.dash-card{background:#1E293B;border:1px solid #334155;border-radius:12px;padding:20px}
+.dash-card .label{font-size:11px;color:#64748B;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.dash-card .value{font-size:28px;font-weight:700;color:#F1F5F9}
+.dash-card .sub{font-size:11px;color:#64748B;margin-top:4px}
+.card-ativo .value{color:#22C55E}
+.card-suspenso .value{color:#F59E0B}
+.card-inativo .value{color:#EF4444}
+
+/* ── CHART ── */
+.chart-wrap{background:#1E293B;border:1px solid #334155;border-radius:12px;padding:20px;margin-bottom:24px}
+.chart-title{font-size:13px;font-weight:600;color:#94A3B8;margin-bottom:16px}
+.chart-bars{display:flex;align-items:flex-end;gap:8px;height:120px}
+.chart-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.chart-bar{width:100%;background:#1D4ED8;border-radius:4px 4px 0 0;transition:height .3s;min-height:2px}
+.chart-bar-label{font-size:10px;color:#64748B;writing-mode:horizontal-tb}
+.chart-bar-val{font-size:10px;color:#94A3B8}
+
+/* ── TABLE ── */
+.section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-hd h2{font-size:16px;font-weight:700;color:#F1F5F9}
+.tbl-wrap{background:#1E293B;border:1px solid #334155;border-radius:12px;overflow:hidden}
+.tbl-search{padding:12px 16px;border-bottom:1px solid #334155;display:flex;gap:8px;flex-wrap:wrap}
+table{width:100%;border-collapse:collapse}
+th{padding:10px 14px;text-align:left;font-size:11px;font-weight:600;color:#64748B;text-transform:uppercase;letter-spacing:.5px;background:#162032;white-space:nowrap}
+td{padding:11px 14px;font-size:13px;color:#CBD5E1;border-top:1px solid #1E293B;vertical-align:middle}
+tr:hover td{background:#1a2d45}
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.badge-ativo{background:#14532D;color:#86EFAC}
+.badge-suspenso{background:#713F12;color:#FDE68A}
+.badge-inativo{background:#450A0A;color:#FCA5A5}
+.badge-basico{background:#1E3A5F;color:#93C5FD}
+.badge-pro{background:#3B0764;color:#D8B4FE}
+.badge-premium{background:#14532D;color:#86EFAC}
+.tbl-actions{display:flex;gap:6px;justify-content:flex-end}
+.tbl-actions button{padding:4px 10px;font-size:12px;border-radius:6px;border:none;cursor:pointer;font-weight:500}
+.btn-edit{background:#1D4ED8;color:#fff}
+.btn-del{background:#7F1D1D;color:#FCA5A5}
+.btn-edit:hover{background:#2563EB}
+.btn-del:hover{background:#991B1B}
+
+/* ── FORMS ── */
+.form-card{background:#1E293B;border:1px solid #334155;border-radius:12px;padding:24px;margin-bottom:20px}
+.form-card h3{font-size:15px;font-weight:700;color:#F1F5F9;margin-bottom:18px}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.form-full{grid-column:1/-1}
+label{display:block;font-size:11px;font-weight:600;color:#64748B;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+input,select,textarea{width:100%;background:#0F172A;border:1px solid #334155;border-radius:8px;color:#E2E8F0;padding:9px 12px;font-size:13px;outline:none;transition:border .15s;font-family:inherit}
+input:focus,select:focus,textarea:focus{border-color:#3B82F6}
+input::placeholder,textarea::placeholder{color:#475569}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748B' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+textarea{resize:vertical;min-height:70px}
+.form-row{display:flex;gap:10px;margin-top:14px;justify-content:flex-end;flex-wrap:wrap}
+
+/* ── BUTTONS ── */
+.btn{padding:9px 20px;border-radius:8px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;font-family:inherit}
+.btn-primary{background:#1D4ED8;color:#fff}
+.btn-primary:hover{background:#2563EB}
+.btn-secondary{background:#334155;color:#CBD5E1}
+.btn-secondary:hover{background:#475569}
+.btn-danger{background:#7F1D1D;color:#FCA5A5}
+.btn-danger:hover{background:#991B1B}
+.btn-success{background:#14532D;color:#86EFAC}
+.btn-success:hover{background:#166534}
+.btn-sm{padding:6px 14px;font-size:12px}
+.btn-icon{padding:7px;border-radius:8px;line-height:1}
+
+/* ── MODAL ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;align-items:center;justify-content:center;padding:16px}
+.modal-bg.show{display:flex}
+.modal{background:#1E293B;border:1px solid #334155;border-radius:16px;padding:28px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto}
+.modal h3{font-size:16px;font-weight:700;color:#F1F5F9;margin-bottom:20px}
+.modal-close{float:right;background:none;border:none;color:#64748B;font-size:20px;cursor:pointer;line-height:1;padding:0 2px}
+
+/* ── TABS (páginas) ── */
+.pg{display:none}
+.pg.active{display:block}
+
+/* ── ALERTS ── */
+.alert{padding:10px 16px;border-radius:8px;font-size:13px;margin-bottom:14px}
+.alert-err{background:#450A0A;color:#FCA5A5;border:1px solid #7F1D1D}
+.alert-ok{background:#14532D;color:#86EFAC;border:1px solid #166534}
+
+/* ── MISC ── */
+.text-muted{color:#64748B;font-size:12px}
+.mt-16{margin-top:16px}
+.sep{border:none;border-top:1px solid #334155;margin:20px 0}
+.loading{color:#64748B;font-size:13px;padding:20px;text-align:center}
+.empty{color:#64748B;font-size:13px;padding:24px;text-align:center}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .sidebar{width:100%;height:auto;position:relative}
+  .main{margin-left:0}
+  #appWrap{flex-direction:column}
+  .dash-grid{grid-template-columns:repeat(2,1fr)}
+  .form-grid{grid-template-columns:1fr}
+  table{font-size:12px}
+  th,td{padding:8px 10px}
+}
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN ── -->
+<div id="loginWrap">
+  <div class="login-card">
+    <div class="login-logo">🛡️</div>
+    <h1>Super Admin</h1>
+    <p>Painel de gerenciamento da plataforma</p>
+    <div id="loginErr" class="alert alert-err" style="display:none"></div>
+    <div style="margin-bottom:14px">
+      <label>Usuário</label>
+      <input id="loginUser" type="text" placeholder="superadmin" autocomplete="username">
+    </div>
+    <div style="margin-bottom:20px">
+      <label>Senha</label>
+      <input id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn btn-primary" style="width:100%" onclick="doLogin()">Entrar</button>
+  </div>
+</div>
+
+<!-- ── APP ── -->
+<div id="appWrap" style="display:none;min-height:100vh">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-logo">
+      <div class="icon">🛡️</div>
+      <div class="brand">CardápioOnline</div>
+      <div class="sub">Super Admin</div>
+    </div>
+    <nav class="sb-nav">
+      <button class="nav-item active" onclick="navTo('pg-dash')" id="nav-pg-dash">
+        <span class="ico">📊</span> Dashboard
+      </button>
+      <button class="nav-item" onclick="navTo('pg-clientes')" id="nav-pg-clientes">
+        <span class="ico">👥</span> Assinantes
+      </button>
+      <button class="nav-item" onclick="navTo('pg-config')" id="nav-pg-config">
+        <span class="ico">⚙️</span> Plataforma
+      </button>
+      <button class="nav-item" onclick="navTo('pg-senha')" id="nav-pg-senha">
+        <span class="ico">🔑</span> Minha Senha
+      </button>
+    </nav>
+    <div class="sb-footer">
+      <div class="sb-user" id="sbUser"></div>
+      <button class="btn btn-secondary btn-sm" style="width:100%" onclick="doLogout()">Sair</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- ── DASHBOARD ── -->
+    <div class="pg active" id="pg-dash">
+      <div class="section-hd"><h2>Dashboard</h2></div>
+      <div class="dash-grid" id="dashCards">
+        <div class="loading">Carregando...</div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Novos assinantes — últimos 6 meses</div>
+        <div class="chart-bars" id="chartBars">
+          <div class="loading">Carregando gráfico...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ASSINANTES ── -->
+    <div class="pg" id="pg-clientes">
+      <div class="section-hd">
+        <h2>Assinantes</h2>
+        <button class="btn btn-primary btn-sm" onclick="abrirModalCliente()">+ Novo Assinante</button>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-search">
+          <input id="searchClientes" type="search" placeholder="Buscar por nome, email ou slug..." style="max-width:320px" oninput="filtrarClientes()">
+          <select id="filtroStatus" style="max-width:150px" onchange="filtrarClientes()">
+            <option value="">Todos os status</option>
+            <option value="ativo">Ativo</option>
+            <option value="suspenso">Suspenso</option>
+            <option value="inativo">Inativo</option>
+          </select>
+          <select id="filtroPlano" style="max-width:130px" onchange="filtrarClientes()">
+            <option value="">Todos os planos</option>
+            <option value="basico">Básico</option>
+            <option value="pro">Pro</option>
+            <option value="premium">Premium</option>
+          </select>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome / Slug</th>
+                <th>Email</th>
+                <th>Plano</th>
+                <th>Status</th>
+                <th>Vencimento</th>
+                <th>Entrada</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tblClientes">
+              <tr><td colspan="8" class="empty">Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PLATAFORMA CONFIG ── -->
+    <div class="pg" id="pg-config">
+      <div class="section-hd"><h2>Configurações da Plataforma</h2></div>
+
+      <div class="form-card">
+        <h3>📧 SMTP — E-mail</h3>
+        <div id="cfgEmailErr" class="alert alert-err" style="display:none"></div>
+        <div id="cfgEmailOk" class="alert alert-ok" style="display:none"></div>
+        <div class="form-grid">
+          <div>
+            <label>Servidor SMTP</label>
+            <input id="smtp_host" type="text" placeholder="smtp.gmail.com">
+          </div>
+          <div>
+            <label>Porta</label>
+            <input id="smtp_port" type="number" placeholder="587">
+          </div>
+          <div>
+            <label>Usuário</label>
+            <input id="smtp_user" type="text" placeholder="email@gmail.com">
+          </div>
+          <div>
+            <label>Senha</label>
+            <input id="smtp_password" type="password" placeholder="Deixe em branco para manter">
+          </div>
+          <div>
+            <label>E-mail remetente</label>
+            <input id="smtp_from" type="email" placeholder="noreply@suaempresa.com">
+          </div>
+        </div>
+        <div class="form-row">
+          <button class="btn btn-secondary btn-sm" onclick="testarEmail()">Testar E-mail</button>
+          <button class="btn btn-primary btn-sm" onclick="salvarConfig()">Salvar SMTP</button>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h3>🗄️ Supabase Storage</h3>
+        <div class="form-grid">
+          <div class="form-full">
+            <label>URL do Supabase</label>
+            <input id="supabase_url" type="url" placeholder="https://xxxxx.supabase.co">
+          </div>
+          <div class="form-full">
+            <label>Chave (API Key)</label>
+            <input id="supabase_key" type="text" placeholder="sb_publishable_...">
+          </div>
+          <div>
+            <label>Bucket</label>
+            <input id="supabase_bucket" type="text" placeholder="cardapio">
+          </div>
+        </div>
+        <div class="form-full" style="margin-top:6px;font-size:12px;color:#64748b">
+          💡 Use a <b>Service Role Key</b> (começa com <code>eyJ...</code>) para permitir uploads sem restrições de RLS. Chaves <code>sb_publishable_</code> podem não ter permissão de escrita.
+        </div>
+        <div class="form-row" style="gap:8px">
+          <button class="btn btn-primary btn-sm" onclick="salvarConfig()">Salvar Supabase</button>
+          <button class="btn btn-secondary btn-sm" onclick="testarSupabase()">🔍 Testar conexão</button>
+        </div>
+        <div id="supabaseTestResult" style="display:none;margin-top:8px;padding:8px 12px;border-radius:8px;font-size:13px"></div>
+      </div>
+
+      <div class="form-card">
+        <h3>🔗 Webhook — Pagamentos</h3>
+        <p class="text-muted" style="margin-bottom:14px">Configure o endpoint para receber eventos de pagamento da sua plataforma.</p>
+        <div class="form-grid">
+          <div class="form-full">
+            <label>URL do Webhook (seu endpoint público)</label>
+            <input id="webhook_url" type="url" placeholder="https://seusite.com/api/webhook/pagamento" readonly style="background:#162032;cursor:default">
+          </div>
+          <div class="form-full">
+            <label>Segredo do Webhook (assinatura HMAC-SHA256)</label>
+            <div style="display:flex;gap:8px">
+              <input id="webhook_secret" type="text" placeholder="chave-secreta-aleatoria">
+              <button class="btn btn-secondary btn-sm" onclick="gerarSegredo()" title="Gerar segredo aleatório">🔀</button>
+            </div>
+          </div>
+        </div>
+        <p class="text-muted mt-16">Enviar no header: <code style="background:#162032;padding:2px 6px;border-radius:4px">X-Webhook-Signature: &lt;hmac-sha256&gt;</code></p>
+        <div class="form-row">
+          <button class="btn btn-primary btn-sm" onclick="salvarConfig()">Salvar Webhook</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MINHA SENHA ── -->
+    <div class="pg" id="pg-senha">
+      <div class="section-hd"><h2>Alterar Senha</h2></div>
+      <div class="form-card" style="max-width:420px">
+        <h3>🔑 Nova Senha</h3>
+        <div id="senhaErr" class="alert alert-err" style="display:none"></div>
+        <div id="senhaOk" class="alert alert-ok" style="display:none"></div>
+        <div style="margin-bottom:14px">
+          <label>Nova Senha</label>
+          <input id="novaSenha" type="password" placeholder="Mínimo 6 caracteres">
+        </div>
+        <div style="margin-bottom:20px">
+          <label>Confirmar Senha</label>
+          <input id="confSenha" type="password" placeholder="Repita a senha">
+        </div>
+        <button class="btn btn-primary" onclick="alterarSenha()">Alterar Senha</button>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /appWrap -->
+
+<!-- ── MODAL CRIAR/EDITAR CLIENTE ── -->
+<div class="modal-bg" id="modalCliente">
+  <div class="modal">
+    <button class="modal-close" onclick="fecharModal('modalCliente')">✕</button>
+    <h3 id="modalClienteTit">Novo Assinante</h3>
+    <div id="modalClienteErr" class="alert alert-err" style="display:none"></div>
+
+    <input type="hidden" id="editClienteId">
+    <div class="form-grid">
+      <div>
+        <label>Nome completo *</label>
+        <input id="fc_nome" type="text" placeholder="Nome da empresa ou pessoa">
+      </div>
+      <div>
+        <label>Tipo</label>
+        <select id="fc_tipo_pessoa" onchange="onChangeTipoPessoa()">
+          <option value="pf">Pessoa Física</option>
+          <option value="pj">Pessoa Jurídica</option>
+        </select>
+      </div>
+      <div>
+        <label id="fc_doc_label">CPF</label>
+        <input id="fc_cpf_cnpj" type="text" placeholder="000.000.000-00" oninput="maskDocModal()">
+      </div>
+      <div>
+        <label>Telefone</label>
+        <input id="fc_telefone" type="text" placeholder="(00) 00000-0000" oninput="maskTelModal()">
+      </div>
+      <div>
+        <label>E-mail * <span style="font-size:10px;color:#94A3B8;font-weight:400">(usado como login)</span></label>
+        <input id="fc_email" type="email" placeholder="cliente@email.com" required>
+      </div>
+      <div>
+        <label>Plano</label>
+        <select id="fc_plano">
+          <option value="basico">Básico</option>
+          <option value="pro">Pro</option>
+          <option value="premium">Premium</option>
+        </select>
+      </div>
+      <div>
+        <label>Status</label>
+        <select id="fc_status">
+          <option value="ativo">Ativo</option>
+          <option value="suspenso">Suspenso</option>
+          <option value="inativo">Inativo</option>
+        </select>
+      </div>
+      <div>
+        <label>Data Vencimento</label>
+        <input id="fc_vencimento" type="date">
+      </div>
+      <div>
+        <label>Senha de Acesso *</label>
+        <input id="fc_senha" type="password" placeholder="Deixe em branco para manter">
+      </div>
+      <div>
+        <label>Ref. Webhook / Pagamento</label>
+        <input id="fc_webhook_ref" type="text" placeholder="ID na plataforma de pagamento">
+      </div>
+      <div class="form-full">
+        <label>Observação</label>
+        <textarea id="fc_observacao" rows="2" placeholder="Notas internas..."></textarea>
+      </div>
+    </div>
+    <div class="form-row">
+      <button class="btn btn-secondary" onclick="fecharModal('modalCliente')">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarCliente()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL DETALHES ── -->
+<div class="modal-bg" id="modalDetalhes">
+  <div class="modal">
+    <button class="modal-close" onclick="fecharModal('modalDetalhes')">✕</button>
+    <h3>Detalhes do Assinante</h3>
+    <div id="detalheBody"></div>
+    <div class="form-row">
+      <button class="btn btn-secondary" onclick="fecharModal('modalDetalhes')">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '';
+let todosClientes = [];
+
+// ── AUTH ──────────────────────────────────────────────────────────────────────
+async function checkLogin(){
+  const r = await fetch(`${API}/api/super/auth/check`,{credentials:'include'});
+  const d = await r.json();
+  if(d.logado){ mostrarApp(d.nome); loadDashboard(); loadClientes(); loadConfig(); }
+}
+
+async function doLogin(){
+  const u=document.getElementById('loginUser').value.trim();
+  const p=document.getElementById('loginPass').value;
+  if(!u||!p){showLoginErr('Preencha usuário e senha');return}
+  const r=await fetch(`${API}/api/super/auth/login`,{method:'POST',credentials:'include',
+    headers:{'Content-Type':'application/json'},body:JSON.stringify({usuario:u,senha:p})});
+  const d=await r.json();
+  if(!r.ok){showLoginErr(d.erro||'Falha no login');return}
+  mostrarApp(d.nome);loadDashboard();loadClientes();loadConfig();
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter' && document.getElementById('loginWrap').style.display!=='none') doLogin();
+});
+
+async function doLogout(){
+  await fetch(`${API}/api/super/auth/logout`,{method:'POST',credentials:'include'});
+  document.getElementById('appWrap').style.display='none';
+  document.getElementById('loginWrap').style.display='flex';
+}
+
+function mostrarApp(nome){
+  document.getElementById('loginWrap').style.display='none';
+  document.getElementById('appWrap').style.display='block';
+  document.getElementById('sbUser').textContent=nome||'Super Admin';
+}
+
+function showLoginErr(msg){
+  const el=document.getElementById('loginErr');
+  el.textContent=msg;el.style.display='block';
+}
+
+// ── NAVEGAÇÃO ─────────────────────────────────────────────────────────────────
+function navTo(id){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const nav=document.getElementById('nav-'+id);
+  if(nav)nav.classList.add('active');
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────────────────────────
+async function loadDashboard(){
+  const r=await fetch(`${API}/api/super/dashboard`,{credentials:'include'});
+  if(!r.ok)return;
+  const d=await r.json();
+
+  document.getElementById('dashCards').innerHTML=`
+    <div class="dash-card">
+      <div class="label">Total de Assinantes</div>
+      <div class="value">${d.total}</div>
+    </div>
+    <div class="dash-card card-ativo">
+      <div class="label">Ativos</div>
+      <div class="value">${d.ativos}</div>
+    </div>
+    <div class="dash-card card-suspenso">
+      <div class="label">Suspensos</div>
+      <div class="value">${d.suspensos}</div>
+    </div>
+    <div class="dash-card card-inativo">
+      <div class="label">Inativos</div>
+      <div class="value">${d.inativos}</div>
+    </div>
+    <div class="dash-card">
+      <div class="label">Novos (30 dias)</div>
+      <div class="value" style="color:#60A5FA">${d.novos_30d}</div>
+    </div>
+  `;
+
+  // Gráfico
+  const por_mes = d.por_mes || [];
+  if(por_mes.length===0){
+    document.getElementById('chartBars').innerHTML='<div class="empty">Sem dados</div>';
+    return;
+  }
+  const maxVal = Math.max(...por_mes.map(m=>m.qtd),1);
+  document.getElementById('chartBars').innerHTML = por_mes.map(m=>{
+    const pct = Math.round((m.qtd/maxVal)*100);
+    const label = m.mes ? m.mes.substring(5)+'/' + m.mes.substring(2,4) : m.mes;
+    return `<div class="chart-bar-col">
+      <div class="chart-bar-val">${m.qtd}</div>
+      <div class="chart-bar" style="height:${pct}%"></div>
+      <div class="chart-bar-label">${label}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── CLIENTES ──────────────────────────────────────────────────────────────────
+async function loadClientes(){
+  const r=await fetch(`${API}/api/super/clientes`,{credentials:'include'});
+  if(!r.ok)return;
+  todosClientes=await r.json();
+  renderClientes(todosClientes);
+}
+
+function filtrarClientes(){
+  const q=(document.getElementById('searchClientes').value||'').toLowerCase();
+  const st=document.getElementById('filtroStatus').value;
+  const pl=document.getElementById('filtroPlano').value;
+  const lista=todosClientes.filter(c=>{
+    const match=(c.nome||'').toLowerCase().includes(q)||(c.email||'').toLowerCase().includes(q)||(c.slug||'').toLowerCase().includes(q);
+    const ms=!st||c.status===st;
+    const mp=!pl||c.plano===pl;
+    return match&&ms&&mp;
+  });
+  renderClientes(lista);
+}
+
+function renderClientes(lista){
+  const tb=document.getElementById('tblClientes');
+  if(!lista.length){tb.innerHTML='<tr><td colspan="8" class="empty">Nenhum assinante encontrado</td></tr>';return}
+  tb.innerHTML=lista.map(c=>`
+    <tr>
+      <td style="color:#64748B;font-size:12px">#${c.id}</td>
+      <td>
+        <div style="font-weight:600;color:#F1F5F9">${esc(c.nome)}</div>
+        <div style="font-size:11px;color:#64748B">/${esc(c.slug)}</div>
+      </td>
+      <td>${esc(c.email||'—')}</td>
+      <td><span class="badge badge-${c.plano||'basico'}">${c.plano||'básico'}</span></td>
+      <td><span class="badge badge-${c.status||'ativo'}">${c.status||'ativo'}</span></td>
+      <td style="font-size:12px">${c.data_vencimento||'—'}</td>
+      <td style="font-size:12px">${(c.data_entrada||c.criado_em||'').substring(0,10)||'—'}</td>
+      <td>
+        <div class="tbl-actions">
+          <button class="tbl-actions btn-edit" onclick="verDetalhes(${c.id})">👁</button>
+          <button class="tbl-actions btn-edit" onclick="editarCliente(${c.id})">✏️</button>
+          <button class="tbl-actions btn-del" onclick="deletarCliente(${c.id},'${esc(c.nome)}')">🗑</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function abrirModalCliente(){
+  document.getElementById('modalClienteTit').textContent='Novo Assinante';
+  document.getElementById('editClienteId').value='';
+  document.getElementById('modalClienteErr').style.display='none';
+  ['fc_nome','fc_cpf_cnpj','fc_telefone','fc_email','fc_webhook_ref','fc_observacao','fc_senha'].forEach(id=>{
+    document.getElementById(id).value='';
+  });
+  document.getElementById('fc_plano').value='basico';
+  document.getElementById('fc_status').value='ativo';
+  document.getElementById('fc_tipo_pessoa').value='pf';
+  document.getElementById('fc_vencimento').value='';
+  onChangeTipoPessoa();
+  document.getElementById('modalCliente').classList.add('show');
+}
+
+async function editarCliente(id){
+  const r=await fetch(`${API}/api/super/clientes/${id}`,{credentials:'include'});
+  if(!r.ok)return alert('Erro ao carregar dados');
+  const {cliente:c}=await r.json();
+  document.getElementById('modalClienteTit').textContent='Editar Assinante';
+  document.getElementById('editClienteId').value=c.id;
+  document.getElementById('fc_nome').value=c.nome||'';
+  document.getElementById('fc_email').value=c.email||'';
+  document.getElementById('fc_telefone').value=c.telefone||'';
+  document.getElementById('fc_cpf_cnpj').value=c.cpf_cnpj||'';
+  document.getElementById('fc_plano').value=c.plano||'basico';
+  document.getElementById('fc_status').value=c.status||'ativo';
+  document.getElementById('fc_vencimento').value=c.data_vencimento||'';
+  document.getElementById('fc_webhook_ref').value=c.webhook_ref||'';
+  document.getElementById('fc_observacao').value=c.observacao||'';
+  document.getElementById('fc_senha').value='';
+  const doc=c.cpf_cnpj||'';
+  document.getElementById('fc_tipo_pessoa').value=doc.length>14?'pj':'pf';
+  onChangeTipoPessoa();
+  document.getElementById('modalClienteErr').style.display='none';
+  document.getElementById('modalCliente').classList.add('show');
+}
+
+async function salvarCliente(){
+  const id=document.getElementById('editClienteId').value;
+  const payload={
+    nome:document.getElementById('fc_nome').value.trim(),
+    email:document.getElementById('fc_email').value.trim(),
+    telefone:document.getElementById('fc_telefone').value.trim()||null,
+    cpf_cnpj:document.getElementById('fc_cpf_cnpj').value.trim()||null,
+    plano:document.getElementById('fc_plano').value,
+    status:document.getElementById('fc_status').value,
+    data_vencimento:document.getElementById('fc_vencimento').value||null,
+    webhook_ref:document.getElementById('fc_webhook_ref').value.trim()||null,
+    observacao:document.getElementById('fc_observacao').value.trim()||null,
+    senha:document.getElementById('fc_senha').value||null,
+  };
+  if(!payload.nome){
+    document.getElementById('modalClienteErr').textContent='Nome é obrigatório';
+    document.getElementById('modalClienteErr').style.display='block';
+    return;
+  }
+  if(!payload.email){
+    document.getElementById('modalClienteErr').textContent='E-mail é obrigatório (usado como login)';
+    document.getElementById('modalClienteErr').style.display='block';
+    return;
+  }
+  const url=id?`${API}/api/super/clientes/${id}`:`${API}/api/super/clientes`;
+  const method=id?'PATCH':'POST';
+  const r=await fetch(url,{method,credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  const d=await r.json();
+  if(!r.ok){
+    document.getElementById('modalClienteErr').textContent=d.erro||'Erro ao salvar';
+    document.getElementById('modalClienteErr').style.display='block';
+    return;
+  }
+  fecharModal('modalCliente');
+  loadClientes();
+  loadDashboard();
+}
+
+async function deletarCliente(id,nome){
+  if(!confirm(`Excluir o assinante "${nome}" e todos os seus dados? Esta ação é irreversível.`))return;
+  const r=await fetch(`${API}/api/super/clientes/${id}`,{method:'DELETE',credentials:'include'});
+  if(!r.ok){const d=await r.json();alert(d.erro||'Erro ao excluir');return}
+  loadClientes();loadDashboard();
+}
+
+async function verDetalhes(id){
+  const r=await fetch(`${API}/api/super/clientes/${id}`,{credentials:'include'});
+  if(!r.ok)return;
+  const {cliente:c,config:cfg}=await r.json();
+  const loja=cfg?cfg.nome_loja:c.nome;
+  document.getElementById('detalheBody').innerHTML=`
+    <table style="width:100%;border-collapse:collapse">
+      <tr><td class="text-muted" style="padding:6px 0;width:130px">ID</td><td style="padding:6px 0;color:#F1F5F9">#${c.id}</td></tr>
+      <tr><td class="text-muted" style="padding:6px 0">Nome</td><td style="padding:6px 0;color:#F1F5F9">${esc(c.nome)}</td></tr>
+      <tr><td class="text-muted" style="padding:6px 0">Slug / Rota</td><td style="padding:6px 0;color:#60A5FA">/${esc(c.slug)}</td></tr>
+      <tr><td class="text-muted" style="padding:6px 0">Nome da Loja</td><td style="padding:6px 0;color:#F1F5F9">${esc(loja||'—')}</td></tr>
+      <tr><td class="text-muted" style="padding:6px 0">E-mail</td><td style="padding:6px 0;color:#F1F5F9">${esc(c.email||'—')}</td></tr>
+      <tr><td class="text-muted" style="padding:6px 0">Telefone</td><td style="padding:6px 0;color:#F1F5F9">${esc(c.telefone||'—')}</td></tr>
+      <tr><td class="text-muted" style="padding:6px 0">CPF/CNPJ</td><td style="padding:6px 0;color:#F1F5F9">${esc(c.cpf_cnpj||'—')}</td></tr>
+      <tr><td class="text-muted" style="padding:6px 0">Plano</td><td style="padding:6px 0"><span class="badge badge-${c.plano}">${c.plano}</span></td></tr>
+      <tr><td class="text-muted" style="padding:6px 0">Status</td><td style="padding:6px 0"><span class="badge badge-${c.status}">${c.status}</span></td></tr>
+      <tr><td class="text-muted" style="padding:6px 0">Entrada</td><td style="padding:6px 0;color:#F1F5F9">${c.data_entrada||'—'}</td></tr>
+      <tr><td class="text-muted" style="padding:6px 0">Vencimento</td><td style="padding:6px 0;color:#F1F5F9">${c.data_vencimento||'—'}</td></tr>
+      <tr><td class="text-muted" style="padding:6px 0">Webhook Ref</td><td style="padding:6px 0;color:#F1F5F9">${esc(c.webhook_ref||'—')}</td></tr>
+      ${c.observacao?`<tr><td class="text-muted" style="padding:6px 0">Observação</td><td style="padding:6px 0;color:#F1F5F9">${esc(c.observacao)}</td></tr>`:''}
+      <tr><td class="text-muted" style="padding:6px 0">Cadastrado em</td><td style="padding:6px 0;color:#F1F5F9">${(c.criado_em||'').substring(0,16)}</td></tr>
+    </table>
+    <hr class="sep">
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <a href="/${esc(c.slug)}" target="_blank" class="btn btn-secondary btn-sm">🛵 Ver Cardápio</a>
+      <a href="/${esc(c.slug)}/painel" target="_blank" class="btn btn-secondary btn-sm">⚙️ Painel do Cliente</a>
+    </div>
+  `;
+  document.getElementById('modalDetalhes').classList.add('show');
+}
+
+// ── CONFIGURAÇÕES ─────────────────────────────────────────────────────────────
+async function loadConfig(){
+  const r=await fetch(`${API}/api/super/config`,{credentials:'include'});
+  if(!r.ok)return;
+  const d=await r.json();
+  // SMTP
+  setVal('smtp_host',d.smtp_host||'smtp.gmail.com');
+  setVal('smtp_port',d.smtp_port||587);
+  setVal('smtp_user',d.smtp_user||'');
+  setVal('smtp_from',d.smtp_from||'');
+  // Supabase
+  setVal('supabase_url',d.supabase_url||'');
+  setVal('supabase_key',d.supabase_key||'');
+  setVal('supabase_bucket',d.supabase_bucket||'cardapio');
+  // Webhook
+  setVal('webhook_secret',d.webhook_secret||'');
+  // Mostrar URL do webhook
+  setVal('webhook_url', window.location.origin+'/api/webhook/pagamento');
+}
+
+async function testarSupabase(){
+  const el=document.getElementById('supabaseTestResult');
+  el.style.display='block';
+  el.style.background='#f1f5f9';
+  el.style.color='#334155';
+  el.textContent='⏳ Testando conexão...';
+  try{
+    const r=await fetch('/api/super/config/test-supabase',{method:'POST',credentials:'include'});
+    const d=await r.json();
+    if(d.ok){
+      el.style.background='#dcfce7';el.style.color='#166534';
+      el.textContent='✅ '+d.msg;
+    }else{
+      el.style.background='#fee2e2';el.style.color='#991b1b';
+      el.textContent='❌ '+d.erro;
+    }
+  }catch(e){
+    el.style.background='#fee2e2';el.style.color='#991b1b';
+    el.textContent='❌ Erro: '+e.message;
+  }
+}
+
+async function salvarConfig(){
+  hideAlerts('cfgEmailErr','cfgEmailOk');
+  const payload={
+    smtp_host:getVal('smtp_host'),
+    smtp_port:parseInt(getVal('smtp_port'))||587,
+    smtp_user:getVal('smtp_user'),
+    smtp_from:getVal('smtp_from'),
+    supabase_url:getVal('supabase_url'),
+    supabase_key:getVal('supabase_key'),
+    supabase_bucket:getVal('supabase_bucket')||'cardapio',
+    webhook_secret:getVal('webhook_secret'),
+    webhook_url:getVal('webhook_url'),
+  };
+  const pass=getVal('smtp_password');
+  if(pass)payload.smtp_password=pass;
+  const r=await fetch(`${API}/api/super/config`,{method:'POST',credentials:'include',
+    headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  const d=await r.json();
+  if(r.ok){
+    document.getElementById('cfgEmailOk').textContent='Configurações salvas!';
+    document.getElementById('cfgEmailOk').style.display='block';
+    setTimeout(()=>document.getElementById('cfgEmailOk').style.display='none',3000);
+  } else {
+    document.getElementById('cfgEmailErr').textContent=d.erro||'Erro ao salvar';
+    document.getElementById('cfgEmailErr').style.display='block';
+  }
+}
+
+async function testarEmail(){
+  const dest=prompt('Digite o e-mail de destino para teste:');
+  if(!dest)return;
+  alert('Funcionalidade de teste de email disponível no backend. Verifique os logs do servidor.');
+}
+
+function gerarSegredo(){
+  const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+  let s='';for(let i=0;i<32;i++)s+=chars[Math.floor(Math.random()*chars.length)];
+  document.getElementById('webhook_secret').value=s;
+}
+
+// ── ALTERAR SENHA ─────────────────────────────────────────────────────────────
+async function alterarSenha(){
+  hideAlerts('senhaErr','senhaOk');
+  const nova=document.getElementById('novaSenha').value;
+  const conf=document.getElementById('confSenha').value;
+  if(!nova||nova.length<6){showAlert('senhaErr','Senha deve ter pelo menos 6 caracteres');return}
+  if(nova!==conf){showAlert('senhaErr','Senhas não conferem');return}
+  const r=await fetch(`${API}/api/super/auth/senha`,{method:'POST',credentials:'include',
+    headers:{'Content-Type':'application/json'},body:JSON.stringify({nova})});
+  if(r.ok){showAlert('senhaOk','Senha alterada com sucesso!');document.getElementById('novaSenha').value='';document.getElementById('confSenha').value='';}
+  else{const d=await r.json();showAlert('senhaErr',d.erro||'Erro ao alterar');}
+}
+
+// ── MÁSCARAS ──────────────────────────────────────────────────────────────────
+function onChangeTipoPessoa(){
+  const tipo=document.getElementById('fc_tipo_pessoa').value;
+  const lbl=document.getElementById('fc_doc_label');
+  const inp=document.getElementById('fc_cpf_cnpj');
+  if(tipo==='pj'){lbl.textContent='CNPJ';inp.placeholder='00.000.000/0000-00';}
+  else{lbl.textContent='CPF';inp.placeholder='000.000.000-00';}
+  inp.value='';
+}
+
+function maskDocModal(){
+  const tipo=document.getElementById('fc_tipo_pessoa').value;
+  const inp=document.getElementById('fc_cpf_cnpj');
+  inp.value=tipo==='pj'?maskCNPJ(inp.value):maskCPF(inp.value);
+}
+
+function maskTelModal(){
+  const inp=document.getElementById('fc_telefone');
+  inp.value=maskTel(inp.value);
+}
+
+function maskCPF(v){
+  v=v.replace(/\D/g,'').substring(0,11);
+  if(v.length>9)return v.replace(/(\d{3})(\d{3})(\d{3})(\d{0,2})/,'$1.$2.$3-$4');
+  if(v.length>6)return v.replace(/(\d{3})(\d{3})(\d{0,3})/,'$1.$2.$3');
+  if(v.length>3)return v.replace(/(\d{3})(\d{0,3})/,'$1.$2');
+  return v;
+}
+function maskCNPJ(v){
+  v=v.replace(/\D/g,'').substring(0,14);
+  if(v.length>12)return v.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{0,2})/,'$1.$2.$3/$4-$5');
+  if(v.length>8)return v.replace(/(\d{2})(\d{3})(\d{3})(\d{0,4})/,'$1.$2.$3/$4');
+  if(v.length>5)return v.replace(/(\d{2})(\d{3})(\d{0,3})/,'$1.$2.$3');
+  if(v.length>2)return v.replace(/(\d{2})(\d{0,3})/,'$1.$2');
+  return v;
+}
+function maskTel(v){
+  v=v.replace(/\D/g,'').substring(0,11);
+  if(v.length>10)return v.replace(/(\d{2})(\d{5})(\d{4})/,'($1) $2-$3');
+  if(v.length>6)return v.replace(/(\d{2})(\d{4,5})(\d{0,4})/,'($1) $2-$3');
+  if(v.length>2)return v.replace(/(\d{2})(\d{0,5})/,'($1) $2');
+  return v;
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+function fecharModal(id){document.getElementById(id).classList.remove('show')}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function setVal(id,v){const el=document.getElementById(id);if(el)el.value=v}
+function getVal(id){const el=document.getElementById(id);return el?el.value.trim():''}
+function showAlert(id,msg){const el=document.getElementById(id);if(el){el.textContent=msg;el.style.display='block'}}
+function hideAlerts(...ids){ids.forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none'})}
+
+// Fechar modal ao clicar fora
+document.querySelectorAll('.modal-bg').forEach(m=>{
+  m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('show')});
+});
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+checkLogin();
+</script>
+</body>
+</html>

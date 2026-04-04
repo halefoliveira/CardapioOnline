@@ -561,7 +561,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',sans-serif;-webkit
   border:1.5px solid rgba(255,180,0,.4);
   cursor:pointer;display:none;align-items:center;gap:10px;
   animation:cupom-pulse 3s ease-in-out infinite;
-  white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis;
+  white-space:normal;max-width:90vw;overflow:hidden;word-break:break-word;overflow-wrap:anywhere;
 }
 .cupom-banner.show{display:flex;}
 @keyframes cupom-pulse{
@@ -758,6 +758,10 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',sans-serif;-webkit
 
 <script>
 const API='/api';
+// Extrair slug da URL: /<slug> ou /
+const _cp=window.location.pathname.split('/').filter(Boolean);
+const _cpExclude=['api','uploads','static','Admin','login'];
+const TENANT_SLUG=(_cp.length>=1&&!_cpExclude.includes(_cp[0]))?_cp[0]:'';
 
 function maskTel(el){
   let v=el.value.replace(/\D/g,'').slice(0,11);
@@ -840,7 +844,7 @@ async function aplicarCupom(){
   try{
     const r = await fetch('/api/cupom/validar', {method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({codigo, telefone: tel})});
+      body: JSON.stringify({codigo, telefone: tel, slug: TENANT_SLUG||undefined})});
     const d = await r.json();
     if(!r.ok){ errEl.textContent = d.erro || 'Cupom inválido'; errEl.classList.add('show'); cupomAtivo=null; buildResumo(); return; }
     cupomAtivo = d;
@@ -860,10 +864,21 @@ function calcDescontoCupom(sub){
 async function load(){
   try{fetch('/api/visita',{method:'POST'});}catch(e){}
 
-  // Registrar visita única por IP
-  try{ fetch('/api/visita',{method:'POST'}); }catch(e){}
+  // Verificar status do tenant (suspenso/inativo)
+  if(TENANT_SLUG){
+    try{
+      const rt=await fetch(`${API}/tenant/${TENANT_SLUG}/info`);
+      if(!rt.ok){
+        const dt=await rt.json();
+        document.body.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:#0F172A;color:#E2E8F0;padding:24px;text-align:center"><div><div style="font-size:48px;margin-bottom:16px">🔒</div><h2 style="font-size:20px;margin-bottom:8px">Loja indisponível</h2><p style="color:#94A3B8">${dt.erro||'Esta loja não está acessível no momento.'}</p></div></div>`;
+        return;
+      }
+    }catch(e){}
+  }
+
   try{
-    const [rc,rg]=await Promise.all([fetch(`${API}/cardapio`),fetch(`${API}/config`)]);
+    const qs=TENANT_SLUG?`?slug=${TENANT_SLUG}`:'';
+    const [rc,rg]=await Promise.all([fetch(`${API}/cardapio${qs}`),fetch(`${API}/config${qs}`)]);
     cardapio=await rc.json(); cfg=await rg.json();
     const nome=cfg.nome_loja||'Cardápio';
     document.getElementById('lojaNome').textContent=nome;
@@ -1030,7 +1045,7 @@ async function enviar(){
     const desc=calcDescontoCupom(sub+fr);
     const obsComCupom=cupomAtivo?`${obs}${obs?' | ':''}Cupom: ${cupomAtivo.codigo} (-R$${desc.toFixed(2)})`:obs;
     const r=await fetch(`${API}/pedido`,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({nome_cliente:nome,telefone:tel,observacao:obsComCupom,endereco:end,tipo_entrega:tipoEntrega,forma_pagamento:fpag,desconto_override:desc>0?desc:undefined,itens:its.map(i=>({produto_id:i.produto_id,quantidade:i.quantidade}))})});
+      body:JSON.stringify({nome_cliente:nome,telefone:tel,observacao:obsComCupom,endereco:end,tipo_entrega:tipoEntrega,forma_pagamento:fpag,desconto_override:desc>0?desc:undefined,slug:TENANT_SLUG||undefined,itens:its.map(i=>({produto_id:i.produto_id,quantidade:i.quantidade}))})});
     const d=await r.json();
     if(!r.ok){toast(d.erro||'Erro',true);return;}
     const wpp=cfg.wpp||'';

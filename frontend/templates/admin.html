@@ -243,7 +243,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',sans-serif;min-hei
   box-shadow:0 0 0 3px rgba(0,0,0,.06);
 }
 /* Select moderno custom */
-.fg select,.sinp[type=date],.sinp{
+.fg select,.sinp{
   width:100%;background:#fff;
   border:1.5px solid var(--bd);
   border-radius:10px;
@@ -251,12 +251,19 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',sans-serif;min-hei
   color:#1E293B;
   font-family:'Inter',sans-serif;
   font-size:13px;transition:.2s ease;
+  cursor:pointer;
+}
+.fg select,select.sinp{
   appearance:none;-webkit-appearance:none;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
   background-repeat:no-repeat;
   background-position:right 10px center;
   background-size:16px;
-  cursor:pointer;
+}
+input.sinp[type=date],input.sinp[type=time]{
+  appearance:auto;-webkit-appearance:auto;
+  background-image:none;
+  padding:10px 13px;
 }
 .fg select:focus{
   outline:none;
@@ -437,6 +444,8 @@ input,select,textarea{color:#1E293B !important;}
   color:var(--tx);transition:.2s ease;
 }
 .sinp:focus{outline:none;border-color:var(--bl);box-shadow:0 0 0 3px rgba(99,102,241,.12);}
+.fil-row{display:flex;gap:7px;flex-wrap:wrap;align-items:center;}
+.fil-row .sinp,.fils .sinp,.filtros-lista .sinp{width:auto;}
 
 /* PDV */
 .pdv-lay{display:grid;grid-template-columns:1fr 370px;gap:18px;align-items:start;}
@@ -940,7 +949,8 @@ input,select,textarea{color:#1E293B !important;}
     <div class="lcard-icon">🍽️</div>
     <h1>Painel Admin</h1>
     <p>Entre para gerenciar seu negócio</p>
-    <div class="fg"><label>Usuário</label><input type="text" id="lU" placeholder="admin" value="admin"></div>
+    <div class="fg" id="lSlugWrap" style="display:none"><label>Endereço da loja</label><input type="text" id="lSlug" placeholder="ex: minha-lanchonete" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9-]/g,'-')" onkeydown="if(event.key==='Enter')doLogin()"><div style="font-size:11px;color:var(--mu);margin-top:4px">O mesmo nome informado no seu painel, ex: <b>burguerhouse</b></div></div>
+    <div class="fg" id="lUserWrap"><label>E-mail</label><input type="email" id="lU" placeholder="seu@email.com" autocomplete="email"></div>
     <div class="fg"><label>Senha</label><input type="password" id="lP" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
     <button class="btn bac" style="width:100%;padding:14px;font-size:14px;margin-top:6px" onclick="doLogin()">Entrar</button>
     <div id="lErr" style="color:var(--rd);font-size:12px;margin-top:12px;text-align:center;display:none"></div>
@@ -995,24 +1005,10 @@ input,select,textarea{color:#1E293B !important;}
     <div class="ni" id="ni-resumo" onclick="goPage('resumo',this)"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>Resumo</div>
     <div class="ni" id="ni-relatorios" onclick="goPage('relatorios',this)"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>Relatórios</div>
     <div class="nav-s" id="navs-admin">Administração</div>
-    <!-- Configurações: menu colapsável -->
-    <div class="ni" id="ni-cfg-toggle" onclick="toggleCfgMenu()" style="justify-content:space-between">
-      <span style="display:flex;align-items:center;gap:10px">
-        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span>Configurações
-      </span>
-      <svg id="cfg-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="transition:.2s ease;flex-shrink:0"><polyline points="6 9 12 15 18 9"/></svg>
-    </div>
-    <div id="cfg-submenu" style="display:none;padding-left:12px">
-      <div class="ni" id="ni-usuarios" onclick="goPage('usuarios',this)"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>Usuários</div>
-      <div class="ni" id="ni-config-visual" onclick="goPage('config-visual',this)"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span>Identidade Visual</div>
-      <div class="ni" id="ni-config-horarios" onclick="goPage('config-horarios',this)"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>Horários</div>
-      <div class="ni" id="ni-config-loja" onclick="goPage('config-loja',this)"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Config. da Loja</div>
-      <div class="ni" id="ni-email-config" onclick="goPage('email-config',this)"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>Config. E-mail</div>
-    </div>
-    <div class="ni" id="ni-config" onclick="goPage('config',this)" style="display:none"></div>
+    <div class="ni" id="ni-config" onclick="goPage('config',this)"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span>Configurações</div>
   </nav>
   <div class="sb-ft">
-    <a href="/" target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> Ver cardápio</a>
+    <a href="#" onclick="if(TENANT_SLUG)window.open('/'+TENANT_SLUG,'_blank');return false;" target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> Ver cardápio</a>
     <button onclick="doLogout()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Sair</button>
   </div>
 </aside>
@@ -1052,12 +1048,10 @@ input,select,textarea{color:#1E293B !important;}
       <option value="cancelado">⚫ Cancelado</option>
     </select>
     <input class="sinp" id="listaNome" placeholder="🔍 Nome ou número" style="min-width:150px">
-    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-      <span style="font-size:11px;color:var(--mu);white-space:nowrap">De</span>
-      <input type="date" class="sinp" id="listaDtI">
-      <span style="font-size:11px;color:var(--mu)">até</span>
-      <input type="date" class="sinp" id="listaDtF">
-    </div>
+    <span style="font-size:11px;color:var(--mu);white-space:nowrap">De</span>
+    <input type="date" class="sinp" id="listaDtI">
+    <span style="font-size:11px;color:var(--mu)">até</span>
+    <input type="date" class="sinp" id="listaDtF">
     <button class="btn bbl bsm" onclick="loadListaPedidos()">Filtrar</button>
     <button class="btn bgh bsm" onclick="limparFiltrosLista()">Limpar</button>
     <span id="listaTotal" style="font-size:12px;color:var(--mu);margin-left:auto"></span>
@@ -1268,7 +1262,7 @@ input,select,textarea{color:#1E293B !important;}
   <div class="card">
     <div class="ct" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
       <span style="font-size:14px;font-weight:800">💳 Lançamentos</span>
-      <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center">
+      <div class="fil-row">
         <select class="sinp" id="fTF" onchange="loadFin()" style="min-width:110px"><option value="">Todos tipos</option><option value="entrada">Entradas</option><option value="saida">Saídas</option></select>
         <select class="sinp" id="fPF" onchange="loadFin()" style="min-width:120px"><option value="">Todos status</option><option value="1">Pagos</option><option value="0">Pendentes</option></select>
         <select class="sinp" id="fEmpF" onchange="loadFin()" style="min-width:140px"><option value="">Todas empresas</option></select>
@@ -1298,10 +1292,10 @@ input,select,textarea{color:#1E293B !important;}
   <div class="card">
     <div class="ct" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
       <span style="font-size:14px;font-weight:800">📈 Faturamento diário</span>
-      <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap">
-        <input type="date" class="sinp" id="gIni" oninput="loadGraf()">
+      <div class="fil-row">
+        <input type="date" class="sinp" id="gIni" oninput="loadResumo()">
         <span style="font-size:11px;color:var(--mu)">até</span>
-        <input type="date" class="sinp" id="gFim" oninput="loadGraf()">
+        <input type="date" class="sinp" id="gFim" oninput="loadResumo()">
       </div>
     </div>
     <div class="chart-w"><canvas id="chartFat"></canvas></div>
@@ -1311,6 +1305,17 @@ input,select,textarea{color:#1E293B !important;}
 <!-- CONFIG -->
 <div class="pg" id="pg-config">
   <div class="pg-t">Configurações</div>
+  <!-- Abas de configuração -->
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;padding-bottom:14px;border-bottom:1.5px solid var(--bd)">
+    <button class="fi on" id="cfgt-visual"   onclick="switchCfgTab('visual',this)">🏪 Identidade Visual</button>
+    <button class="fi"    id="cfgt-loja"     onclick="switchCfgTab('loja',this)">⚙️ Config. da Loja</button>
+    <button class="fi"    id="cfgt-horarios" onclick="switchCfgTab('horarios',this)">🕐 Horários</button>
+    <button class="fi"    id="cfgt-usuarios" onclick="switchCfgTab('usuarios',this)">👥 Usuários</button>
+  </div>
+
+  <!-- ── ABA: IDENTIDADE VISUAL ── -->
+  <div class="cfs" id="cfs-visual">
+  <!-- Identidade Visual card -->
   <div class="card"><div class="ct">🏪 Identidade visual</div>
     <div style="display:flex;align-items:center;gap:18px;margin-bottom:18px">
       <div class="logo-crc" id="lgCrc">🍽️</div>
@@ -1334,33 +1339,14 @@ input,select,textarea{color:#1E293B !important;}
       <div class="fg"><label>Nome da loja</label><input type="text" id="cNm" placeholder="Ex: Burger House"></div>
       <div class="fg"><label>WhatsApp</label><input type="text" id="cWp" placeholder="5561999999999"></div>
     </div>
-  </div>
-  <div class="card"><div class="ct">🚚 Entrega</div>
-    <div class="r2">
-      <div class="fg"><label>Frete padrão (R$)</label><input type="number" id="cFr" step="0.50" placeholder="0,00"></div>
-      <div class="fg"><label>Frete mínimo (R$)</label><input type="number" id="cFm" step="0.50" placeholder="0,00"></div>
+    <div class="fg" style="margin-top:8px">
+      <label>Rota do Cardápio</label>
+      <div style="display:flex;align-items:center;gap:0;border:1.5px solid var(--bd);border-radius:10px;overflow:hidden;background:var(--bg)">
+        <span id="cSlugPrefix" style="padding:9px 10px;font-size:12px;color:var(--mu);white-space:nowrap;background:var(--bg);border-right:1px solid var(--bd)"></span>
+        <input type="text" id="cSlug" placeholder="minha-lanchonete" oninput="updateSlugPreview()" style="border:none;border-radius:0;flex:1;background:var(--bg)">
+      </div>
+      <div style="font-size:11px;color:var(--mu);margin-top:5px">Link: <a id="cSlugPreview" href="#" target="_blank" style="color:var(--bl)"></a></div>
     </div>
-  </div>
-  <div class="card"><div class="ct">🕐 Horários de funcionamento</div>
-    <div class="hor-grid" id="horGrid"></div>
-    <div style="margin-top:15px;font-size:11px;color:var(--mu)">Deixe desmarcado os dias em que a loja não abre.</div>
-  </div>
-  <div class="card">
-    <div class="ct">💳 Formas de Pagamento</div>
-    <p style="font-size:12px;color:var(--mu);margin-bottom:13px">Defina as opções disponíveis para o cliente e para o PDV. Separe por vírgula.</p>
-    <div class="fg"><label>Tipos de pagamento</label>
-      <input type="text" id="cTpPg" placeholder="Dinheiro, PIX, Cartão de Débito, Cartão de Crédito">
-    </div>
-    <p style="font-size:11px;color:var(--mu)">Digite os tipos separados por vírgula.</p>
-  </div>
-  <div class="card">
-    <div class="ct">🎟️ Cupons de Desconto</div>
-    <p style="font-size:12px;color:var(--mu);margin-bottom:15px">
-      Cadastre cupons de desconto. <b>Cliente novo</b>: válido apenas para quem nunca fez pedido.
-      <b>Distribuição</b>: código secreto que pode ser enviado para clientes.
-    </p>
-    <div id="cuponsLista" style="display:flex;flex-direction:column;gap:11px;margin-bottom:15px"></div>
-    <button class="btn bbl bsm" onclick="cupomAdd()">+ Adicionar cupom</button>
   </div>
   <div class="card"><div class="ct">🎨 Tema de cores</div>
     <p style="font-size:12px;color:var(--mu);margin-bottom:4px">Escolha um tema predefinido ou crie o seu próprio.</p>
@@ -1374,36 +1360,36 @@ input,select,textarea{color:#1E293B !important;}
       <button class="btn bac bsm" onclick="saveCustomTheme()">Salvar personalização</button>
     </div>
   </div>
-  <div class="card"><div class="ct">🔐 Alterar senha</div>
+  <button class="btn bac" onclick="salvarConfig()">Salvar</button>
+  </div><!-- /cfs-visual -->
+
+  <!-- ── ABA: CONFIG DA LOJA ── -->
+  <div class="cfs" id="cfs-loja" style="display:none">
+  <div class="card"><div class="ct">🚚 Entrega</div>
     <div class="r2">
-      <div class="fg"><label>Nova senha</label><input type="password" id="nSe" placeholder="••••••••"></div>
-      <div class="fg"><label>Confirmar</label><input type="password" id="cSe" placeholder="••••••••"></div>
-    </div>
-    <button class="btn bgh bsm" onclick="alterarSenha()">Alterar senha</button>
-  </div>
-  <div class="card"><div class="ct">🖨️ Impressão automática</div>
-    <div style="font-size:12px;color:var(--mu);margin-bottom:13px">Configure a impressão automática ao aceitar pedidos. <strong>Requer impressora conectada ao computador.</strong></div>
-    <div class="r2">
-      <div class="fg"><label>Impressora padrão</label><input type="text" id="cfgImpressora" placeholder="Ex: EPSON TM-T20, Generic / Text Only..."></div>
-      <div class="fg"><label>Largura do papel</label>
-        <select id="cfgPapelLarg">
-          <option value="58">58mm</option>
-          <option value="80" selected>80mm</option>
-          <option value="100">100mm</option>
-        </select>
-      </div>
-    </div>
-    <div class="fg">
-      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;text-transform:none;letter-spacing:0">
-        <input type="checkbox" id="cfgAutoImp" style="width:auto;border:none;background:none;padding:0">
-        <span style="font-weight:700">Imprimir automaticamente ao aceitar pedido</span>
-      </label>
+      <div class="fg"><label>Frete padrão (R$)</label><input type="number" id="cFr" step="0.50" placeholder="0,00"></div>
+      <div class="fg"><label>Frete mínimo (R$)</label><input type="number" id="cFm" step="0.50" placeholder="0,00"></div>
     </div>
   </div>
+  <div class="card">
+    <div class="ct">💳 Formas de Pagamento</div>
+    <div class="fg"><label>Tipos de pagamento</label>
+      <input type="text" id="cTpPg" placeholder="Dinheiro, PIX, Cartão de Débito, Cartão de Crédito">
+    </div>
+    <p style="font-size:11px;color:var(--mu)">Separe por vírgula.</p>
+  </div>
+  <div class="card">
+    <div class="ct">🎟️ Cupons de Desconto</div>
+    <p style="font-size:12px;color:var(--mu);margin-bottom:15px">
+      Cadastre cupons de desconto. <b>Cliente novo</b>: válido apenas para quem nunca fez pedido.
+      <b>Distribuição</b>: código secreto enviado para clientes.
+    </p>
+    <div id="cuponsLista" style="display:flex;flex-direction:column;gap:11px;margin-bottom:15px"></div>
+    <button class="btn bbl bsm" onclick="cupomAdd()">+ Adicionar cupom</button>
+  </div>
   <div class="card"><div class="ct">🖨️ Impressão automática</div>
-    <p style="font-size:12px;color:var(--mu);margin-bottom:13px">Quando ativado, ao aceitar um pedido ele será enviado automaticamente para impressão.</p>
     <div class="r2">
-      <div class="fg"><label>Impressora padrão</label><input type="text" id="cImp" placeholder="Ex: HP_LaserJet ou deixe em branco para padrão do sistema"></div>
+      <div class="fg"><label>Impressora padrão</label><input type="text" id="cImp" placeholder="Ex: HP_LaserJet"></div>
       <div class="fg"><label>Impressão automática ao aceitar</label>
         <select id="cAutoImp">
           <option value="1">✅ Ativada</option>
@@ -1420,113 +1406,27 @@ input,select,textarea{color:#1E293B !important;}
       </select>
     </div>
   </div>
-  <button class="btn bac" onclick="salvarConfig()">Salvar configurações</button>
-</div>
-
-<!-- IDENTIDADE VISUAL -->
-<div class="pg" id="pg-config-visual">
-  <div class="pg-t">Identidade Visual</div>
-  <div class="card"><div class="ct">🏪 Identidade visual</div>
-    <div style="display:flex;align-items:center;gap:18px;margin-bottom:18px">
-      <div class="logo-crc" id="lgCrc2">🍽️</div>
-      <div>
-        <div style="font-weight:700;margin-bottom:3px;font-size:13px">Logo da loja</div>
-        <div style="font-size:11px;color:var(--mu);margin-bottom:10px">Ícone do site e exibida no cardápio</div>
-        <div class="upl" style="display:inline-block;padding:9px 18px;width:auto" onclick="document.getElementById('lgI2').click()">
-          <input type="file" id="lgI2" accept="image/*" style="display:none" onchange="prevLogo2(this)">
-          <span style="font-size:11px;color:var(--bl);font-weight:700">📤 Enviar logo</span>
-        </div>
-      </div>
-    </div>
-    <div class="fg"><label>Banner do cardápio</label>
-      <div class="upl" onclick="document.getElementById('bnI2').click()">
-        <img class="pr-rect" id="bnPv2" src="" alt="">
-        <div id="bnPh2"><div style="font-size:22px;margin-bottom:5px">🖼️</div><div style="font-size:11px;color:var(--mu)"><strong style="color:var(--bl)">Clique</strong> para enviar fundo</div></div>
-        <input type="file" id="bnI2" accept="image/*" style="display:none" onchange="prevBanner2(this)">
-      </div>
-    </div>
+  <div class="card"><div class="ct">🔐 Alterar senha</div>
     <div class="r2">
-      <div class="fg"><label>Nome da loja</label><input type="text" id="cNm2" placeholder="Ex: Burger House"></div>
-      <div class="fg"><label>WhatsApp</label><input type="text" id="cWp2" placeholder="5561999999999"></div>
+      <div class="fg"><label>Nova senha</label><input type="password" id="nSe" placeholder="••••••••"></div>
+      <div class="fg"><label>Confirmar</label><input type="password" id="cSe" placeholder="••••••••"></div>
     </div>
+    <button class="btn bgh bsm" onclick="alterarSenha()">Alterar senha</button>
   </div>
-  <div class="card"><div class="ct">🎨 Tema de cores</div>
-    <p style="font-size:12px;color:var(--mu);margin-bottom:4px">Escolha um tema predefinido ou crie o seu próprio.</p>
-    <div class="theme-grid" id="themeGrid2"></div>
-    <div class="theme-custom-box" id="customThemeBox2">
-      <div style="font-size:13px;font-weight:700;margin-bottom:12px;color:var(--tx)">🎨 Cores personalizadas</div>
-      <div class="custom-pickers">
-        <div class="cpk"><label>Cor primária</label><input type="color" id="cpAc2" oninput="applyCustomTheme2()"></div>
-        <div class="cpk"><label>Sidebar</label><input type="color" id="cpSb2" oninput="applyCustomTheme2()"></div>
-      </div>
-      <button class="btn bac bsm" onclick="saveCustomTheme2()">Salvar personalização</button>
-    </div>
-  </div>
-  <button class="btn bac" onclick="salvarConfigVisual()">Salvar</button>
-</div>
+  <button class="btn bac" onclick="salvarConfigLoja()">Salvar</button>
+  </div><!-- /cfs-loja -->
 
-<!-- HORÁRIOS -->
-<div class="pg" id="pg-config-horarios">
-  <div class="pg-t">Horários de Funcionamento</div>
+  <!-- ── ABA: HORÁRIOS ── -->
+  <div class="cfs" id="cfs-horarios" style="display:none">
   <div class="card"><div class="ct">🕐 Horários de funcionamento</div>
-    <div class="hor-grid" id="horGrid2"></div>
+    <div class="hor-grid" id="horGrid"></div>
     <div style="margin-top:15px;font-size:11px;color:var(--mu)">Deixe desmarcado os dias em que a loja não abre.</div>
   </div>
   <button class="btn bac" onclick="salvarConfigHorarios()">Salvar</button>
-</div>
+  </div><!-- /cfs-horarios -->
 
-<!-- CONFIG DA LOJA -->
-<div class="pg" id="pg-config-loja">
-  <div class="pg-t">Config. da Loja</div>
-  <div class="card"><div class="ct">🚚 Entrega</div>
-    <div class="r2">
-      <div class="fg"><label>Frete padrão (R$)</label><input type="number" id="cFr2" step="0.50" placeholder="0,00"></div>
-      <div class="fg"><label>Frete mínimo (R$)</label><input type="number" id="cFm2" step="0.50" placeholder="0,00"></div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="ct">💳 Formas de Pagamento</div>
-    <p style="font-size:12px;color:var(--mu);margin-bottom:13px">Defina as opções disponíveis para o cliente e para o PDV. Separe por vírgula.</p>
-    <div class="fg"><label>Tipos de pagamento</label>
-      <input type="text" id="cTpPg2" placeholder="Dinheiro, PIX, Cartão de Débito, Cartão de Crédito">
-    </div>
-    <p style="font-size:11px;color:var(--mu)">Digite os tipos separados por vírgula.</p>
-  </div>
-  <div class="card">
-    <div class="ct">🎟️ Cupons de Desconto</div>
-    <p style="font-size:12px;color:var(--mu);margin-bottom:15px">
-      Cadastre cupons de desconto. <b>Cliente novo</b>: válido apenas para quem nunca fez pedido.
-      <b>Distribuição</b>: código secreto que pode ser enviado para clientes.
-    </p>
-    <div id="cuponsLista2" style="display:flex;flex-direction:column;gap:11px;margin-bottom:15px"></div>
-    <button class="btn bbl bsm" onclick="cupomAdd2()">+ Adicionar cupom</button>
-  </div>
-  <div class="card"><div class="ct">🖨️ Impressão automática</div>
-    <p style="font-size:12px;color:var(--mu);margin-bottom:13px">Quando ativado, ao aceitar um pedido ele será enviado automaticamente para impressão.</p>
-    <div class="r2">
-      <div class="fg"><label>Impressora padrão</label><input type="text" id="cImp2" placeholder="Ex: HP_LaserJet ou deixe em branco para padrão do sistema"></div>
-      <div class="fg"><label>Impressão automática ao aceitar</label>
-        <select id="cAutoImp2">
-          <option value="1">✅ Ativada</option>
-          <option value="0">❌ Desativada</option>
-        </select>
-      </div>
-    </div>
-    <div class="fg"><label>Tamanho do papel</label>
-      <select id="cPapel2">
-        <option value="80mm">80mm (padrão térmica)</option>
-        <option value="100mm">100mm</option>
-        <option value="58mm">58mm</option>
-        <option value="A4">A4</option>
-      </select>
-    </div>
-  </div>
-  <button class="btn bac" onclick="salvarConfigLoja()">Salvar</button>
-</div>
-
-<!-- USUÁRIOS -->
-<div class="pg" id="pg-usuarios">
-  <div class="pg-t">Usuários</div>
+  <!-- ── ABA: USUÁRIOS ── -->
+  <div class="cfs" id="cfs-usuarios" style="display:none">
   <div class="card">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
       <div class="ct" style="margin-bottom:0">👥 Usuários cadastrados</div>
@@ -1535,7 +1435,6 @@ input,select,textarea{color:#1E293B !important;}
         Novo usuário
       </button>
     </div>
-    <!-- FORM COLAPSÁVEL -->
     <div id="usrFormCard" style="display:none;margin-top:18px;padding-top:18px;border-top:1.5px solid var(--bd)">
       <div class="r2">
         <div class="fg"><label>Login *</label><input type="text" id="usrLogin" placeholder="Ex: maria" autocomplete="off"></div>
@@ -1578,7 +1477,16 @@ input,select,textarea{color:#1E293B !important;}
       <tbody id="usrBody"></tbody>
     </table></div>
   </div>
-</div>
+  </div><!-- /cfs-usuarios -->
+
+
+</div><!-- /pg-config -->
+
+<!-- shells vazios para não quebrar referências JS -->
+<div class="pg" id="pg-config-visual" style="display:none"></div>
+<div class="pg" id="pg-config-horarios" style="display:none"></div>
+<div class="pg" id="pg-config-loja" style="display:none"></div>
+<div class="pg" id="pg-usuarios" style="display:none"></div>
 
 <!-- RELATÓRIOS -->
 <div class="pg" id="pg-relatorios">
@@ -1590,7 +1498,7 @@ input,select,textarea{color:#1E293B !important;}
       <button class="fi"    id="rTab-apagar"     onclick="switchRel('apagar',this)">📤 A Pagar</button>
       <button class="fi"    id="rTab-areceber"   onclick="switchRel('areceber',this)">📥 A Receber</button>
       <button class="fi"    id="rTab-extrato"    onclick="switchRel('extrato',this)">💳 Extrato</button>
-      <div style="display:flex;gap:7px;align-items:center;margin-left:auto;flex-wrap:wrap">
+      <div class="fil-row" style="margin-left:auto">
         <input type="date" class="sinp" id="relDtI">
         <span style="font-size:11px;color:var(--mu)">até</span>
         <input type="date" class="sinp" id="relDtF">
@@ -1611,44 +1519,7 @@ input,select,textarea{color:#1E293B !important;}
   </div>
 </div>
 
-<!-- CONFIG E-MAIL -->
-<div class="pg" id="pg-email-config">
-  <div class="pg-t">Configuração de E-mail</div>
-  <div class="card">
-    <div class="ct">📧 SMTP — Servidor de e-mail</div>
-    <p style="font-size:12px;color:var(--mu);margin-bottom:18px">Configure o servidor de e-mail para envio de recuperação de senha e notificações automáticas.</p>
-    <div class="r2">
-      <div class="fg"><label>Servidor SMTP</label><input type="text" id="smtpHost" placeholder="smtp.gmail.com"></div>
-      <div class="fg"><label>Porta</label><input type="number" id="smtpPort" placeholder="587" value="587"></div>
-    </div>
-    <div class="r2">
-      <div class="fg"><label>Usuário / E-mail</label><input type="text" id="smtpUser" placeholder="seu@gmail.com"></div>
-      <div class="fg"><label>Senha / App password</label><input type="password" id="smtpPass" placeholder="••••••••"></div>
-    </div>
-    <div class="fg"><label>Remetente (From)</label><input type="text" id="smtpFrom" placeholder="Cardápio Digital &lt;seu@gmail.com&gt;"></div>
-    <button class="btn bac" onclick="salvarConfigEmail()">Salvar configuração</button>
-  </div>
-  <div class="card" style="margin-top:0">
-    <div class="ct">✉️ Modelo de e-mail — Recuperação de senha</div>
-    <p style="font-size:12px;color:var(--mu);margin-bottom:14px">Este é o modelo enviado ao usuário quando clicar em <strong>"Esqueci minha senha"</strong>. Use <code style="background:var(--bg);padding:2px 6px;border-radius:4px;font-size:11px">{link}</code> para inserir o link de redefinição.</p>
-    <div class="fg"><label>Assunto do e-mail</label><input type="text" id="emailSubject" placeholder="Recuperação de senha — Cardápio Digital" value="Recuperação de senha — Cardápio Digital"></div>
-    <div class="fg"><label>Corpo do e-mail (HTML ou texto)</label>
-      <textarea id="emailBody" style="height:160px;resize:vertical;font-size:12px;font-family:monospace">Olá!
-
-Recebemos uma solicitação para redefinir sua senha.
-Clique no link abaixo para criar uma nova senha:
-
-{link}
-
-Este link expira em 1 hora.
-Se você não solicitou a redefinição, ignore este e-mail.
-
-Atenciosamente,
-Equipe Cardápio Digital</textarea>
-    </div>
-    <button class="btn bbl bsm" onclick="testarEmail()">📤 Enviar e-mail de teste</button>
-  </div>
-</div>
+<div class="pg" id="pg-email-config" style="display:none"></div>
 
 </div></main>
 </div>
@@ -1765,6 +1636,10 @@ Equipe Cardápio Digital</textarea>
 
 <script>
 const API='/api';
+// Extrair slug da URL: /login → pede no form; /<slug>/painel → lê do path
+const _pathParts=window.location.pathname.split('/').filter(Boolean);
+const IS_LOGIN_PAGE=_pathParts.length===1&&_pathParts[0]==='login';
+const TENANT_SLUG=IS_LOGIN_PAGE?'':(_pathParts.length>=2&&_pathParts[1]==='painel'?_pathParts[0]:(_pathParts[0]||''));
 let catsD=[], prodsD=[], lgB64='', bnB64='', ftB64='', efFotos={};
 let allCats=[], allProds=[], cfgG={}, finData=[], chartInst=null;
 let pdvCart={}, pdvTipoA='retirada', pdvCatA='todos';
@@ -1781,12 +1656,25 @@ async function checkAuth(){
 async function doLogin(){
   const u=document.getElementById('lU').value.trim();
   const p=document.getElementById('lP').value;
+  const errEl=document.getElementById('lErr');
+  errEl.style.display='none';
+  if(IS_LOGIN_PAGE){
+    // /login: apenas valida slug e redireciona para o painel do tenant
+    const slug=(document.getElementById('lSlug').value.trim()||'').toLowerCase().replace(/[^a-z0-9-]/g,'-');
+    if(!slug){errEl.style.display='block';errEl.textContent='Informe o endereço da loja';return;}
+    try{
+      const r=await fetch(`${API}/tenant/${slug}/info`);
+      if(!r.ok){const d=await r.json();errEl.style.display='block';errEl.textContent=d.erro||'Loja não encontrada';return;}
+      window.location.href=`/${slug}/painel`;
+    }catch(e){errEl.style.display='block';errEl.textContent='Erro de conexão';}
+    return;
+  }
   try{
-    const r=await fetch(`${API}/auth/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usuario:u,senha:p})});
+    const r=await fetch(`${API}/auth/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usuario:u,senha:p,slug:TENANT_SLUG})});
     const d=await r.json();
-    if(!r.ok){const e=document.getElementById('lErr');e.style.display='block';e.textContent=d.erro;return;}
+    if(!r.ok){errEl.style.display='block';errEl.textContent=d.erro;return;}
     showPanel(d.role,d.nome,d.permissions);
-  }catch(e){const el=document.getElementById('lErr');el.style.display='block';el.textContent='Erro de conexão';}
+  }catch(e){errEl.style.display='block';errEl.textContent='Erro de conexão';}
 }
 function showForgotForm(){
   document.querySelector('.lcard').style.display='none';
@@ -1915,8 +1803,8 @@ function goPage(name,el){
     }
     loadListaPedidos();
   }
-  if(name==='config'){loadConfig();renderThemes();}
-  if(name==='config-visual'){loadConfig();renderThemes2();}
+  if(name==='config'){loadConfig();renderThemes();loadEmailConfig();loadUsuarios();}
+  if(name==='config-visual'){loadConfig();renderThemes();}
   if(name==='config-horarios'){loadConfig();}
   if(name==='config-loja'){loadConfig();}
   if(name==='email-config'){loadEmailConfig();}
@@ -1938,7 +1826,8 @@ function closeModal(id){document.getElementById(id).classList.remove('on');}
 // ── CONFIG ────────────────────────────────────────────────────────────────────
 async function loadConfig(){
   try{
-    const r=await fetch(`${API}/config`); const c=await r.json(); cfgG=c;
+    const qs=TENANT_SLUG?`?slug=${TENANT_SLUG}`:'';
+    const r=await fetch(`${API}/config${qs}`); const c=await r.json(); cfgG=c;
     if(c.nome_loja){
       const nmEl=document.getElementById('cNm');if(nmEl)nmEl.value=c.nome_loja;
       document.getElementById('sbNm').textContent=c.nome_loja;
@@ -1964,10 +1853,9 @@ async function loadConfig(){
     renderHorarios(c.horarios||{});
     renderCupons(c.cupons||[]);
     populatePgtoSelects();
-    // Sincronizar páginas separadas de config
-    syncConfigVisual(c);
-    syncConfigHorarios(c);
-    syncConfigLoja(c);
+    // Slug / Rota do Cardápio
+    const slugEl=document.getElementById('cSlug');
+    if(slugEl){slugEl.value=c.slug||TENANT_SLUG||'';updateSlugPreview();}
   }catch(e){}
 }
 function renderHorarios(horarios){
@@ -2000,11 +1888,34 @@ async function salvarConfig(){
   const tpRaw=document.getElementById('cTpPg').value;
   const tipos=tpRaw.split(',').map(t=>t.trim()).filter(Boolean);
   const cupons=getCuponsForm();
-  const body={nome_loja:document.getElementById('cNm').value.trim(),tipos_pagamento:tipos,cupons,wpp:document.getElementById('cWp').value.trim(),frete:parseFloat(document.getElementById('cFr').value)||0,frete_min:parseFloat(document.getElementById('cFm').value)||0,horarios,logo_base64:lgB64||null,banner_base64:bnB64||null,impressora:document.getElementById('cImp').value.trim(),auto_impressao:document.getElementById('cAutoImp').value==='1',papel:document.getElementById('cPapel').value};
+  const newSlug=(document.getElementById('cSlug')||{value:''}).value.trim();
+  const body={nome_loja:document.getElementById('cNm').value.trim(),wpp:document.getElementById('cWp').value.trim(),logo_base64:lgB64||null,banner_base64:bnB64||null};
+  if(newSlug)body.slug=newSlug;
   const r=await fetch(`${API}/admin/config`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
   const d=await r.json(); cfgG=d.cfg||cfgG;
   if(body.nome_loja) document.getElementById('sbNm').textContent=body.nome_loja;
-  toast('Configurações salvas!',false,true);
+  lgB64=null;bnB64=null;
+  toast('Identidade visual salva!',false,true);
+  await loadConfig();
+}
+async function salvarConfigLoja(){
+  const tpRaw=document.getElementById('cTpPg').value;
+  const tipos=tpRaw.split(',').map(t=>t.trim()).filter(Boolean);
+  const cupons=getCuponsForm();
+  const body={tipos_pagamento:tipos,cupons,frete:parseFloat(document.getElementById('cFr').value)||0,frete_min:parseFloat(document.getElementById('cFm').value)||0,impressora:document.getElementById('cImp').value.trim(),auto_impressao:document.getElementById('cAutoImp').value==='1',papel:document.getElementById('cPapel').value};
+  const r=await fetch(`${API}/admin/config`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const d=await r.json();cfgG=d.cfg||cfgG;
+  toast('Config. da loja salva!',false,true);
+  await loadConfig();
+}
+async function salvarConfigHorarios(){
+  const horarios={};
+  DIAS.forEach(d=>{
+    horarios[d]={ativo:document.getElementById(`hc-${d}`).checked,abertura:document.getElementById(`ha-${d}`).value,fechamento:document.getElementById(`hf-${d}`).value};
+  });
+  const r=await fetch(`${API}/admin/config`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({horarios})});
+  const d=await r.json();cfgG=d.cfg||cfgG;
+  toast('Horários salvos!',false,true);
   await loadConfig();
 }
 
@@ -2116,28 +2027,29 @@ async function impPedAutomatic(pid){
   const p=ps.find(x=>x.id===pid); if(!p) return;
   const loja=cfgG.nome_loja||'Cardápio Digital';
   const papel=cfgG.papel||'80mm';
-  let h=`<div id="print-auto" style="width:${papel==='A4'?'210mm':papel};font-family:monospace;font-size:${papel==='A4'?'12pt':'11px'};padding:3mm;line-height:1.7">`;
-  h+=`<div style="text-align:center;font-size:14px;font-weight:bold;border-bottom:1px dashed #000;padding-bottom:5px;margin-bottom:6px">${loja}</div>`;
-  h+=`<div style="text-align:center;margin-bottom:6px">----- PEDIDO #${p.id} -----</div>`;
-  h+=`<div><b>Cliente:</b> ${p.nome_cliente}</div>`;
-  if(p.telefone) h+=`<div><b>Tel:</b> ${p.telefone}</div>`;
-  h+=`<div><b>Tipo:</b> ${p.tipo_entrega==='entrega'?'ENTREGA':'RETIRADA'}</div>`;
-  if(p.endereco) h+=`<div><b>End:</b> ${p.endereco}</div>`;
-  h+=`<div><b>Data:</b> ${p.criado_em}</div>`;
+  let h=`<div id="print-auto" style="width:${papel==='A4'?'210mm':papel};font-family:monospace;font-size:${papel==='A4'?'13pt':'13px'};padding:3mm;line-height:1.7">`;
+  h+=`<div style="text-align:center;font-size:16px;font-weight:bold;border-bottom:1px dashed #000;padding-bottom:5px;margin-bottom:6px">${loja}</div>`;
+  h+=`<div style="text-align:center;font-size:18px;font-weight:bold;margin-bottom:6px">----- PEDIDO #${p.id} -----</div>`;
+  h+=`<div style="font-size:13px"><b>Cliente:</b> ${p.nome_cliente}</div>`;
+  if(p.telefone) h+=`<div style="font-size:13px"><b>Tel:</b> ${p.telefone}</div>`;
+  h+=`<div style="font-size:13px"><b>Tipo:</b> ${p.tipo_entrega==='entrega'?'ENTREGA':'RETIRADA'}</div>`;
+  if(p.endereco) h+=`<div style="font-size:13px"><b>End:</b> ${p.endereco}</div>`;
+  h+=`<div style="font-size:13px"><b>Data:</b> ${p.criado_em}</div>`;
   h+=`<div style="border-top:1px dashed #000;margin:5px 0;padding-top:5px">`;
   p.itens.forEach(i=>{
-    h+=`<div style="font-size:13px;font-weight:bold">${i.quantidade}x ${i.nome}</div>`;
-    h+=`<div style="text-align:right">R$ ${(i.quantidade*i.preco_unit).toFixed(2).replace('.',',')}</div>`;
+    h+=`<div style="font-size:14px;font-weight:bold">${i.quantidade}x ${i.nome}</div>`;
+    h+=`<div style="font-size:12px;padding-left:12px">Un: R$ ${i.preco_unit.toFixed(2).replace('.',',')}</div>`;
+    h+=`<div style="text-align:right;font-size:13px">R$ ${(i.quantidade*i.preco_unit).toFixed(2).replace('.',',')}</div>`;
   });
   h+=`</div>`;
   if((p.frete||0)>0){
-    h+=`<div style="display:flex;justify-content:space-between"><span>Subtotal:</span><span>R$ ${(p.subtotal||0).toFixed(2).replace('.',',')}</span></div>`;
-    h+=`<div style="display:flex;justify-content:space-between"><span>Frete:</span><span>R$ ${p.frete.toFixed(2).replace('.',',')}</span></div>`;
+    h+=`<div style="display:flex;justify-content:space-between;font-size:13px"><span>Subtotal:</span><span>R$ ${(p.subtotal||0).toFixed(2).replace('.',',')}</span></div>`;
+    h+=`<div style="display:flex;justify-content:space-between;font-size:13px"><span>Frete:</span><span>R$ ${p.frete.toFixed(2).replace('.',',')}</span></div>`;
   }
-  h+=`<div style="border-top:1px dashed #000;margin-top:5px;padding-top:5px;font-size:14px;font-weight:bold;display:flex;justify-content:space-between"><span>TOTAL:</span><span>R$ ${p.total.toFixed(2).replace('.',',')}</span></div>`;
-  if(p.forma_pagamento) h+=`<div><b>Pgto:</b> ${p.forma_pagamento}</div>`;
-  if(p.observacao) h+=`<div style="margin-top:5px;border-top:1px dashed #000;padding-top:5px"><b>Obs:</b> ${p.observacao}</div>`;
-  h+=`<div style="text-align:center;margin-top:8px">Obrigado pela preferência!</div></div>`;
+  h+=`<div style="border-top:1px dashed #000;margin-top:5px;padding-top:5px;font-size:16px;font-weight:bold;display:flex;justify-content:space-between"><span>TOTAL:</span><span>R$ ${p.total.toFixed(2).replace('.',',')}</span></div>`;
+  if(p.forma_pagamento) h+=`<div style="font-size:13px"><b>Pgto:</b> ${p.forma_pagamento}</div>`;
+  if(p.observacao) h+=`<div style="margin-top:5px;border-top:1px dashed #000;padding-top:5px;font-size:13px"><b>Obs: ${p.observacao}</b></div>`;
+  h+=`<div style="text-align:center;margin-top:8px;font-size:13px">Obrigado pela preferência!</div></div>`;
   const a=document.getElementById('pa'); a.innerHTML=h; a.style.display='block';
   window.print(); a.style.display='none';
 }
@@ -2375,41 +2287,43 @@ async function impPed(pid){
   const L=[];
 
   // ── Cabeçalho ────────────────────────────────────────────────────────────────
-  L.push(`<div style="text-align:center;font-size:14px;font-weight:900;border-bottom:2px solid #000;padding-bottom:4px;margin-bottom:4px">${loja}</div>`);
-  L.push(`<div style="text-align:center;font-size:18px;font-weight:900;letter-spacing:1px;padding:3px 0">PEDIDO ${p.id}</div>`);
+  L.push(`<div style="text-align:center;font-size:16px;font-weight:900;border-bottom:2px solid #000;padding-bottom:4px;margin-bottom:4px">${loja}</div>`);
+  L.push(`<div style="text-align:center;font-size:20px;font-weight:900;letter-spacing:1px;padding:3px 0">PEDIDO #${p.id}</div>`);
   L.push(SEP);
 
   // ── Dados do cliente — todos em negrito ───────────────────────────────────────
-  L.push(`<div style="font-size:11px"><b>Cliente:</b> <b>${p.nome_cliente}</b></div>`);
-  if(p.telefone) L.push(`<div style="font-size:11px"><b>Tel:</b> <b>${p.telefone}</b></div>`);
-  L.push(`<div style="font-size:11px"><b>Tipo:</b> <b>${p.tipo_entrega==='entrega'?'ENTREGA':'RETIRADA'}</b></div>`);
-  if(p.endereco) L.push(`<div style="font-size:11px"><b>Endereço:</b> <b>${p.endereco}</b></div>`);
-  L.push(`<div style="font-size:11px"><b>Data:</b> <b>${p.criado_em}</b></div>`);
-  if(p.forma_pagamento) L.push(`<div style="font-size:11px"><b>Pagamento:</b> <b>${p.forma_pagamento}</b></div>`);
+  L.push(`<div style="font-size:13px"><b>Cliente:</b> <b>${p.nome_cliente}</b></div>`);
+  if(p.telefone) L.push(`<div style="font-size:13px"><b>Tel:</b> <b>${p.telefone}</b></div>`);
+  L.push(`<div style="font-size:13px"><b>Tipo:</b> <b>${p.tipo_entrega==='entrega'?'ENTREGA':'RETIRADA'}</b></div>`);
+  if(p.endereco) L.push(`<div style="font-size:13px"><b>Endereço:</b> <b>${p.endereco}</b></div>`);
+  L.push(`<div style="font-size:13px"><b>Data:</b> <b>${p.criado_em}</b></div>`);
+  if(p.forma_pagamento) L.push(`<div style="font-size:13px"><b>Pagamento:</b> <b>${p.forma_pagamento}</b></div>`);
   L.push(SEP);
 
   // ── Itens ─────────────────────────────────────────────────────────────────────
   p.itens.forEach(i=>{
     const tot=(i.quantidade*i.preco_unit).toFixed(2);
-    L.push(`<div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;padding:2px 0">
+    const unit=i.preco_unit.toFixed(2);
+    L.push(`<div style="display:flex;justify-content:space-between;font-size:14px;font-weight:700;padding:2px 0">
       <span>${i.quantidade}x ${i.nome}</span><span>R$${tot}</span>
     </div>`);
+    L.push(`<div style="font-size:12px;color:#444;padding-left:12px">Un: R$${unit}</div>`);
   });
   L.push(SEP);
 
   // ── Totais ─────────────────────────────────────────────────────────────────────
   if((p.frete||0)>0){
-    L.push(`<div style="display:flex;justify-content:space-between;font-size:11px"><span>Subtotal:</span><span>R$${(p.subtotal||0).toFixed(2)}</span></div>`);
-    L.push(`<div style="display:flex;justify-content:space-between;font-size:11px"><b>Frete:</b><span>R$${p.frete.toFixed(2)}</span></div>`);
+    L.push(`<div style="display:flex;justify-content:space-between;font-size:13px"><span>Subtotal:</span><span>R$${(p.subtotal||0).toFixed(2)}</span></div>`);
+    L.push(`<div style="display:flex;justify-content:space-between;font-size:13px"><b>Frete:</b><span>R$${p.frete.toFixed(2)}</span></div>`);
   }
-  L.push(`<div style="display:flex;justify-content:space-between;font-size:16px;font-weight:900;border-top:2px solid #000;margin-top:3px;padding-top:3px"><b>TOTAL</b><b>R$${p.total.toFixed(2)}</b></div>`);
+  L.push(`<div style="display:flex;justify-content:space-between;font-size:18px;font-weight:900;border-top:2px solid #000;margin-top:3px;padding-top:3px"><b>TOTAL</b><b>R$${p.total.toFixed(2)}</b></div>`);
   if(p.observacao){
     L.push(SEP);
-    L.push(`<div style="font-size:11px"><b>Obs:</b> ${p.observacao}</div>`);
+    L.push(`<div style="font-size:13px"><b>Obs: ${p.observacao}</b></div>`);
   }
-  L.push(`<div style="text-align:center;margin-top:8px;font-size:11px;border-top:1px solid #000;padding-top:5px"><b>*** Obrigado pela preferência! ***</b></div>`);
+  L.push(`<div style="text-align:center;margin-top:8px;font-size:13px;border-top:1px solid #000;padding-top:5px"><b>*** Obrigado pela preferência! ***</b></div>`);
 
-  const html=`<div style="width:72mm;font-family:'Courier New',monospace;font-size:11px;line-height:1.5;color:#000;background:#fff;padding:2mm">${L.join('')}</div>`;
+  const html=`<div style="width:72mm;font-family:'Courier New',monospace;font-size:13px;line-height:1.5;color:#000;background:#fff;padding:2mm">${L.join('')}</div>`;
   const a=document.getElementById('pa');
   a.style.cssText='display:block;position:absolute;left:0;top:0;width:80mm;height:auto;background:#fff;';
   a.innerHTML=html;
@@ -2702,6 +2616,9 @@ async function pdvFinalizar(){
   pdvDescontoAtivo=false;const pdvDr=document.getElementById('pdvDescontoRow');if(pdvDr)pdvDr.style.display='none';
   const pdvDv=document.getElementById('pdvDescVal');if(pdvDv)pdvDv.value='';
   renderPdvCart(); renderPdvGrid();
+  // Redirecionar para a página de pedidos
+  const niPed=document.getElementById('ni-pedidos');
+  if(niPed) goPage('pedidos', niPed);
 }
 
 // ── PRODUTOS ──────────────────────────────────────────────────────────────────
@@ -3017,23 +2934,31 @@ async function loadResumo(){
     const r=await fetch(`${API}/admin/pedidos`);
     if(!r.ok) throw new Error('Erro ao carregar pedidos');
     const ps=await r.json();
-    const tot=ps.filter(p=>p.status==='entregue').reduce((s,p)=>s+p.total,0);
-    const totTodos=ps.reduce((s,p)=>s+p.total,0);
-    const hoje=new Date().toISOString().slice(0,10);
-    const hj=ps.filter(p=>p.status==='entregue'&&p.criado_em?.startsWith(hoje)).length;
     const el=id=>document.getElementById(id);
-    if(el('sTot'))  el('sTot').textContent=ps.length;
-    if(el('sFat'))  el('sFat').textContent='R$'+tot.toFixed(2).replace('.',',');
-    if(el('sTick')) el('sTick').textContent=ps.filter(p=>p.status==='entregue').length
-      ?'R$'+(tot/ps.filter(p=>p.status==='entregue').length).toFixed(2).replace('.',','):'—';
-    if(el('sHj'))   el('sHj').textContent=hj;
     const fim=new Date(); const ini=new Date(); ini.setDate(ini.getDate()-13);
     const fmt=d=>d.toISOString().slice(0,10);
     if(el('gIni')&&!el('gIni').value) el('gIni').value=fmt(ini);
     if(el('gFim')&&!el('gFim').value) el('gFim').value=fmt(fim);
+    // Filtrar por período selecionado
+    const iniVal=el('gIni')?.value||fmt(ini);
+    const fimVal=el('gFim')?.value||fmt(fim);
+    const filtered=ps.filter(p=>{
+      if(!p.criado_em) return false;
+      const d=p.criado_em.slice(0,10);
+      return d>=iniVal && d<=fimVal;
+    });
+    const entregues=filtered.filter(p=>p.status==='entregue');
+    const tot=entregues.reduce((s,p)=>s+p.total,0);
+    const hoje=new Date().toISOString().slice(0,10);
+    const hj=entregues.filter(p=>p.criado_em?.startsWith(hoje)).length;
+    if(el('sTot'))  el('sTot').textContent=filtered.length;
+    if(el('sFat'))  el('sFat').textContent='R$'+tot.toFixed(2).replace('.',',');
+    if(el('sTick')) el('sTick').textContent=entregues.length
+      ?'R$'+(tot/entregues.length).toFixed(2).replace('.',','):'—';
+    if(el('sHj'))   el('sHj').textContent=hj;
     loadGraf(ps);
-    // Carregar visitas
-    try{const rv=await fetch('/api/visitas');const v=await rv.json();if(el('sVisitas'))el('sVisitas').textContent=v.total||0;}catch(e){}
+    // Carregar visitas filtradas por período
+    try{const rv=await fetch(`/api/visitas?ini=${iniVal}&fim=${fimVal}`);const v=await rv.json();if(el('sVisitas'))el('sVisitas').textContent=v.total||0;}catch(e){}
   }catch(e){
     console.error('loadResumo error:',e);
     toast('Erro ao carregar resumo',true);
@@ -3047,6 +2972,17 @@ async function loadGraf(psIn){
     const ini=iniEl.value, fim=fimEl.value;
     if(!ini||!fim) return;
     let ps=psIn; if(!ps){const r=await fetch(`${API}/admin/pedidos`);ps=await r.json();}
+    // Atualizar cards de resumo com o período selecionado
+    const elS=id=>document.getElementById(id);
+    const filtrados=ps.filter(p=>p.criado_em&&p.criado_em.slice(0,10)>=ini&&p.criado_em.slice(0,10)<=fim);
+    const entFil=filtrados.filter(p=>p.status==='entregue');
+    const totFil=entFil.reduce((s,p)=>s+p.total,0);
+    const hoje=new Date().toISOString().slice(0,10);
+    if(elS('sTot'))  elS('sTot').textContent=filtrados.length;
+    if(elS('sFat'))  elS('sFat').textContent='R$'+totFil.toFixed(2).replace('.',',');
+    if(elS('sTick')) elS('sTick').textContent=entFil.length?'R$'+(totFil/entFil.length).toFixed(2).replace('.',','):'—';
+    if(elS('sHj'))   elS('sHj').textContent=entFil.filter(p=>p.criado_em?.startsWith(hoje)).length;
+    try{const rv=await fetch(`/api/visitas?ini=${ini}&fim=${fim}`);const v=await rv.json();if(elS('sVisitas'))elS('sVisitas').textContent=v.total||0;}catch(e){}
     const ent=ps.filter(p=>p.status==='entregue');
     const dias=[]; let cur=new Date(ini+'T12:00:00'); const fimD=new Date(fim+'T12:00:00');
     while(cur<=fimD&&dias.length<90){
@@ -3593,14 +3529,31 @@ function toggleEmpForm(){
   if(!card) return;
   card.style.display=card.style.display!=='none'?'none':'block';
 }
-function toggleCfgMenu(){
-  const sub=document.getElementById('cfg-submenu');
-  const arrow=document.getElementById('cfg-arrow');
-  if(!sub) return;
-  const open=sub.style.display!=='none';
-  sub.style.display=open?'none':'block';
-  if(arrow) arrow.style.transform=open?'':'rotate(180deg)';
+function toggleCfgMenu(){ /* obsoleto: menu agora é unificado */ }
+
+function switchCfgTab(name, el){
+  document.querySelectorAll('.cfs').forEach(s=>s.style.display='none');
+  const sec=document.getElementById('cfs-'+name);
+  if(sec) sec.style.display='';
+  document.querySelectorAll('[id^="cfgt-"]').forEach(b=>b.classList.remove('on'));
+  const btn=document.getElementById('cfgt-'+name);
+  if(btn) btn.classList.add('on');
+  if(name==='email') loadEmailConfig();
+  if(name==='usuarios') loadUsuarios();
 }
+
+function updateSlugPreview(){
+  const inp=document.getElementById('cSlug');
+  if(!inp) return;
+  let v=inp.value.toLowerCase().replace(/[àáâãä]/g,'a').replace(/[èéêë]/g,'e').replace(/[ìíîï]/g,'i').replace(/[òóôõö]/g,'o').replace(/[ùúûü]/g,'u').replace(/ç/g,'c').replace(/[^a-z0-9-]/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
+  inp.value=v;
+  const origin=window.location.origin;
+  const pfx=document.getElementById('cSlugPrefix');
+  if(pfx) pfx.textContent=origin+'/';
+  const prev=document.getElementById('cSlugPreview');
+  if(prev){prev.textContent=v?`${origin}/${v}`:'';prev.href=v?`/${v}`:'#';}
+}
+
 // ── USUÁRIOS ─────────────────────────────────────────────────────────────────
 let currentUserRole='admin';
 
@@ -3742,7 +3695,7 @@ function applyPermissions(permissions,role){
     if(el) el.style.display=permissions[perm]?'':'none';
   });
   // Ocultar seções admin
-  ['ni-cfg-toggle','cfg-submenu','ni-config','ni-usuarios','ni-config-visual','ni-config-horarios','ni-config-loja','ni-email-config'].forEach(id=>{
+  ['ni-config'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.style.display='none';
   });
@@ -3870,10 +3823,10 @@ function showCustomTheme(){
 
 // ── PÁGINAS DE CONFIG SEPARADAS ───────────────────────────────────────────────
 let lgB642=null,bnB642=null;
-function prevLogo2(input){const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{lgB642=e.target.result;document.getElementById('lgCrc2').innerHTML=`<img src="${lgB642}" alt="logo">`;};r.readAsDataURL(f);}
-function prevBanner2(input){const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{bnB642=e.target.result;const p=document.getElementById('bnPv2');p.src=bnB642;p.classList.add('on');document.getElementById('bnPh2').style.display='none';};r.readAsDataURL(f);}
-
-function renderThemes2(){
+function prevLogo2(input){ prevLogo(input); }
+function prevBanner2(input){ prevBanner(input); }
+function renderThemes2(){ renderThemes(); }
+function _renderThemes2_obsoleto(){
   const grid=document.getElementById('themeGrid2');
   if(!grid) return;
   const atual=localStorage.getItem('tema')||'laranja';
@@ -3898,8 +3851,11 @@ function renderThemes2(){
     if(saved.sb) document.getElementById('cpSb2').value=saved.sb;
   }
 }
-function showCustomTheme2(){
-  document.querySelectorAll('#pg-config-visual .theme-card').forEach(c=>c.classList.toggle('active',c.dataset.tid==='custom'));
+function showCustomTheme2(){ showCustomTheme(); }
+function applyCustomTheme2(){ applyCustomTheme(); }
+function saveCustomTheme2(){ saveCustomTheme(); }
+function _showCustomTheme2_obsoleto(){
+  document.querySelectorAll('#cfs-visual .theme-card').forEach(c=>c.classList.toggle('active',c.dataset.tid==='custom'));
   const box=document.getElementById('customThemeBox2');
   if(box) box.classList.add('show');
   const cs=getComputedStyle(document.documentElement);
@@ -3908,156 +3864,32 @@ function showCustomTheme2(){
   document.getElementById('cpAc2').value=curAc.length===7?curAc:'#FF5A1F';
   document.getElementById('cpSb2').value=curSb.length===7?curSb:'#1E293B';
 }
-function applyCustomTheme2(){
-  const ac=document.getElementById('cpAc2').value;
-  const sb=document.getElementById('cpSb2').value;
-  applyThemeCss(ac,darken(ac,20),sb,darken(sb,15));
-  document.querySelectorAll('#pg-config-visual .theme-card').forEach(c=>c.classList.toggle('active',c.dataset.tid==='custom'));
-}
-function saveCustomTheme2(){
-  const ac=document.getElementById('cpAc2').value;
-  const sb=document.getElementById('cpSb2').value;
-  localStorage.setItem('tema','custom');
-  localStorage.setItem('tema_custom',JSON.stringify({ac,sb}));
-  applyThemeCss(ac,darken(ac,20),sb,darken(sb,15));
-  toast('Tema personalizado salvo!',false,true);
-}
+// Funções sync/compat obsoletas (conteúdo agora unificado em pg-config)
+function syncConfigVisual(c){}
+function syncConfigHorarios(c){}
+function syncConfigLoja(c){}
+function toggleDia2(d){}
+function renderCupons2(lista){}
+function cupomAdd2(){ cupomAdd(); }
+function getCuponsForm2(){ return getCuponsForm(); }
+function salvarConfigVisual(){ salvarConfig(); }
 
-// Preencher campos da pg-config-visual a partir do cfgG
-function syncConfigVisual(c){
-  if(!c) return;
-  if(c.nome_loja){const el=document.getElementById('cNm2');if(el)el.value=c.nome_loja;}
-  if(c.wpp){const el=document.getElementById('cWp2');if(el)el.value=c.wpp;}
-  if(c.logo_url){const el=document.getElementById('lgCrc2');if(el)el.innerHTML=`<img src="${c.logo_url}" alt="logo">`;}
-  if(c.banner_url){const p=document.getElementById('bnPv2');const ph=document.getElementById('bnPh2');if(p){p.src=c.banner_url;p.classList.add('on');}if(ph)ph.style.display='none';}
-}
-function syncConfigHorarios(c){
-  if(!c) return;
-  if(document.getElementById('horGrid2')){
-    document.getElementById('horGrid2').innerHTML=DIAS.map((d,i)=>{
-      const h=(c.horarios||{})[d]||{ativo:false,abertura:'08:00',fechamento:'22:00'};
-      return `<div class="hor-day ${h.ativo?'':'closed'}" id="hd2-${d}">
-        <div class="hor-day-nm">${DIAS_PT[i]}</div>
-        <div class="hor-day-inp">
-          <label><input type="checkbox" id="hc2-${d}" ${h.ativo?'checked':''} onchange="toggleDia2('${d}')"> Aberto</label>
-          <input type="time" id="ha2-${d}" value="${h.abertura||'08:00'}" ${h.ativo?'':'disabled'}>
-          <span style="font-size:11px;color:var(--mu)">até</span>
-          <input type="time" id="hf2-${d}" value="${h.fechamento||'22:00'}" ${h.ativo?'':'disabled'}>
-        </div>
-      </div>`;
-    }).join('');
-  }
-}
-function toggleDia2(d){
-  const ativo=document.getElementById(`hc2-${d}`).checked;
-  document.getElementById(`ha2-${d}`).disabled=!ativo;
-  document.getElementById(`hf2-${d}`).disabled=!ativo;
-  document.getElementById(`hd2-${d}`).classList.toggle('closed',!ativo);
-}
-function syncConfigLoja(c){
-  if(!c) return;
-  const fr2=document.getElementById('cFr2');if(fr2&&c.frete!==undefined)fr2.value=c.frete;
-  const fm2=document.getElementById('cFm2');if(fm2&&c.frete_min!==undefined)fm2.value=c.frete_min;
-  const tp2=document.getElementById('cTpPg2');if(tp2)tp2.value=(c.tipos_pagamento||['Dinheiro','PIX','Cartão de Débito','Cartão de Crédito']).join(', ');
-  const imp2=document.getElementById('cImp2');if(imp2)imp2.value=c.impressora||'';
-  const ai2=document.getElementById('cAutoImp2');if(ai2)ai2.value=c.auto_impressao?'1':'0';
-  const pap2=document.getElementById('cPapel2');if(pap2&&c.papel)pap2.value=c.papel;
-  // Cupons na pg-config-loja
-  renderCupons2(c.cupons||[]);
-}
 
-let cuponsData2=[];
-function renderCupons2(lista){
-  cuponsData2=lista.length?[...lista]:[];
-  const wrap=document.getElementById('cuponsLista2');if(!wrap)return;
-  if(!cuponsData2.length){wrap.innerHTML='<p style="font-size:12px;color:var(--mu)">Nenhum cupom cadastrado.</p>';return;}
-  wrap.innerHTML=cuponsData2.map((cup,i)=>`
-    <div class="cupom-row-item" style="background:var(--bg);border-radius:12px;padding:14px;border:1.5px solid var(--bd)">
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:9px">
-        <input class="cupom-codigo" value="${cup.codigo||''}" placeholder="Código (ex: BEMVINDO10)"
-          style="flex:1;min-width:130px;font-size:12px;padding:7px 11px;border:1.5px solid var(--bd);border-radius:9px;font-weight:700;text-transform:uppercase">
-        <select class="cupom-tipo" style="font-size:12px;padding:7px 10px;border:1.5px solid var(--bd);border-radius:9px">
-          <option value="novo_cliente"${cup.tipo==='novo_cliente'?' selected':''}>🆕 Cliente novo</option>
-          <option value="distribuicao"${cup.tipo==='distribuicao'?' selected':''}>📤 Distribuição</option>
-        </select>
-        <select class="cupom-tipo-desc" style="font-size:12px;padding:7px 10px;border:1.5px solid var(--bd);border-radius:9px">
-          <option value="pct"${cup.tipo_desconto==='pct'?' selected':''}>% Percentual</option>
-          <option value="valor"${cup.tipo_desconto==='valor'?' selected':''}>R$ Valor fixo</option>
-        </select>
-        <input class="cupom-valor" type="number" value="${cup.desconto||0}" min="0" step="0.01" placeholder="Desconto"
-          style="width:82px;font-size:12px;padding:7px 10px;border:1.5px solid var(--bd);border-radius:9px;text-align:right">
-        <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer">
-          <input class="cupom-ativo" type="checkbox" ${cup.ativo!==false?'checked':''}> Ativo
-        </label>
-        <button onclick="this.closest('.cupom-row-item').remove()"
-          style="background:none;border:none;color:var(--rd);cursor:pointer;font-size:18px;padding:0 4px" title="Remover">✕</button>
-      </div>
-      <div class="cupom-msg-wrap" style="display:flex;gap:8px;flex-wrap:wrap">
-        <div style="flex:1;min-width:200px">
-          <label style="font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.07em">Mensagem no cardápio (só para cliente novo)</label>
-          <input class="cupom-msg" value="${cup.mensagem||''}" placeholder="Ex: 🎉 Primeira compra? Use o cupom e ganhe desconto!"
-            style="width:100%;margin-top:4px;font-size:12px;padding:7px 11px;border:1.5px solid var(--bd);border-radius:9px">
-        </div>
-      </div>
-    </div>`).join('');
-}
-function cupomAdd2(){
-  cuponsData2.push({codigo:'',tipo:'novo_cliente',tipo_desconto:'pct',desconto:10,mensagem:'',ativo:true});
-  renderCupons2(cuponsData2);
-}
-function getCuponsForm2(){
-  const wrap=document.getElementById('cuponsLista2');if(!wrap)return cuponsData2;
-  const rows=wrap.querySelectorAll('.cupom-row-item');if(!rows.length)return cuponsData2;
-  return Array.from(rows).map(row=>({
-    codigo:(row.querySelector('.cupom-codigo')?.value||'').toUpperCase().trim(),
-    tipo:row.querySelector('.cupom-tipo')?.value||'novo_cliente',
-    tipo_desconto:row.querySelector('.cupom-tipo-desc')?.value||'pct',
-    desconto:parseFloat(row.querySelector('.cupom-valor')?.value)||0,
-    mensagem:row.querySelector('.cupom-msg')?.value||'',
-    ativo:row.querySelector('.cupom-ativo')?.checked!==false,
-  })).filter(cup=>cup.codigo);
-}
-
-async function salvarConfigVisual(){
-  const body={
-    nome_loja:(document.getElementById('cNm2').value||'').trim(),
-    wpp:(document.getElementById('cWp2').value||'').trim(),
-    logo_base64:lgB642||null,
-    banner_base64:bnB642||null
-  };
-  const r=await fetch(`${API}/admin/config`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  const d=await r.json();cfgG=d.cfg||cfgG;
-  if(body.nome_loja)document.getElementById('sbNm').textContent=body.nome_loja;
-  lgB642=null;bnB642=null;
-  toast('Identidade visual salva!',false,true);
-  await loadConfig();
-}
-async function salvarConfigHorarios(){
-  const horarios={};
-  DIAS.forEach(d=>{
-    horarios[d]={ativo:document.getElementById(`hc2-${d}`).checked,abertura:document.getElementById(`ha2-${d}`).value,fechamento:document.getElementById(`hf2-${d}`).value};
-  });
-  const r=await fetch(`${API}/admin/config`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({horarios})});
-  const d=await r.json();cfgG=d.cfg||cfgG;
-  toast('Horários salvos!',false,true);
-  await loadConfig();
-}
-async function salvarConfigLoja(){
-  const tpRaw=document.getElementById('cTpPg2').value;
-  const tipos=tpRaw.split(',').map(t=>t.trim()).filter(Boolean);
-  const cupons=getCuponsForm2();
-  const body={
-    tipos_pagamento:tipos,cupons,
-    frete:parseFloat(document.getElementById('cFr2').value)||0,
-    frete_min:parseFloat(document.getElementById('cFm2').value)||0,
-    impressora:(document.getElementById('cImp2').value||'').trim(),
-    auto_impressao:document.getElementById('cAutoImp2').value==='1',
-    papel:document.getElementById('cPapel2').value,
-  };
-  const r=await fetch(`${API}/admin/config`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  const d=await r.json();cfgG=d.cfg||cfgG;
-  toast('Configurações da loja salvas!',false,true);
-  await loadConfig();
+// Na página /login: mostrar só o campo slug; esconder user+pass (serão preenchidos após redirect)
+if(IS_LOGIN_PAGE){
+  const sw=document.getElementById('lSlugWrap');
+  if(sw) sw.style.display='';
+  // Ocultar user/pass — /login só serve para localizar a loja e redirecionar
+  const uw=document.getElementById('lUserWrap');
+  if(uw) uw.style.display='none';
+  const lp=document.getElementById('lP');
+  if(lp) lp.closest('.fg')&&(lp.closest('.fg').style.display='none');
+  // Alterar label do botão
+  const btn=document.querySelector('#loginScr .lcard > .btn');
+  if(btn) btn.textContent='Acessar painel';
+  // Alterar subtítulo
+  const sub=document.querySelector('.lcard p');
+  if(sub) sub.textContent='Digite o endereço da sua loja para acessar o painel.';
 }
 
 checkAuth();
