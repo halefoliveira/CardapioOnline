@@ -1131,10 +1131,10 @@ def atualizar_status(pid):
                         else:
                             tipo_pgto = parte; val = total_ped / len(partes)
                         cur.execute("INSERT INTO financeiro (cliente_id,pedido_id,cli_id,valor,tipo,forma_pagamento,descricao,pago) VALUES (%s,%s,%s,%s,'entrada',%s,%s,1)",
-                            (cid,pid,cliente_fin_id,round(val,2),tipo_pgto,f'Pedido {pid} - {tipo_pgto}'))
+                            (cid,pid,cliente_fin_id,round(val,2),tipo_pgto,f'Pedido #{pid} - {pedido["nome_cliente"]} ({tipo_pgto})'))
                 else:
                     cur.execute("INSERT INTO financeiro (cliente_id,pedido_id,cli_id,valor,tipo,forma_pagamento,descricao,pago) VALUES (%s,%s,%s,%s,'entrada',%s,%s,1)",
-                        (cid,pid,cliente_fin_id,total_ped,fpag,f'Pedido {pid}'))
+                        (cid,pid,cliente_fin_id,total_ped,fpag,f'Pedido #{pid} - {pedido["nome_cliente"]}'))
     conn.commit(); conn.close(); return jsonify({'ok': True})
 
 # ── PRODUTOS ──────────────────────────────────────────────────────────────────
@@ -1196,10 +1196,14 @@ def listar_financeiro():
     conn = get_connection(); cur = conn.cursor()
     q = '''SELECT f.*,
         c.nome as cliente_nome, c.telefone as cliente_tel,
-        e.nome as empresa_nome, e.tipo as empresa_tipo
+        e.nome as empresa_nome, e.tipo as empresa_tipo,
+        p.nome_cliente as pedido_cliente, p.total as pedido_total,
+        p.forma_pagamento as pedido_fpag, p.tipo_entrega as pedido_tipo_entrega,
+        p.criado_em as pedido_criado_em
         FROM financeiro f
         LEFT JOIN clientes c ON c.id=f.cli_id
         LEFT JOIN clientes e ON e.id=f.empresa_id
+        LEFT JOIN pedidos p ON p.id=f.pedido_id
         WHERE f.cliente_id=%s'''
     params = [cid]
     if tp:  q += " AND f.tipo=%s";    params.append(tp)

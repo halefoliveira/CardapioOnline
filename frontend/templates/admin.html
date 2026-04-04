@@ -2027,7 +2027,8 @@ async function impPedAutomatic(pid){
   const p=ps.find(x=>x.id===pid); if(!p) return;
   const loja=cfgG.nome_loja||'Cardápio Digital';
   const papel=cfgG.papel||'80mm';
-  let h=`<div id="print-auto" style="width:${papel==='A4'?'210mm':papel};font-family:monospace;font-size:${papel==='A4'?'13pt':'13px'};padding:3mm;line-height:1.7">`;
+  const largura=papel==='A4'?'210mm':'78mm';
+  let h=`<div id="print-auto" style="width:${largura};font-family:monospace;font-size:${papel==='A4'?'13pt':'13px'};padding:1mm 2mm;line-height:1.7">`;
   h+=`<div style="text-align:center;font-size:16px;font-weight:bold;border-bottom:1px dashed #000;padding-bottom:5px;margin-bottom:6px">${loja}</div>`;
   h+=`<div style="text-align:center;font-size:18px;font-weight:bold;margin-bottom:6px">----- PEDIDO #${p.id} -----</div>`;
   h+=`<div style="font-size:13px"><b>Cliente:</b> ${p.nome_cliente}</div>`;
@@ -2037,13 +2038,12 @@ async function impPedAutomatic(pid){
   h+=`<div style="font-size:13px"><b>Data:</b> ${p.criado_em}</div>`;
   h+=`<div style="border-top:1px dashed #000;margin:5px 0;padding-top:5px">`;
   p.itens.forEach(i=>{
-    h+=`<div style="font-size:14px;font-weight:bold">${i.quantidade}x ${i.nome}</div>`;
-    h+=`<div style="font-size:12px;padding-left:12px">Un: R$ ${i.preco_unit.toFixed(2).replace('.',',')}</div>`;
-    h+=`<div style="text-align:right;font-size:13px">R$ ${(i.quantidade*i.preco_unit).toFixed(2).replace('.',',')}</div>`;
+    h+=`<div style="display:flex;justify-content:space-between;font-size:14px;font-weight:bold"><span>${i.quantidade}x ${i.nome}</span><b>R$ ${i.preco_unit.toFixed(2).replace('.',',')}</b></div>`;
   });
   h+=`</div>`;
+  const _subItens=p.itens.reduce((s,i)=>s+(i.quantidade*i.preco_unit),0);
+  h+=`<div style="display:flex;justify-content:space-between;font-size:13px"><span>Subtotal:</span><b>R$ ${_subItens.toFixed(2).replace('.',',')}</b></div>`;
   if((p.frete||0)>0){
-    h+=`<div style="display:flex;justify-content:space-between;font-size:13px"><span>Subtotal:</span><span>R$ ${(p.subtotal||0).toFixed(2).replace('.',',')}</span></div>`;
     h+=`<div style="display:flex;justify-content:space-between;font-size:13px"><span>Frete:</span><span>R$ ${p.frete.toFixed(2).replace('.',',')}</span></div>`;
   }
   h+=`<div style="border-top:1px dashed #000;margin-top:5px;padding-top:5px;font-size:16px;font-weight:bold;display:flex;justify-content:space-between"><span>TOTAL:</span><span>R$ ${p.total.toFixed(2).replace('.',',')}</span></div>`;
@@ -2305,16 +2305,16 @@ async function impPed(pid){
     const tot=(i.quantidade*i.preco_unit).toFixed(2);
     const unit=i.preco_unit.toFixed(2);
     L.push(`<div style="display:flex;justify-content:space-between;font-size:14px;font-weight:700;padding:2px 0">
-      <span>${i.quantidade}x ${i.nome}</span><span>R$${tot}</span>
+      <span>${i.quantidade}x ${i.nome}</span><b>R$${unit}</b>
     </div>`);
-    L.push(`<div style="font-size:12px;color:#444;padding-left:12px">Un: R$${unit}</div>`);
   });
   L.push(SEP);
 
   // ── Totais ─────────────────────────────────────────────────────────────────────
+  const subtotalItens=p.itens.reduce((s,i)=>s+(i.quantidade*i.preco_unit),0);
+  L.push(`<div style="display:flex;justify-content:space-between;font-size:13px"><span>Subtotal:</span><b>R$${subtotalItens.toFixed(2)}</b></div>`);
   if((p.frete||0)>0){
-    L.push(`<div style="display:flex;justify-content:space-between;font-size:13px"><span>Subtotal:</span><span>R$${(p.subtotal||0).toFixed(2)}</span></div>`);
-    L.push(`<div style="display:flex;justify-content:space-between;font-size:13px"><b>Frete:</b><span>R$${p.frete.toFixed(2)}</span></div>`);
+    L.push(`<div style="display:flex;justify-content:space-between;font-size:13px"><span>Frete:</span><span>R$${p.frete.toFixed(2)}</span></div>`);
   }
   L.push(`<div style="display:flex;justify-content:space-between;font-size:18px;font-weight:900;border-top:2px solid #000;margin-top:3px;padding-top:3px"><b>TOTAL</b><b>R$${p.total.toFixed(2)}</b></div>`);
   if(p.observacao){
@@ -2323,7 +2323,7 @@ async function impPed(pid){
   }
   L.push(`<div style="text-align:center;margin-top:8px;font-size:13px;border-top:1px solid #000;padding-top:5px"><b>*** Obrigado pela preferência! ***</b></div>`);
 
-  const html=`<div style="width:72mm;font-family:'Courier New',monospace;font-size:13px;line-height:1.5;color:#000;background:#fff;padding:2mm">${L.join('')}</div>`;
+  const html=`<div style="width:78mm;font-family:'Courier New',monospace;font-size:13px;line-height:1.5;color:#000;background:#fff;padding:1mm 2mm">${L.join('')}</div>`;
   const a=document.getElementById('pa');
   a.style.cssText='display:block;position:absolute;left:0;top:0;width:80mm;height:auto;background:#fff;';
   a.innerHTML=html;
@@ -2854,16 +2854,27 @@ async function loadFin(){
   document.getElementById('fPend').textContent='R$'+pend.toFixed(2).replace('.',',');
   document.getElementById('finBody').innerHTML=finData.map(f=>{
     const isE=f.tipo==='entrada'; const isPg=f.pago===1||f.pago===true;
+    const dataExib=(f.data_lancamento||f.criado_em||'').slice(0,10);
+    const descExib=f.descricao||(f.pedido_id?`Pedido #${f.pedido_id}`:'—');
+    const clienteExib=f.pedido_cliente||f.cliente_nome||'';
+    const fpagExib=f.forma_pagamento||f.pedido_fpag||'—';
+    const subInfo=[];
+    if(f.pedido_id) subInfo.push(`Pedido #${f.pedido_id}`);
+    if(clienteExib) subInfo.push(clienteExib);
+    if(f.observacao) subInfo.push(f.observacao);
     return `<tr>
-      <td style="font-size:10px;color:var(--mu)">${f.criado_em?.slice(0,10)||''}</td>
-      <td>${f.descricao||'—'}${f.observacao?`<div style="font-size:10px;color:var(--mu)">${f.observacao}</div>`:''}</td>
+      <td style="font-size:11px;color:var(--mu);white-space:nowrap">${dataExib}</td>
+      <td>
+        <div style="font-size:12px;font-weight:600">${descExib}</div>
+        ${subInfo.length?`<div style="font-size:10px;color:var(--mu)">${subInfo.join(' · ')}</div>`:''}
+      </td>
       <td class="hide-mobile" style="font-size:11px">${f.empresa_nome?`<span style="font-size:10px;font-weight:700">${f.empresa_nome}</span>`:'—'}</td>
       <td class="hide-sm"><span class="ft ${isE?'ft-e':'ft-s'}">${isE?'Entrada':'Saída'}</span></td>
-      <td class="hide-sm">${f.forma_pagamento||'—'}</td>
+      <td class="hide-sm" style="font-size:11px">${fpagExib}</td>
       <td class="hide-sm"><span class="fp ${isPg?'fp-p':'fp-n'}">${isPg?'Pago':'Pendente'}</span></td>
-      <td style="font-weight:800;color:${isE?'#1D4ED8':'var(--rd)'}">R$ ${f.valor.toFixed(2).replace('.',',')}</td>
+      <td style="font-weight:800;color:${isE?'#1D4ED8':'var(--rd)'}">R$ ${(f.valor||0).toFixed(2).replace('.',',')}</td>
       <td><div style="display:flex;gap:4px">
-        ${!f.pedido_id?`<button class="btn bgh bsm" onclick="editLanc(${f.id})">✏️</button><button class="btn bdn" onclick="delLanc(${f.id})">🗑️</button>`:`<span style="font-size:10px;color:var(--mu)">Pedido</span>`}
+        ${!f.pedido_id?`<button class="btn bgh bsm" onclick="editLanc(${f.id})">✏️</button><button class="btn bdn" onclick="delLanc(${f.id})">🗑️</button>`:`<span style="font-size:10px;color:var(--mu)">Pedido #${f.pedido_id}</span>`}
       </div></td>
     </tr>`;
   }).join('');
@@ -3038,8 +3049,8 @@ function renderCupons(lista){
       <div class="cupom-msg-wrap" style="display:flex;gap:8px;flex-wrap:wrap">
         <div style="flex:1;min-width:200px">
           <label style="font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.07em">Mensagem no cardápio (só para cliente novo)</label>
-          <input class="cupom-msg" value="${cup.mensagem||''}" placeholder="Ex: 🎉 Primeira compra? Use ${cup.codigo||'SEU_CODIGO'} e ganhe desconto!"
-            style="width:100%;margin-top:4px;font-size:12px;padding:7px 11px;border:1.5px solid var(--bd);border-radius:9px">
+          <textarea class="cupom-msg" placeholder="Ex: 🎉 Primeira compra? Use ${cup.codigo||'SEU_CODIGO'} e ganhe desconto!"
+            style="width:100%;margin-top:4px;font-size:12px;padding:7px 11px;border:1.5px solid var(--bd);border-radius:9px;resize:vertical;min-height:60px;font-family:inherit">${cup.mensagem||''}</textarea>
         </div>
       </div>
     </div>`).join('');
