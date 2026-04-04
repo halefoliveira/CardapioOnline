@@ -390,9 +390,14 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',sans-serif;-webkit
   background:#fff;
   border-radius:28px 28px 0 0;
   width:100%;max-width:640px;
-  max-height:92vh;overflow-y:auto;
+  height:90vh;max-height:90vh;
+  overflow-y:auto;overflow-x:hidden;
   animation:sup .3s cubic-bezier(.4,0,.2,1);
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
 }
+/* Prevent iOS font size zoom on input focus */
+.sheet input,.sheet select,.sheet textarea{font-size:16px!important;}
 @keyframes sup{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .sheet-pull{
   width:40px;height:4px;
@@ -705,14 +710,14 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',sans-serif;-webkit
       <div class="fg"><label>Tipo de entrega</label>
         <div class="tipo-grid">
           <div class="tipo-opt sel" id="optRet" onclick="setTipo('retirada')">
-            <div class="ti">🏠</div><div class="tl">Retirada</div><div class="ts">No local</div>
+            <div class="ti">🏢</div><div class="tl">Retirada</div><div class="ts">No local</div>
           </div>
           <div class="tipo-opt" id="optEnt" onclick="setTipo('entrega')">
-            <div class="ti">🚚</div><div class="tl">Entrega</div><div class="ts" id="freteDesc">+ frete</div>
+            <div class="ti">🛵</div><div class="tl">Entrega</div><div class="ts" id="freteDesc">+ frete</div>
           </div>
         </div>
       </div>
-      <div class="frete-inf" id="freteInf">🚚 Frete: <strong id="freteVal">R$ 0,00</strong></div>
+      <div class="frete-inf" id="freteInf">🛵 Frete: <strong id="freteVal">R$ 0,00</strong></div>
       <div class="resumo-box" id="resumoBox"></div>
       <div id="endW" style="display:none">
         <div class="fg"><label>Endereço *</label><input type="text" id="inpEnd" placeholder="Rua, número, bairro, complemento"></div>
@@ -992,7 +997,7 @@ function buildResumo(){
         <span style="min-width:62px;text-align:right;font-size:13px;font-weight:700;color:var(--mu)">R$ ${(i.preco*i.quantidade).toFixed(2).replace('.',',')}</span>
       </div>
     </div>`).join('')+
-    (fr>0?`<div class="r-row"><span>🚚 Frete</span><span>R$ ${fr.toFixed(2).replace('.',',')}</span></div>`:'')+
+    (fr>0?`<div class="r-row"><span>🛵 Frete</span><span>R$ ${fr.toFixed(2).replace('.',',')}</span></div>`:'')+
     (desc>0?`<div class="r-row" style="color:var(--gr)"><span>🎟️ Cupom ${cupomAtivo?.codigo||''}</span><span>- R$ ${desc.toFixed(2).replace('.',',')}</span></div>`:'')+
     `<div class="r-tot"><span>Total</span><span>R$ ${tot.toFixed(2).replace('.',',')}</span></div>`;
 }
@@ -1031,21 +1036,26 @@ async function enviar(){
     const wpp=cfg.wpp||'';
     let msg=`*Pedido ${d.pedido_id}* 🍽️\n\n*Cliente:* ${nome}\n`;
     if(tel) msg+=`*WhatsApp:* ${tel}\n`;
-    msg+=`*Tipo:* ${tipoEntrega==='entrega'?'🚚 Entrega':'🏠 Retirada'}\n`;
+    msg+=`*Tipo:* ${tipoEntrega==='entrega'?'🛵 Entrega':'🏢 Retirada'}\n`;
     if(end) msg+=`*Endereço:* ${end}\n`;
     if(fpag) msg+=`*Pagamento:* ${fpag}\n`;
     if(cupomAtivo&&desc>0) msg+=`*Cupom:* ${cupomAtivo.codigo} (-R$${desc.toFixed(2)})\n`;
     msg+=`\n*Itens:*\n`;
     its.forEach(i=>msg+=`• ${i.quantidade}× ${i.nome} — R$ ${(i.preco*i.quantidade).toFixed(2).replace('.',',')}\n`);
-    if(d.frete>0) msg+=`\n🚚 *Frete:* R$ ${d.frete.toFixed(2).replace('.',',')}`;
+    if(d.frete>0) msg+=`\n🛵 *Frete:* R$ ${d.frete.toFixed(2).replace('.',',')}`;
     msg+=`\n*Total: R$ ${d.total.toFixed(2).replace('.',',')}*`;
     if(obs) msg+=`\n\n_${obs}_`;
     msg+=`\n\n_Aguardando confirmação da loja..._`;
     if(wpp){
-      // Usar location.href no mobile, ou link direto — evita bloqueio de popup
-      const waUrl=`https://wa.me/${wpp}?text=${encodeURIComponent(msg)}`;
+      const txt=encodeURIComponent(msg);
+      const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      // No mobile usar esquema nativo do app; no desktop usar web
+      const waUrl=isMobile
+        ?`whatsapp://send?phone=${wpp}&text=${txt}`
+        :`https://wa.me/${wpp}?text=${txt}`;
       const link=document.createElement('a');
-      link.href=waUrl; link.target='_blank'; link.rel='noopener noreferrer';
+      link.href=waUrl;
+      if(!isMobile){link.target='_blank';link.rel='noopener noreferrer';}
       document.body.appendChild(link); link.click(); document.body.removeChild(link);
     }
     cart={};

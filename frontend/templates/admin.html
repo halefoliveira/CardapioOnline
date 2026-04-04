@@ -85,6 +85,8 @@ body{background:var(--bg);color:var(--tx);font-family:'Inter',sans-serif;min-hei
   border-bottom:1px solid rgba(255,255,255,.07);
 }
 .sb-logo{display:flex;align-items:center;gap:12px;}
+#cfg-submenu .ni{padding:8px 12px;font-size:12px;border-left:2px solid rgba(255,255,255,.08);margin-bottom:1px;}
+#cfg-submenu .ni.on{border-left-color:var(--ac);}
 .sb-av{
   width:38px;height:38px;border-radius:10px;
   background:linear-gradient(135deg,var(--ac),var(--ac2));
@@ -747,8 +749,8 @@ input,select,textarea{color:#1E293B !important;}
   .ts{overflow-x:auto;-webkit-overflow-scrolling:touch;}
   .tbl th,.tbl td{white-space:nowrap;}
   .r2,.r3{grid-template-columns:1fr;}
-  .fils{flex-direction:column;align-items:stretch;}
-  .fils .sinp,.fils select{width:100%;}
+  .fils{flex-direction:row;flex-wrap:wrap;align-items:center;}
+  .fils .sinp{min-width:120px;}
   .ped-btns{flex-direction:row;flex-wrap:wrap;}
   .mbox{max-height:95vh;border-radius:20px;}
   .overlay{padding:8px;}
@@ -974,11 +976,10 @@ input,select,textarea{color:#1E293B !important;}
 <!-- APP -->
 <div id="app">
 <aside class="sb" id="sb">
-  <div class="sb-hd">
-    <div class="sb-logo">
-      <div class="sb-av" id="sbAv">🍽️</div>
-      <div><div class="sb-nm" id="sbNm">Cardápio</div><div class="sb-sub">Admin</div></div>
-    </div>
+  <div class="sb-hd" style="text-align:center;padding:20px 18px 16px">
+    <div class="sb-av" id="sbAv" style="width:64px;height:64px;border-radius:16px;margin:0 auto 10px;font-size:30px">🍽️</div>
+    <div class="sb-nm" id="sbNm" style="font-size:15px">Cardápio</div>
+    <div class="sb-sub" id="sbSub">Admin</div>
   </div>
   <nav class="nav">
     <div class="nav-s" id="navs-operacional">Operacional</div>
@@ -994,12 +995,21 @@ input,select,textarea{color:#1E293B !important;}
     <div class="ni" id="ni-resumo" onclick="goPage('resumo',this)"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>Resumo</div>
     <div class="ni" id="ni-relatorios" onclick="goPage('relatorios',this)"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span>Relatórios</div>
     <div class="nav-s" id="navs-admin">Administração</div>
-    <div class="ni" id="ni-usuarios" onclick="goPage('usuarios',this)"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3l2 2-2 2M8 3L6 5l2 2"/></svg></span>Usuários</div>
-    <div class="nav-s" id="navs-config">Configurações</div>
-    <div class="ni" id="ni-config-visual" onclick="goPage('config-visual',this)"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></span>Identidade Visual</div>
-    <div class="ni" id="ni-config-horarios" onclick="goPage('config-horarios',this)"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>Horários</div>
-    <div class="ni" id="ni-config-loja" onclick="goPage('config-loja',this)"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span>Config. da Loja</div>
-    <div class="ni" id="ni-config" onclick="goPage('config',this)" style="display:none"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span>Configurações</div>
+    <!-- Configurações: menu colapsável -->
+    <div class="ni" id="ni-cfg-toggle" onclick="toggleCfgMenu()" style="justify-content:space-between">
+      <span style="display:flex;align-items:center;gap:10px">
+        <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span>Configurações
+      </span>
+      <svg id="cfg-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="transition:.2s ease;flex-shrink:0"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div id="cfg-submenu" style="display:none;padding-left:12px">
+      <div class="ni" id="ni-usuarios" onclick="goPage('usuarios',this)"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>Usuários</div>
+      <div class="ni" id="ni-config-visual" onclick="goPage('config-visual',this)"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span>Identidade Visual</div>
+      <div class="ni" id="ni-config-horarios" onclick="goPage('config-horarios',this)"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>Horários</div>
+      <div class="ni" id="ni-config-loja" onclick="goPage('config-loja',this)"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Config. da Loja</div>
+      <div class="ni" id="ni-email-config" onclick="goPage('email-config',this)"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>Config. E-mail</div>
+    </div>
+    <div class="ni" id="ni-config" onclick="goPage('config',this)" style="display:none"></div>
   </nav>
   <div class="sb-ft">
     <a href="/" target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> Ver cardápio</a>
@@ -1082,8 +1092,8 @@ input,select,textarea{color:#1E293B !important;}
       <div class="pdv-list" id="pdvList"><div class="pdv-empty">Clique nos produtos</div></div>
       <div class="pdv-ft">
         <div class="pdv-tb">
-          <div class="pdv-tb-btn sel" id="pdvRet" onclick="pdvTipo('retirada')">🏠 Retirada</div>
-          <div class="pdv-tb-btn" id="pdvEnt" onclick="pdvTipo('entrega')">🚚 Entrega</div>
+          <div class="pdv-tb-btn sel" id="pdvRet" onclick="pdvTipo('retirada')">🏢 Retirada</div>
+          <div class="pdv-tb-btn" id="pdvEnt" onclick="pdvTipo('entrega')">🛵 Entrega</div>
         </div>
         <div class="pdv-fm">
           <div id="pdvEndW" style="display:none">
@@ -1103,7 +1113,7 @@ input,select,textarea{color:#1E293B !important;}
           <div class="fg"><label>Obs</label><input type="text" id="pdvObs" placeholder="Observações..."></div>
         </div>
         <div class="pdv-sr" id="pdvSrR" style="display:none"><span>Subtotal</span><span id="pdvSrV">R$ 0,00</span></div>
-        <div class="pdv-sr" id="pdvFrR" style="display:none"><span>🚚 Frete</span><span id="pdvFrV">R$ 0,00</span></div>
+        <div class="pdv-sr" id="pdvFrR" style="display:none"><span>🛵 Frete</span><span id="pdvFrV">R$ 0,00</span></div>
         <div class="desconto-row" id="pdvDescontoRow" style="display:none">
           <label>🏷️ Desconto</label>
           <select id="pdvDescTipo" onchange="pdvCalc()">
@@ -1128,7 +1138,14 @@ input,select,textarea{color:#1E293B !important;}
 <div class="pg" id="pg-produtos">
   <div class="pg-t">Produtos</div>
   <div class="card">
-    <div class="ct">➕ Novo produto</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <div class="ct" style="margin-bottom:0">🛍️ Gerenciar Produtos</div>
+      <button class="btn bac bsm" onclick="toggleProdForm()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px;margin-right:4px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Novo produto
+      </button>
+    </div>
+    <div id="prodFormCard" style="display:none;margin-top:18px;padding-top:18px;border-top:1.5px solid var(--bd)">
     <div class="r2" style="margin-bottom:12px">
       <div class="fg"><label>Nome *</label><input type="text" id="pNm" placeholder="Ex: Pizza Calabresa"></div>
       <div class="fg"><label>Categoria *</label><select id="pCat"></select></div>
@@ -1144,7 +1161,11 @@ input,select,textarea{color:#1E293B !important;}
         <input type="file" id="pFI" accept="image/*" style="display:none" onchange="prevFoto(this,'pPv','pPh')">
       </div>
     </div>
-    <div style="margin-top:14px"><button class="btn bac" onclick="criarProd()">Adicionar produto</button></div>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button class="btn bac" onclick="criarProd()">Adicionar produto</button>
+      <button class="btn bgh bsm" onclick="toggleProdForm()">Cancelar</button>
+    </div>
+    </div>
   </div>
   <div class="card"><div class="ct">🛍️ Todos os produtos</div>
     <div class="ts"><table class="tbl">
@@ -1157,13 +1178,25 @@ input,select,textarea{color:#1E293B !important;}
 <!-- CATEGORIAS -->
 <div class="pg" id="pg-categorias">
   <div class="pg-t">Categorias</div>
-  <div class="card"><div class="ct">➕ Nova categoria</div>
-    <div class="r2"><div class="fg"><label>Nome *</label><input type="text" id="catNm" placeholder="Ex: Pizzas"></div></div>
-    <button class="btn bac" onclick="criarCat()">Adicionar</button>
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <div class="ct" style="margin-bottom:0">📂 Gerenciar Categorias</div>
+      <button class="btn bac bsm" onclick="toggleCatForm()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px;margin-right:4px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Nova categoria
+      </button>
+    </div>
+    <div id="catFormCard" style="display:none;margin-top:18px;padding-top:18px;border-top:1.5px solid var(--bd)">
+      <div class="r2"><div class="fg"><label>Nome *</label><input type="text" id="catNm" placeholder="Ex: Pizzas"></div></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn bac" onclick="criarCat()">Adicionar</button>
+        <button class="btn bgh bsm" onclick="toggleCatForm()">Cancelar</button>
+      </div>
+    </div>
   </div>
   <div class="card"><div class="ct">📂 Categorias</div>
     <div class="ts"><table class="tbl">
-      <thead><tr><th>Nome</th><th>Status</th><th class="hide-mobile">Ordem</th><th>Ações</th></tr></thead>
+      <thead><tr><th style="width:60px">Ordem</th><th>Nome</th><th>Status</th><th>Ações</th></tr></thead>
       <tbody id="catBody"></tbody>
     </table></div>
   </div>
@@ -1173,22 +1206,41 @@ input,select,textarea{color:#1E293B !important;}
 <div class="pg" id="pg-clientes">
   <div class="pg-t">Empresas (Clientes & Fornecedores)</div>
   <div class="card" style="margin-bottom:16px">
-    <div class="ct">➕ Novo cadastro</div>
-    <div class="r2">
-      <div class="fg"><label>Nome *</label><input type="text" id="novaEmpNome" placeholder="Nome ou razão social"></div>
-      <div class="fg"><label>CPF / CNPJ</label><input type="text" id="novaEmpDoc" placeholder="000.000.000-00 ou 00.000.000/0001-00"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <div class="ct" style="margin-bottom:0">🏢 Cadastros</div>
+      <button class="btn bac bsm" onclick="toggleEmpForm()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px;margin-right:4px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Novo cadastro
+      </button>
     </div>
-    <div class="r3">
-      <div class="fg"><label>Telefone</label><input type="tel" id="novaEmpTel" placeholder="(61) 99999-9999"></div>
-      <div class="fg"><label>E-mail</label><input type="email" id="novaEmpEmail" placeholder="email@exemplo.com"></div>
-      <div class="fg"><label>Tipo</label>
-        <select id="novaEmpTipo">
-          <option value="cliente">🛒 Cliente</option>
-          <option value="fornecedor">🏭 Fornecedor</option>
-        </select>
+    <div id="empFormCard" style="display:none;margin-top:18px;padding-top:18px;border-top:1.5px solid var(--bd)">
+      <div class="r2">
+        <div class="fg"><label>Nome *</label><input type="text" id="novaEmpNome" placeholder="Nome ou razão social"></div>
+        <div class="fg"><label>Tipo de pessoa</label>
+          <select id="novaEmpPessoa" onchange="onChangePessoa()">
+            <option value="fisica">Pessoa Física (CPF)</option>
+            <option value="juridica">Pessoa Jurídica (CNPJ)</option>
+          </select>
+        </div>
+      </div>
+      <div class="r2">
+        <div class="fg"><label id="novaEmpDocLabel">CPF</label><input type="text" id="novaEmpDoc" placeholder="000.000.000-00" oninput="maskDocInline(this)"></div>
+        <div class="fg"><label>Telefone</label><input type="tel" id="novaEmpTel" placeholder="(61) 99999-9999" oninput="maskPhoneInline(this)"></div>
+      </div>
+      <div class="r2">
+        <div class="fg"><label>E-mail</label><input type="email" id="novaEmpEmail" placeholder="email@exemplo.com"></div>
+        <div class="fg"><label>Tipo de cadastro</label>
+          <select id="novaEmpTipo">
+            <option value="cliente">🛒 Cliente</option>
+            <option value="fornecedor">🏭 Fornecedor</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn bac" onclick="criarEmpresa()">Cadastrar</button>
+        <button class="btn bgh bsm" onclick="toggleEmpForm()">Cancelar</button>
       </div>
     </div>
-    <button class="btn bac" onclick="criarEmpresa()">Cadastrar</button>
   </div>
   <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
     <select class="sinp" id="clTipoF" onchange="loadClients()">
@@ -1469,18 +1521,6 @@ input,select,textarea{color:#1E293B !important;}
       </select>
     </div>
   </div>
-  <div class="card"><div class="ct">📧 SMTP — Envio de e-mails</div>
-    <p style="font-size:12px;color:var(--mu);margin-bottom:13px">Configure o servidor de e-mail para envio de recuperação de senha e notificações.</p>
-    <div class="r2">
-      <div class="fg"><label>Servidor SMTP</label><input type="text" id="smtpHost" placeholder="smtp.gmail.com"></div>
-      <div class="fg"><label>Porta</label><input type="number" id="smtpPort" placeholder="587" value="587"></div>
-    </div>
-    <div class="r2">
-      <div class="fg"><label>Usuário / E-mail</label><input type="text" id="smtpUser" placeholder="seu@gmail.com"></div>
-      <div class="fg"><label>Senha / App password</label><input type="password" id="smtpPass" placeholder="••••••••"></div>
-    </div>
-    <div class="fg"><label>Remetente (From)</label><input type="text" id="smtpFrom" placeholder="Cardápio Digital &lt;seu@gmail.com&gt;"></div>
-  </div>
   <button class="btn bac" onclick="salvarConfigLoja()">Salvar</button>
 </div>
 
@@ -1568,6 +1608,45 @@ input,select,textarea{color:#1E293B !important;}
   <div class="card" id="relCard">
     <div class="ct" id="relTitulo">Selecione um relatório acima</div>
     <div class="ts" id="relContent"><p style="color:var(--mu);text-align:center;padding:24px">Clique em um tipo acima para visualizar.</p></div>
+  </div>
+</div>
+
+<!-- CONFIG E-MAIL -->
+<div class="pg" id="pg-email-config">
+  <div class="pg-t">Configuração de E-mail</div>
+  <div class="card">
+    <div class="ct">📧 SMTP — Servidor de e-mail</div>
+    <p style="font-size:12px;color:var(--mu);margin-bottom:18px">Configure o servidor de e-mail para envio de recuperação de senha e notificações automáticas.</p>
+    <div class="r2">
+      <div class="fg"><label>Servidor SMTP</label><input type="text" id="smtpHost" placeholder="smtp.gmail.com"></div>
+      <div class="fg"><label>Porta</label><input type="number" id="smtpPort" placeholder="587" value="587"></div>
+    </div>
+    <div class="r2">
+      <div class="fg"><label>Usuário / E-mail</label><input type="text" id="smtpUser" placeholder="seu@gmail.com"></div>
+      <div class="fg"><label>Senha / App password</label><input type="password" id="smtpPass" placeholder="••••••••"></div>
+    </div>
+    <div class="fg"><label>Remetente (From)</label><input type="text" id="smtpFrom" placeholder="Cardápio Digital &lt;seu@gmail.com&gt;"></div>
+    <button class="btn bac" onclick="salvarConfigEmail()">Salvar configuração</button>
+  </div>
+  <div class="card" style="margin-top:0">
+    <div class="ct">✉️ Modelo de e-mail — Recuperação de senha</div>
+    <p style="font-size:12px;color:var(--mu);margin-bottom:14px">Este é o modelo enviado ao usuário quando clicar em <strong>"Esqueci minha senha"</strong>. Use <code style="background:var(--bg);padding:2px 6px;border-radius:4px;font-size:11px">{link}</code> para inserir o link de redefinição.</p>
+    <div class="fg"><label>Assunto do e-mail</label><input type="text" id="emailSubject" placeholder="Recuperação de senha — Cardápio Digital" value="Recuperação de senha — Cardápio Digital"></div>
+    <div class="fg"><label>Corpo do e-mail (HTML ou texto)</label>
+      <textarea id="emailBody" style="height:160px;resize:vertical;font-size:12px;font-family:monospace">Olá!
+
+Recebemos uma solicitação para redefinir sua senha.
+Clique no link abaixo para criar uma nova senha:
+
+{link}
+
+Este link expira em 1 hora.
+Se você não solicitou a redefinição, ignore este e-mail.
+
+Atenciosamente,
+Equipe Cardápio Digital</textarea>
+    </div>
+    <button class="btn bbl bsm" onclick="testarEmail()">📤 Enviar e-mail de teste</button>
   </div>
 </div>
 
@@ -1765,8 +1844,8 @@ function showPanel(role,nome,permissions){
   document.getElementById('app').classList.add('on');
   // Mostrar nome do usuário na sidebar
   if(nome) document.getElementById('sbNm').textContent=nome;
-  const sub=document.querySelector('.sb-sub');
-  if(sub) sub.textContent=currentUserRole==='admin'?'Administrador':'Staff';
+  const sub=document.getElementById('sbSub');
+  if(sub) sub.textContent=currentUserRole==='admin'?'Administrador':'Usuário';
   loadConfig();
   loadPedidos();
   _preloadProdutos();
@@ -1840,6 +1919,7 @@ function goPage(name,el){
   if(name==='config-visual'){loadConfig();renderThemes2();}
   if(name==='config-horarios'){loadConfig();}
   if(name==='config-loja'){loadConfig();}
+  if(name==='email-config'){loadEmailConfig();}
   if(name==='usuarios')  loadUsuarios();
 }
 function toggleSb(){
@@ -1859,15 +1939,19 @@ function closeModal(id){document.getElementById(id).classList.remove('on');}
 async function loadConfig(){
   try{
     const r=await fetch(`${API}/config`); const c=await r.json(); cfgG=c;
-    if(c.nome_loja){document.getElementById('cNm').value=c.nome_loja;document.getElementById('sbNm').textContent=c.nome_loja;}
-    if(c.wpp) document.getElementById('cWp').value=c.wpp;
-    if(c.frete!==undefined){document.getElementById('cFr').value=c.frete;document.getElementById('pdvFr').value=c.frete;}
-    if(c.frete_min!==undefined) document.getElementById('cFm').value=c.frete_min;
-    if(c.tipos_pagamento) document.getElementById('cTpPg').value=c.tipos_pagamento.join(', ');
-    else document.getElementById('cTpPg').value='Dinheiro, PIX, Cartão de Débito, Cartão de Crédito';
+    if(c.nome_loja){
+      const nmEl=document.getElementById('cNm');if(nmEl)nmEl.value=c.nome_loja;
+      document.getElementById('sbNm').textContent=c.nome_loja;
+    }
+    if(c.wpp){const wpEl=document.getElementById('cWp');if(wpEl)wpEl.value=c.wpp;}
+    if(c.frete!==undefined){const frEl=document.getElementById('cFr');if(frEl)frEl.value=c.frete;const pdvFrEl=document.getElementById('pdvFr');if(pdvFrEl)pdvFrEl.value=c.frete;}
+    if(c.frete_min!==undefined){const fmEl=document.getElementById('cFm');if(fmEl)fmEl.value=c.frete_min;}
+    const tpEl=document.getElementById('cTpPg');
+    if(tpEl){if(c.tipos_pagamento) tpEl.value=c.tipos_pagamento.join(', ');else tpEl.value='Dinheiro, PIX, Cartão de Débito, Cartão de Crédito';}
     if(c.logo_url){
-      document.getElementById('lgCrc').innerHTML=`<img src="${c.logo_url}" alt="logo">`;
-      document.getElementById('sbAv').innerHTML=`<img src="${c.logo_url}" style="width:38px;height:38px;border-radius:10px;object-fit:cover;">`;
+      const lgCrc=document.getElementById('lgCrc');
+      if(lgCrc) lgCrc.innerHTML=`<img src="${c.logo_url}" alt="logo">`;
+      document.getElementById('sbAv').innerHTML=`<img src="${c.logo_url}" style="width:64px;height:64px;border-radius:16px;object-fit:cover;">`;
       document.getElementById('fav').href=c.logo_url;
     }
     if(c.banner_url){
@@ -1967,7 +2051,7 @@ let entreguesExpandido=false;
 
 function renderPedCard(p,col){
   const tc=p.tipo_entrega==='entrega'?'ent':'ret';
-  const tl=p.tipo_entrega==='entrega'?'🚚 Entrega':'🏠 Retirada';
+  const tl=p.tipo_entrega==='entrega'?'🛵 Entrega':'🏢 Retirada';
   const itens=p.itens.map(i=>`<div class="ped-it">• ${i.quantidade}× ${i.nome}</div>`).join('');
   const frete_info=(p.frete||0)>0?`<div style="font-size:10px;color:var(--mu)">Subtotal R$${(p.subtotal||0).toFixed(2)} + Frete R$${p.frete.toFixed(2)}</div>`:'';
   // Botões conforme etapa e regras de edição/exclusão
@@ -2718,9 +2802,9 @@ async function loadCats(){
   allCats=cs;
   document.getElementById('catBody').innerHTML=cs.map(c=>`
     <tr id="catr${c.id}">
+      <td style="text-align:center"><strong>${c.ordem}</strong></td>
       <td><strong>${c.nome}</strong></td>
       <td><button class="tog ${c.ativa?'on':'off'}" onclick="togCat(${c.id},${!c.ativa})">${c.ativa?'Ativa':'Inativa'}</button></td>
-      <td>${c.ordem}</td>
       <td><div style="display:flex;gap:5px">
         <button class="btn bgh bsm" onclick="editCI(${c.id},'${esc(c.nome)}',${c.ordem})">Editar</button>
         <button class="btn bdn" onclick="delCat(${c.id})">Excluir</button>
@@ -2773,8 +2857,8 @@ async function loadClients(){
     <tr id="clr${c.id}">
       <td><b>${c.nome||'—'}</b></td>
       <td><span style="font-size:11px;background:${c.tipo==='fornecedor'?'var(--orl)':'var(--grl)'};color:${c.tipo==='fornecedor'?'#B45309':'var(--gr)'};padding:2px 9px;border-radius:10px;font-weight:700">${tipoIcon[c.tipo]||'👤'} ${c.tipo==='fornecedor'?'Fornecedor':'Cliente'}</span></td>
-      <td>${c.telefone.startsWith('manual_')?'—':c.telefone}</td>
       <td class="hide-mobile">${c.cpf_cnpj||'—'}</td>
+      <td>${c.telefone&&!c.telefone.startsWith('manual_')?c.telefone:'—'}</td>
       <td class="hide-mobile">${c.email||'—'}</td>
       <td><button class="btn bgh bsm" onclick="editCl(${c.id},'${esc(c.nome||'')}','${esc(c.email||'')}','${esc(c.endereco||'')}','${c.tipo||'cliente'}','${esc(c.cpf_cnpj||'')}')">Editar</button></td>
     </tr>`).join('');
@@ -2808,13 +2892,13 @@ function editCl(id,nome,email,end,tipo,doc){
   const tr=document.createElement('tr');tr.id=`cle${id}`;tr.className='edit-row';
   tr.innerHTML=`<td colspan="6"><div class="ei" style="flex-wrap:wrap;row-gap:6px">
     <input id="cln${id}" value="${nome||''}" placeholder="Nome" style="flex:2;min-width:120px">
-    <input id="cldoc${id}" value="${doc||''}" placeholder="CPF/CNPJ" style="flex:1;min-width:150px">
-    <input id="clem${id}" value="${email||''}" placeholder="E-mail" style="flex:2;min-width:150px">
-    <input id="cla${id}" value="${end||''}" placeholder="Endereço" style="flex:2;min-width:150px">
-    <select id="clt${id}" style="padding:6px 9px;border:1.5px solid var(--bd);border-radius:7px;font-size:12px">
+    <select id="clt${id}" style="padding:6px 28px 6px 9px;border:1.5px solid var(--bd);border-radius:7px;font-size:12px;appearance:none;-webkit-appearance:none;background-image:url('data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'16\\' height=\\'16\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'%2364748B\\' stroke-width=\\'2\\'%3E%3Cpolyline points=\\'6 9 12 15 18 9\\'/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 6px center;background-size:14px">
       <option value="cliente"${tipo==='cliente'?' selected':''}>🛒 Cliente</option>
       <option value="fornecedor"${tipo==='fornecedor'?' selected':''}>🏭 Fornecedor</option>
     </select>
+    <input id="cldoc${id}" value="${doc||''}" placeholder="CPF/CNPJ" style="flex:1;min-width:150px">
+    <input id="clem${id}" value="${email||''}" placeholder="E-mail" style="flex:2;min-width:150px">
+    <input id="cla${id}" value="${end||''}" placeholder="Endereço" style="flex:2;min-width:150px">
     <button class="btn bbl bsm" onclick="saveCl(${id})">Salvar</button>
     <button class="btn bgh bsm" onclick="document.getElementById('cle${id}').remove()">✕</button>
   </div></td>`;
@@ -3099,7 +3183,7 @@ async function loadRelatorio(){
           <td style="font-size:11px;color:var(--mu)">${p.criado_em}</td>
           <td><b>${p.nome_cliente}</b></td>
           <td class="hide-mobile">${p.telefone||'—'}</td>
-          <td class="hide-mobile">${p.tipo_entrega==='entrega'?'🚚 Entrega':'🏠 Retirada'}</td>
+          <td class="hide-mobile">${p.tipo_entrega==='entrega'?'🛵 Entrega':'🏢 Retirada'}</td>
           <td class="hide-mobile">${p.forma_pagamento||'—'}</td>
           <td><span class="tag ${statusTagCls(p.status)}">${sLbl(p.status)}</span></td>
           <td style="font-weight:800;color:var(--bl)">R$${p.total.toFixed(2).replace('.',',')}</td>
@@ -3284,7 +3368,7 @@ async function loadListaPedidos(){
       <td style="font-size:11px;color:var(--mu)">${p.criado_em}</td>
       <td><b>${p.nome_cliente}</b></td>
       <td class="hide-mobile">${p.telefone||'—'}</td>
-      <td class="hide-mobile">${p.tipo_entrega==='entrega'?'🚚':'🏠'}</td>
+      <td class="hide-mobile">${p.tipo_entrega==='entrega'?'🛵':'🏢'}</td>
       <td class="hide-mobile" style="font-size:11px;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${itensStr}</td>
       <td class="hide-mobile">${p.forma_pagamento||'—'}</td>
       <td><span class="tag ${statusTagCls(p.status)}">${sLbl(p.status)}</span></td>
@@ -3361,7 +3445,7 @@ async function loadCaixa(di,df){
       <td style="font-weight:800">${p.id}</td>
       <td style="font-size:11px;color:var(--mu)">${p.criado_em}</td>
       <td><b>${p.nome_cliente}</b></td>
-      <td class="hide-mobile">${p.tipo_entrega==='entrega'?'🚚':'🏠'}</td>
+      <td class="hide-mobile">${p.tipo_entrega==='entrega'?'🛵':'🏢'}</td>
       <td style="font-size:11px">${p.forma_pagamento||'—'}</td>
       <td style="text-align:right;font-weight:800">R$${p.total.toFixed(2).replace('.',',')}</td>
     </tr>`;
@@ -3392,6 +3476,52 @@ async function loadCaixa(di,df){
 }
 
 
+// ── MÁSCARAS ──────────────────────────────────────────────────────────────────
+function maskDocInline(el){
+  const tipo=document.getElementById('novaEmpPessoa')?.value||'fisica';
+  let v=el.value.replace(/\D/g,'');
+  if(tipo==='juridica'){
+    v=v.slice(0,14);
+    v=v.replace(/^(\d{2})(\d)/,'$1.$2');
+    v=v.replace(/^(\d{2})\.(\d{3})(\d)/,'$1.$2.$3');
+    v=v.replace(/\.(\d{3})(\d)/,'.$1/$2');
+    v=v.replace(/(\d{4})(\d)/,'$1-$2');
+  } else {
+    v=v.slice(0,11);
+    v=v.replace(/^(\d{3})(\d)/,'$1.$2');
+    v=v.replace(/^(\d{3})\.(\d{3})(\d)/,'$1.$2.$3');
+    v=v.replace(/\.(\d{3})(\d)/,'.$1-$2');
+  }
+  el.value=v;
+}
+function onChangePessoa(){
+  const tipo=document.getElementById('novaEmpPessoa')?.value||'fisica';
+  const lbl=document.getElementById('novaEmpDocLabel');
+  const inp=document.getElementById('novaEmpDoc');
+  if(lbl) lbl.textContent=tipo==='juridica'?'CNPJ':'CPF';
+  if(inp){ inp.value=''; inp.placeholder=tipo==='juridica'?'00.000.000/0001-00':'000.000.000-00'; }
+}
+async function loadEmailConfig(){
+  try{
+    const r=await fetch(`${API}/config`); const c=await r.json();
+    if(c.smtp){
+      if(c.smtp.host) document.getElementById('smtpHost').value=c.smtp.host;
+      if(c.smtp.port) document.getElementById('smtpPort').value=c.smtp.port;
+      if(c.smtp.user) document.getElementById('smtpUser').value=c.smtp.user;
+      if(c.smtp.from) document.getElementById('smtpFrom').value=c.smtp.from;
+    }
+  }catch(e){}
+}
+async function salvarConfigEmail(){
+  const body={smtp:{host:document.getElementById('smtpHost').value.trim(),port:parseInt(document.getElementById('smtpPort').value)||587,user:document.getElementById('smtpUser').value.trim(),pass:document.getElementById('smtpPass').value,from:document.getElementById('smtpFrom').value.trim()}};
+  try{
+    await fetch(`${API}/admin/config`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    toast('Configuração de e-mail salva!',false,true);
+  }catch(e){toast('Erro ao salvar',true);}
+}
+function testarEmail(){
+  toast('E-mail de teste enviado (funcionalidade requer backend)',false);
+}
 // ── MÁSCARA TELEFONE ──────────────────────────────────────────────────────────
 function maskPhone(el){
   el.addEventListener('input',function(){
@@ -3441,6 +3571,36 @@ function populatePgtoSelects(){
   // Atualizar tipos do PDV multipagamento também
   if(document.getElementById('pdvPgtoRows')) renderPdvPgto();
 }
+// ── TOGGLE FORMS ─────────────────────────────────────────────────────────────
+function toggleUsrForm(){
+  const card=document.getElementById('usrFormCard');
+  if(!card) return;
+  const visible=card.style.display!=='none';
+  card.style.display=visible?'none':'block';
+}
+function toggleProdForm(){
+  const card=document.getElementById('prodFormCard');
+  if(!card) return;
+  card.style.display=card.style.display!=='none'?'none':'block';
+}
+function toggleCatForm(){
+  const card=document.getElementById('catFormCard');
+  if(!card) return;
+  card.style.display=card.style.display!=='none'?'none':'block';
+}
+function toggleEmpForm(){
+  const card=document.getElementById('empFormCard');
+  if(!card) return;
+  card.style.display=card.style.display!=='none'?'none':'block';
+}
+function toggleCfgMenu(){
+  const sub=document.getElementById('cfg-submenu');
+  const arrow=document.getElementById('cfg-arrow');
+  if(!sub) return;
+  const open=sub.style.display!=='none';
+  sub.style.display=open?'none':'block';
+  if(arrow) arrow.style.transform=open?'':'rotate(180deg)';
+}
 // ── USUÁRIOS ─────────────────────────────────────────────────────────────────
 let currentUserRole='admin';
 
@@ -3487,7 +3647,7 @@ async function loadUsuarios(){
     document.getElementById('usrBody').innerHTML=users.map(u=>{
       const roleBadge=u.role==='admin'
         ?'<span class="usr-role-badge admin">Admin</span>'
-        :'<span class="usr-role-badge staff">Staff</span>';
+        :'<span class="usr-role-badge staff">Usuário</span>';
       let permsText='—';
       if(u.role==='staff'){
         try{
@@ -3531,11 +3691,11 @@ function editarUsuario(id){
         <div class="fg"><label>E-mail</label><input id="uem${id}" type="email" value="${u.email||''}" placeholder="email@exemplo.com"></div>
       </div>
       <div class="r2">
-        <div class="fg"><label>Nova senha (opcional)</label><input id="ups${id}" type="password" placeholder="Deixe em branco para manter"></div>
+        <div class="fg"><label>Alterar senha</label><input id="ups${id}" type="password" placeholder="Deixe em branco para manter"></div>
         <div class="fg"><label>Perfil</label>
           <select id="uro${id}" style="padding:7px 10px;border:1.5px solid var(--bd);border-radius:8px;font-size:12px">
-            <option value="admin"${u.role==='admin'?' selected':''}>Admin</option>
-            <option value="staff"${u.role==='staff'?' selected':''}>Staff</option>
+            <option value="admin"${u.role==='admin'?' selected':''}>Administrador</option>
+            <option value="staff"${u.role==='staff'?' selected':''}>Usuário</option>
           </select>
         </div>
       </div>
@@ -3582,7 +3742,7 @@ function applyPermissions(permissions,role){
     if(el) el.style.display=permissions[perm]?'':'none';
   });
   // Ocultar seções admin
-  ['navs-admin','ni-usuarios','ni-config','navs-config','ni-config-visual','ni-config-horarios','ni-config-loja'].forEach(id=>{
+  ['ni-cfg-toggle','cfg-submenu','ni-config','ni-usuarios','ni-config-visual','ni-config-horarios','ni-config-loja','ni-email-config'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.style.display='none';
   });
@@ -3613,14 +3773,9 @@ function applyPermissions(permissions,role){
 
 // ── TEMAS ─────────────────────────────────────────────────────────────────────
 const TEMAS=[
-  {id:'laranja', nome:'Laranja', ac:'#FF5A1F',ac2:'#e04400',sb:'#1E293B',sb2:'#0F172A'},
-  {id:'roxo',    nome:'Roxo',    ac:'#7C3AED',ac2:'#6D28D9',sb:'#1E1B4B',sb2:'#0F0E2E'},
-  {id:'azul',    nome:'Azul',    ac:'#2563EB',ac2:'#1D4ED8',sb:'#1E3A5F',sb2:'#0F2340'},
-  {id:'verde',   nome:'Verde',   ac:'#059669',ac2:'#047857',sb:'#064E3B',sb2:'#022C22'},
-  {id:'rosa',    nome:'Rosa',    ac:'#DB2777',ac2:'#BE185D',sb:'#500724',sb2:'#3B0764'},
-  {id:'teal',    nome:'Teal',    ac:'#0891B2',ac2:'#0E7490',sb:'#0C4A6E',sb2:'#082F49'},
-  {id:'grafite', nome:'Grafite', ac:'#374151',ac2:'#1F2937',sb:'#111827',sb2:'#030712'},
-  {id:'dourado', nome:'Dourado', ac:'#D97706',ac2:'#B45309',sb:'#292524',sb2:'#1C1917'},
+  {id:'vermelho', nome:'Vermelho', ac:'#DC2626',ac2:'#B91C1C',sb:'#1E293B',sb2:'#0F172A'},
+  {id:'laranja',  nome:'Laranja',  ac:'#FF5A1F',ac2:'#e04400',sb:'#1E293B',sb2:'#0F172A'},
+  {id:'grafite',  nome:'Grafite',  ac:'#374151',ac2:'#1F2937',sb:'#111827',sb2:'#030712'},
 ];
 function hexToRgba(hex,a){
   const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
@@ -3807,13 +3962,6 @@ function syncConfigLoja(c){
   const imp2=document.getElementById('cImp2');if(imp2)imp2.value=c.impressora||'';
   const ai2=document.getElementById('cAutoImp2');if(ai2)ai2.value=c.auto_impressao?'1':'0';
   const pap2=document.getElementById('cPapel2');if(pap2&&c.papel)pap2.value=c.papel;
-  // Campos SMTP
-  const smtp=c.smtp||{};
-  const sh=document.getElementById('smtpHost');if(sh)sh.value=smtp.host||'';
-  const sp=document.getElementById('smtpPort');if(sp)sp.value=smtp.port||587;
-  const su=document.getElementById('smtpUser');if(su)su.value=smtp.user||'';
-  const sf=document.getElementById('smtpFrom');if(sf)sf.value=smtp.from||'';
-  // Senha SMTP não é preenchida por segurança
   // Cupons na pg-config-loja
   renderCupons2(c.cupons||[]);
 }
@@ -3898,14 +4046,6 @@ async function salvarConfigLoja(){
   const tpRaw=document.getElementById('cTpPg2').value;
   const tipos=tpRaw.split(',').map(t=>t.trim()).filter(Boolean);
   const cupons=getCuponsForm2();
-  const smtpPass=document.getElementById('smtpPass').value;
-  const smtp={
-    host:(document.getElementById('smtpHost').value||'').trim(),
-    port:parseInt(document.getElementById('smtpPort').value)||587,
-    user:(document.getElementById('smtpUser').value||'').trim(),
-    from:(document.getElementById('smtpFrom').value||'').trim(),
-  };
-  if(smtpPass) smtp.password=smtpPass; // só enviar se preenchido
   const body={
     tipos_pagamento:tipos,cupons,
     frete:parseFloat(document.getElementById('cFr2').value)||0,
@@ -3913,11 +4053,9 @@ async function salvarConfigLoja(){
     impressora:(document.getElementById('cImp2').value||'').trim(),
     auto_impressao:document.getElementById('cAutoImp2').value==='1',
     papel:document.getElementById('cPapel2').value,
-    smtp
   };
   const r=await fetch(`${API}/admin/config`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
   const d=await r.json();cfgG=d.cfg||cfgG;
-  document.getElementById('smtpPass').value=''; // limpar senha após salvar
   toast('Configurações da loja salvas!',false,true);
   await loadConfig();
 }

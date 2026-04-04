@@ -11,3 +11,7 @@ iniciar.sh
 
 # Docker
 .dockerignore
+docker-compose.yml
+Dockerfile
+Procfile
+uploads/
